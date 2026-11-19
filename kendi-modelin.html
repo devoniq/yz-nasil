@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kendi Modelini Eğit · Yapay Zekâ Nasıl Düşünür?</title>
+<meta name="description" content="Birkaç şekil çiz, modele öğret, sonra yeni çizimini tahmin etmesini izle. Makine öğrenmesini kendin dene.">
+<meta property="og:title" content="Kendi modelini eğit · Yapay Zekâ Nasıl Düşünür?">
+<meta property="og:description" content="Birkaç şekil çiz, modele öğret, sonra yeni çizimini tahmin etmesini izle.">
+<meta property="og:image" content="https://devoniq.github.io/yz-nasil/ikon-512.png">
+<meta name="theme-color" content="#3646c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<script>try{const t=localStorage.getItem("tema");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="ortak.css">
+<script src="ortak.js" defer></script>
+<style>
+.cizim-alani{display:grid;grid-template-columns:minmax(0,300px) 1fr;gap:18px;align-items:start}
+.tuval-kap{position:relative;width:100%;max-width:300px;aspect-ratio:1}
+#tuval{width:100%;height:100%;background:#fff;border:2px solid var(--cizgi);border-radius:14px;touch-action:none;cursor:crosshair;display:block}
+.tuval-ipucu{position:absolute;inset:0;display:grid;place-items:center;color:#9aa;pointer-events:none;font-size:15px;text-align:center;padding:20px}
+.sinif-sec{display:flex;flex-direction:column;gap:8px}
+.sinif-satir{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:8px 10px;border:2px solid var(--cizgi);
+  border-radius:12px;background:var(--kart2);cursor:pointer}
+.sinif-satir[aria-pressed="true"]{border-color:var(--ana);background:var(--ana-acik)}
+.sinif-satir .renk{width:14px;height:14px;border-radius:50%}
+.sinif-satir input{border:0;background:transparent;font-weight:700;width:100%;min-width:0;padding:4px 0}
+.sinif-satir .say{font-size:14px;color:var(--soluk);font-variant-numeric:tabular-nums}
+.ornekler{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 0}
+.ornekler canvas{width:40px;height:40px;border-radius:8px;border:2px solid var(--cizgi);background:#fff;image-rendering:pixelated}
+.sekme{display:flex;gap:6px;background:var(--kart2);border:1px solid var(--cizgi);border-radius:14px;padding:4px;margin:0 0 14px}
+.sekme button{flex:1;border:0;background:transparent;border-radius:10px;padding:10px;font-weight:700;cursor:pointer;min-height:44px}
+.sekme button[aria-selected="true"]{background:var(--ana);color:var(--ana-yazi)}
+.goren{display:flex;gap:14px;align-items:center;margin:10px 0}
+.goren canvas{width:96px;height:96px;image-rendering:pixelated;border-radius:8px;border:1px solid var(--cizgi);background:#fff}
+.tahmin-sonuc{font-size:22px;font-weight:800;margin:6px 0}
+.komsular{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:14px;color:var(--soluk)}
+.komsular canvas{width:36px;height:36px;border-radius:6px;border:2px solid;background:#fff}
+.gorev-liste{list-style:none;padding:0;margin:0}
+.gorev-liste li{display:flex;gap:10px;align-items:flex-start;margin:8px 0}
+.gorev-liste li::before{content:"";flex:none;width:22px;height:22px;border-radius:7px;border:2px solid var(--cizgi);margin-top:2px}
+@media (max-width:620px){.cizim-alani{grid-template-columns:1fr}.tuval-kap{margin:0 auto}}
+</style>
+</head>
+<body data-sayfa="egit">
+<header class="ust"><div class="ust-ic">
+  <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
+  <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
+</div></header>
+
+<main class="sayfa">
+  <span class="etiket" data-oto>&nbsp;</span>
+  <h1>Kendi modelini eğit</h1>
+  <p class="giris">Yapay zekâya kimse “kare dört köşelidir” diye kural yazmaz. Bunun yerine ona <strong>çok sayıda örnek</strong> gösterilir, o da örneklerden kendisi öğrenir. Buna <strong>makine öğrenmesi</strong> denir. Şimdi öğretmen sensin.</p>
+
+  <section class="kutu deney" aria-labelledby="d-egit">
+    <h2 id="d-egit" style="margin-top:0">Dene: Şekil tanıyan bir model eğit</h2>
+    <div class="sekme" role="tablist">
+      <button type="button" role="tab" id="sekmeOgret" aria-selected="true">1. Öğret</button>
+      <button type="button" role="tab" id="sekmeDene" aria-selected="false">2. Dene</button>
+    </div>
+
+    <div class="cizim-alani">
+      <div>
+        <div class="tuval-kap">
+          <canvas id="tuval" width="280" height="280" aria-label="Çizim alanı. Parmağınla ya da fareyle çiz."></canvas>
+          <div class="tuval-ipucu" id="tuvalIpucu">Buraya parmağınla ya da fareyle çiz</div>
+        </div>
+        <div class="dugmeler">
+          <button class="dugme ikincil" type="button" id="temizle">Temizle</button>
+        </div>
+      </div>
+
+      <div id="panelOgret">
+        <p style="margin-top:0"><b>Hangi şekli öğretiyorsun?</b> Seç, çiz, sonra “Örnek olarak ekle”ye bas. İstersen şekillerin adını değiştirebilirsin.</p>
+        <div class="sinif-sec" id="siniflar"></div>
+        <div class="dugmeler"><button class="dugme" type="button" id="ekle">＋ Örnek olarak ekle</button></div>
+        <p class="ipucu kucuk" id="ogretDurum"></p>
+      </div>
+
+      <div id="panelDene" hidden>
+        <p style="margin-top:0">Modele daha önce göstermediğin <b>yeni bir şekil</b> çiz ve “Tahmin et”e bas.</p>
+        <div class="dugmeler"><button class="dugme" type="button" id="tahmin">Tahmin et</button></div>
+        <div id="sonuc" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <h3>Modelin gördüğü</h3>
+    <div class="goren">
+      <canvas id="kucuk" width="16" height="16" aria-label="Çiziminin 16 çarpı 16 piksellik hali"></canvas>
+      <p class="ipucu kucuk" style="margin:0">Model çizimini görmez. Önce kırpılıp <b>16 × 16 = 256 kareye</b> küçültülür. Her karenin ne kadar koyu olduğu bir <b>sayı</b> olur. Model bu 256 sayıyı karşılaştırır.</p>
+    </div>
+  </section>
+
+  <h2>Şu deneyleri yap</h2>
+  <div class="kutu">
+    <ul class="gorev-liste">
+      <li><span><b>Az örnek:</b> Her şekle sadece 1 örnek ver ve dene. Model sık yanılıyor mu?</span></li>
+      <li><span><b>Çok örnek:</b> Her şekle 5'er örnek ver: büyük, küçük, yamuk, hızlı çizilmiş. Şimdi nasıl?</span></li>
+      <li><span><b>Kandır:</b> Öğretmediğin bir şey çiz, mesela bir yıldız ya da bir ev. Model ne diyor?</span></li>
+      <li><span><b>Yanlış öğret:</b> Daireleri “Kare” diye ekle. Model kimin hatası olduğunu bilebilir mi?</span></li>
+    </ul>
+  </div>
+  <p><strong>“Kandır” deneyinin sonucu önemli.</strong> Model, öğretmediğin bir şekli gördüğünde “Bunu bilmiyorum” demez. Bildiği şekillerden en çok benzeyeni seçer. 4. deneydeki uydurmanın kökü de buna benzer. Model ancak öğrendiği seçenekler arasından seçim yapabilir.</p>
+
+  <details class="derin">
+    <summary>Daha derine in: Bu model nasıl çalışıyor?</summary>
+    <p>Bu sayfadaki model <strong>en yakın komşu</strong> (k-NN) yöntemini kullanıyor. Yeni bir çizim geldiğinde:</p>
+    <ol>
+      <li>Çizim 256 sayıya dönüştürülür.</li>
+      <li>Bu sayılar, kaydettiğin her örneğin sayılarıyla karşılaştırılır. Fark ne kadar azsa çizimler o kadar “yakın” sayılır.</li>
+      <li>En yakın 3 örneğe bakılır. Hangi şekil çoğunluktaysa tahmin o olur.</li>
+    </ol>
+    <p>Bu çok basit bir yöntem, ama makine öğrenmesinin özünü gösteriyor: <strong>Kural yok, örnek var.</strong> Modelin başarısı tamamen verdiğin örneklerin miktarına ve kalitesine bağlı.</p>
+    <p>Telefonundaki yüz tanıma, e-postandaki spam filtresi ya da el yazısını metne çeviren uygulamalar da aynı fikre dayanır. Tek fark şu: Onlar binlerce, hatta milyonlarca örnekle ve çok daha güçlü yöntemlerle (sinir ağlarıyla) eğitilir. Sinir ağlarını bir sonraki deneyde göreceksin.</p>
+    <p class="kucuk">Çizimlerin yalnızca bu sayfada, tarayıcının belleğinde tutulur. Sayfayı kapatınca silinir.</p>
+  </details>
+
+  <aside class="ogrendik">
+    <h2>Ne öğrendik?</h2>
+    <ul>
+      <li>Makine öğrenmesinde modele kural yazılmaz, <strong>örnek gösterilir</strong>.</li>
+      <li>Model resmi değil, resmi oluşturan <strong>sayıları</strong> karşılaştırır.</li>
+      <li>Daha çok ve daha çeşitli örnek, daha iyi bir model demektir.</li>
+      <li>Model, öğretilmeyen bir şeyle karşılaşınca bile bildiği seçeneklerden birini seçer.</li>
+      <li>Yanlış örnek verilirse model yanlış öğrenir. Modelin kalitesi verinin kalitesine bağlıdır.</li>
+    </ul>
+  </aside>
+
+  <h2>Kendini dene</h2>
+  <script type="application/json" class="test-veri" data-modul="egit">[
+    {"soru":"Makine öğrenmesinde bilgisayar bir şeyi nasıl öğrenir?",
+     "secenekler":["Programcı her kuralı tek tek yazar","Çok sayıda örneğe bakarak kendisi örüntü bulur","İnternetten kendi kendine araştırır"],
+     "dogru":1,"aciklama":"Modele örnekler gösterilir. Model bu örneklerdeki ortak özellikleri kendisi yakalar."},
+    {"soru":"Modeli daireleri “kare” olarak etiketleyerek eğitirsen ne olur?",
+     "secenekler":["Model hatayı fark edip düzeltir","Model daireleri kare sanmayı öğrenir","Model çalışmayı reddeder"],
+     "dogru":1,"aciklama":"Model doğruyu bilemez, sadece gösterilen örnekleri taklit eder. Yanlış veri, yanlış model demektir."},
+    {"soru":"Sadece daire ve kare öğrettiğin modele bir yıldız çizersen ne olur?",
+     "secenekler":["“Bu bir yıldız” der","“Bilmiyorum” der","Daire ya da kare der, yani bildiklerinden birini seçer"],
+     "dogru":2,"aciklama":"Modelin seçenekleri öğrettiklerinle sınırlıdır. Yıldızı tanımadığı için en çok benzeyen sınıfı seçer."}
+  ]</script>
+
+  <p class="not">Bu sayfadaki model gerçek bir makine öğrenmesi yöntemidir (en yakın komşu) ve tamamen senin tarayıcında çalışır. Çizimlerin hiçbir yere gönderilmez.</p>
+  <nav class="ileri-geri" data-oto aria-label="Deneyler arası geçiş"></nav>
+</main>
+
+<footer class="alt"><p>Yapay Zekâ Nasıl Düşünür? · Hazırlayan: devoniq</p></footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const RENKLER = ["#e8590c", "#1c7ed6", "#2f9e44"];
+const siniflar = [{ad: "Daire", ornekler: []}, {ad: "Kare", ornekler: []}, {ad: "Üçgen", ornekler: []}];
+let secili = 0, mod = "ogret", bosMu = true;
+
+// ---------- Çizim ----------
+const tuval = $("tuval"), c = tuval.getContext("2d");
+function temizle() {
+  c.fillStyle = "#fff"; c.fillRect(0, 0, 280, 280);
+  bosMu = true; $("tuvalIpucu").hidden = false; kucukCiz(null);
+}
+let ciziyor = false, son = null;
+function nokta(e) { const r = tuval.getBoundingClientRect(); return [(e.clientX - r.left) * 280 / r.width, (e.clientY - r.top) * 280 / r.height]; }
+tuval.addEventListener("pointerdown", e => {
+  ciziyor = true; son = nokta(e); tuval.setPointerCapture(e.pointerId);
+  if (mod === "dene" && $("sonuc").childElementCount && !bosMu) { temizle(); $("sonuc").replaceChildren(); }
+  bosMu = false; $("tuvalIpucu").hidden = true;
+  c.fillStyle = "#111"; c.beginPath(); c.arc(son[0], son[1], 6, 0, 7); c.fill();
+});
+tuval.addEventListener("pointermove", e => {
+  if (!ciziyor) return;
+  const p = nokta(e);
+  c.strokeStyle = "#111"; c.lineWidth = 12; c.lineCap = "round"; c.lineJoin = "round";
+  c.beginPath(); c.moveTo(...son); c.lineTo(...p); c.stroke(); son = p;
+});
+const birak = () => { if (ciziyor) { ciziyor = false; kucukCiz(ozellik()); } };
+tuval.addEventListener("pointerup", birak);
+tuval.addEventListener("pointercancel", birak);
+
+// ---------- Çizimi 16x16 sayıya çevir ----------
+const N = 16;
+function ozellik() {
+  if (bosMu) return null;
+  const v = c.getImageData(0, 0, 280, 280).data;
+  let x0 = 280, y0 = 280, x1 = 0, y1 = 0;
+  for (let y = 0; y < 280; y++) for (let x = 0; x < 280; x++) {
+    if (v[(y * 280 + x) * 4] < 128) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  }
+  if (x1 < x0) return null;
+  const k = document.createElement("canvas"); k.width = k.height = N;
+  const kc = k.getContext("2d"); kc.fillStyle = "#fff"; kc.fillRect(0, 0, N, N);
+  const w = x1 - x0 + 1, h = y1 - y0 + 1, olcek = (N - 2) / Math.max(w, h);
+  kc.imageSmoothingEnabled = true; kc.imageSmoothingQuality = "high";
+  kc.drawImage(tuval, x0, y0, w, h, (N - w * olcek) / 2, (N - h * olcek) / 2, w * olcek, h * olcek);
+  const d = kc.getImageData(0, 0, N, N).data;
+  const f = new Float32Array(N * N);
+  for (let i = 0; i < N * N; i++) f[i] = 1 - d[i * 4] / 255;
+  return f;
+}
+function minikCiz(kanvas, f) {
+  const kc = kanvas.getContext("2d"), img = kc.createImageData(N, N);
+  for (let i = 0; i < N * N; i++) { const g = 255 - Math.round((f ? f[i] : 0) * 255); img.data.set([g, g, g, 255], i * 4); }
+  kc.putImageData(img, 0, 0);
+}
+function kucukCiz(f) { minikCiz($("kucuk"), f); }
+function yeniMinik(f, renk) {
+  const k = document.createElement("canvas"); k.width = k.height = N; minikCiz(k, f);
+  if (renk) k.style.borderColor = renk; return k;
+}
+
+// ---------- Model: en yakın komşu ----------
+function uzaklik(a, b) { let s = 0; for (let i = 0; i < a.length; i++) { const d = a[i] - b[i]; s += d * d; } return Math.sqrt(s); }
+function tahmin(f) {
+  const hepsi = [];
+  siniflar.forEach((s, si) => s.ornekler.forEach(o => hepsi.push({si, o, d: uzaklik(f, o)})));
+  hepsi.sort((a, b) => a.d - b.d);
+  const k = Math.min(3, hepsi.length), oy = siniflar.map(() => 0);
+  hepsi.slice(0, k).forEach((h, j) => oy[h.si] += 1 / (1 + j * .25));
+  const top = oy.reduce((a, b) => a + b, 0);
+  return {oran: oy.map(x => x / top), komsular: hepsi.slice(0, k)};
+}
+
+// ---------- Arayüz ----------
+function siniflariCiz() {
+  const k = $("siniflar"); k.replaceChildren();
+  siniflar.forEach((s, i) => {
+    const d = document.createElement("div");
+    d.className = "sinif-satir"; d.setAttribute("role", "button"); d.setAttribute("aria-pressed", i === secili); d.tabIndex = 0;
+    d.innerHTML = `<span class="renk" style="background:${RENKLER[i]}"></span><input aria-label="Şekil ${i + 1} adı" maxlength="14"><span class="say">${s.ornekler.length} örnek</span><div class="ornekler" style="grid-column:1/-1"></div>`;
+    const inp = d.querySelector("input"); inp.value = s.ad;
+    inp.addEventListener("input", () => { s.ad = inp.value || `Şekil ${i + 1}`; durum(); });
+    inp.addEventListener("focus", () => { secili = i; document.querySelectorAll(".sinif-satir").forEach((x, j) => x.setAttribute("aria-pressed", j === i)); });
+    s.ornekler.forEach(o => d.querySelector(".ornekler").append(yeniMinik(o, RENKLER[i])));
+    if (!s.ornekler.length) d.querySelector(".ornekler").remove();
+    const sec = () => { secili = i; siniflariCiz(); };
+    d.addEventListener("click", e => { if (e.target !== inp) sec(); });
+    d.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target === d) { e.preventDefault(); sec(); } });
+    k.append(d);
+  });
+  durum();
+}
+function durum() {
+  const top = siniflar.reduce((t, s) => t + s.ornekler.length, 0);
+  const eksik = siniflar.filter(s => !s.ornekler.length).map(s => s.ad);
+  $("ogretDurum").textContent = top === 0 ? `Şu an “${siniflar[secili].ad}” seçili. Çiz ve ekle.`
+    : eksik.length ? `Henüz örneği olmayan: ${eksik.join(", ")}. Her şekle en az bir örnek ver.`
+    : `Toplam ${top} örnek. Hazır! İstersen daha fazla ekle ya da “2. Dene” sekmesine geç.`;
+}
+function sekme(m) {
+  mod = m;
+  $("sekmeOgret").setAttribute("aria-selected", m === "ogret");
+  $("sekmeDene").setAttribute("aria-selected", m === "dene");
+  $("panelOgret").hidden = m !== "ogret"; $("panelDene").hidden = m !== "dene";
+  temizle(); $("sonuc").replaceChildren();
+}
+
+$("ekle").addEventListener("click", () => {
+  const f = ozellik();
+  if (!f) { $("ogretDurum").textContent = "Önce bir şey çiz."; return; }
+  siniflar[secili].ornekler.push(f);
+  temizle(); siniflariCiz();
+});
+$("temizle").addEventListener("click", () => { temizle(); $("sonuc").replaceChildren(); });
+$("sekmeOgret").addEventListener("click", () => sekme("ogret"));
+$("sekmeDene").addEventListener("click", () => sekme("dene"));
+$("tahmin").addEventListener("click", () => {
+  const s = $("sonuc"); s.replaceChildren();
+  const f = ozellik();
+  const p = document.createElement("p");
+  if (siniflar.filter(x => x.ornekler.length).length < 2) { p.textContent = "Önce “1. Öğret” sekmesinde en az iki şekle örnek ver."; s.append(p); return; }
+  if (!f) { p.textContent = "Önce bir şekil çiz."; s.append(p); return; }
+  const {oran, komsular} = tahmin(f);
+  const en = oran.indexOf(Math.max(...oran));
+  const b = document.createElement("p"); b.className = "tahmin-sonuc";
+  b.textContent = `Bence bu bir: ${siniflar[en].ad}`; b.style.color = RENKLER[en];
+  s.append(b);
+  siniflar.forEach((sn, i) => {
+    if (!sn.ornekler.length) return;
+    const r = document.createElement("div"); r.className = "cubuk-satir";
+    r.innerHTML = `<span class="cubuk-ad"></span><span class="cubuk-yol"><span class="cubuk-dolgu" style="width:${oran[i] * 100}%;background:${RENKLER[i]}"></span></span><span class="cubuk-deger">%${Math.round(oran[i] * 100)}</span>`;
+    r.querySelector(".cubuk-ad").textContent = sn.ad; s.append(r);
+  });
+  const k = document.createElement("div"); k.className = "komsular";
+  k.append("En çok benzediği örnekler:");
+  komsular.forEach(h => k.append(yeniMinik(h.o, RENKLER[h.si])));
+  s.append(k);
+});
+
+temizle(); siniflariCiz();
+</script>
+</body>
+</html>

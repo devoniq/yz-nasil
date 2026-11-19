@@ -103,11 +103,71 @@ const YZ = (() => {
   // Sayı biçimi: 1.234 / 0,8
   const sayi = (n, b = 0) => n.toLocaleString("tr-TR", {minimumFractionDigits: b, maximumFractionDigits: b});
 
+  // --- Deney listesi: ana sayfa, etiketler ve ileri/geri bağlantıları buradan üretilir ---
+  // Yeni deney eklemek için: listeye bir satır ekle (hazir: true), sayfada <body data-sayfa="id"> kullan.
+  const BOLUMLER = [
+    {ad: "Temeller", alt: "Yapay zekâ metni nasıl görür ve cevabı nasıl kurar?"},
+    {ad: "Makine nasıl öğrenir?", alt: "Bir bilgisayar programı “öğrenmeyi” nasıl başarır?"},
+    {ad: "Günlük hayatta yapay zekâ", alt: "Yapay zekâyı daha iyi kullanmak için bilmen gerekenler."},
+    {ad: "Bilinçli kullanım", alt: "Yanılmamak, kandırılmamak ve kendini korumak için."},
+  ];
+  const MODULLER = [
+    {id: "1", d: "1-parcalama.html", b: 0, sure: 5, ad: "Metin nasıl parçalanır?",
+      ozet: "Yapay zekâ kelimeleri değil, “token” denen parçaları görür. Yazdığın cümlenin nasıl bölündüğünü izle."},
+    {id: "anlam", taslak: true, d: "anlam-haritasi.html", b: 0, sure: 6, ad: "Kelimeler nasıl sayıya dönüşür?",
+      ozet: "Anlamı yakın kelimeler haritada yan yana durur. Kelimelerin “adresini” keşfet."},
+    {id: "2", d: "2-sonraki-kelime.html", b: 0, sure: 7, ad: "Sonraki kelime nasıl seçilir?",
+      ozet: "Olasılıklar, zar atmak ve “yaratıcılık” ayarı. Minik bir dil modeliyle kendi cümleni kur."},
+    {id: "dikkat", taslak: true, d: "dikkat.html", b: 0, sure: 5, ad: "Model neye dikkat eder?",
+      ozet: "“O” kelimesi kimi kastediyor? Modelin bir kelimeyi anlamak için hangi kelimelere baktığını gör."},
+    {id: "3", d: "3-zaman.html", b: 0, sure: 5, ad: "Soruyu sorduktan sonra ne oluyor?",
+      ozet: "Cevap neden kelime kelime akıyor? Bekleme, okuma ve yazma aşamalarını zaman çizelgesinde gör."},
+    {id: "sinir", d: "sinir-agi.html", b: 1, sure: 8, ad: "Canlı sinir ağı",
+      ozet: "Noktaları yerleştir, küçük bir yapay sinir ağının onları ayırmayı öğrenişini canlı izle."},
+    {id: "egit", d: "kendi-modelin.html", b: 1, sure: 8, ad: "Kendi modelini eğit",
+      ozet: "Birkaç şekil çiz, modele öğret, sonra yeni çizimini tahmin etmesini izle."},
+    {id: "geribildirim", taslak: true, d: "iyi-cevap.html", b: 1, sure: 6, ad: "İyi cevabı sen seç",
+      ozet: "Sohbet botları nasıl kibar ve yardımsever olmayı öğrenir? Öğretmenlik sırası sende."},
+    {id: "soru", d: "soru-sorma.html", b: 2, sure: 7, ad: "İyi soru sorma sanatı",
+      ozet: "Aynı istek, iki farklı yazım, iki farklı cevap. Parçaları birleştirerek iyi bir istek kur."},
+    {id: "resim", taslak: true, d: "resim-uretme.html", b: 2, sure: 5, ad: "Resim üreten yapay zekâ",
+      ozet: "Resim, gürültüden adım adım nasıl ortaya çıkar? Kaydırıcıyla izle."},
+    {id: "onyargi", taslak: true, d: "onyargi.html", b: 2, sure: 6, ad: "Yapay zekâ neden önyargılı olabilir?",
+      ozet: "Eğitim verisini değiştir, modelin kararlarının nasıl çarpıklaştığını gör."},
+    {id: "4", d: "4-uydurma.html", b: 3, sure: 6, ad: "Yapay zekâ neden uydurur?",
+      ozet: "Bir oyunda yapay zekânın yerine geç ve var olmayan bir şey hakkında inandırıcı bir cevap üret."},
+    {id: "kim", taslak: true, d: "insan-mi-yz-mi.html", b: 3, sure: 5, ad: "İnsan mı yazdı, yapay zekâ mı?",
+      ozet: "Metinleri oku, kimin yazdığını tahmin et. Ayırt etmek sandığından zor."},
+    {id: "gizlilik", taslak: true, d: "gizlilik.html", b: 3, sure: 5, ad: "Yapay zekâya ne yazmamalı?",
+      ozet: "Şifre, kimlik numarası, sağlık bilgisi… Senaryolarla güvenli kullanımı öğren."},
+  ];
+  const hazirlar = () => MODULLER.filter(m => !m.taslak);
+
+  function sayfaParcalari(){
+    const id = document.body.dataset.sayfa;
+    if (!id) return;
+    const liste = hazirlar();
+    const i = liste.findIndex(m => m.id === id);
+    if (i < 0) return;
+    const m = liste[i];
+    const et = document.querySelector(".etiket[data-oto]");
+    if (et) et.textContent = `${BOLUMLER[m.b].ad} · Deney ${i + 1} / ${liste.length} · yaklaşık ${m.sure} dakika`;
+    const nav = document.querySelector(".ileri-geri[data-oto]");
+    if (nav) {
+      const once = liste[i - 1], sonra = liste[i + 1];
+      nav.innerHTML =
+        (once ? `<a href="${once.d}"><small>← Önceki deney</small>${once.ad}</a>` : "") +
+        (sonra ? `<a class="sonraki" href="${sonra.d}"><small>Sonraki deney →</small>${sonra.ad}</a>`
+               : `<a class="sonraki" href="./"><small>Hepsini bitirdin! 🎉</small>Ana sayfaya dön</a>`);
+    }
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     temaDugmesi();
+    sayfaParcalari();
     testleriKur();
     hizmetCalisani();
   });
 
-  return { sakla, azHareket, sayi };
+  return { sakla, azHareket, sayi, BOLUMLER, MODULLER, hazirlar };
 })();

@@ -48,14 +48,14 @@ ol.denemeler li{margin:6px 0;font-size:17px}
 .bolum-baslik h3{margin:0}
 </style>
 </head>
-<body>
+<body data-sayfa="2">
 <header class="ust"><div class="ust-ic">
   <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
   <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
 </div></header>
 
 <main class="sayfa">
-  <span class="etiket">Deney 2 / 4 · yaklaşık 7 dakika</span>
+  <span class="etiket" data-oto>&nbsp;</span>
   <h1>Sonraki kelime nasıl seçilir?</h1>
   <p class="giris">Yapay zekâ cevabını tek seferde yazmaz. Her adımda <strong>“Buraya hangi kelime gelebilir?”</strong> diye sorar, her aday kelimeye bir olasılık verir ve birini seçer. Sonra aynı şeyi bir sonraki kelime için tekrarlar.</p>
 
@@ -138,10 +138,7 @@ ol.denemeler li{margin:6px 0;font-size:17px}
 
   <p class="not">Bu sayfadaki model eğitim amaçlı, çok küçük bir modeldir ve tamamen senin tarayıcında çalışır. Gerçek modellerin nasıl karar verdiğinin basitleştirilmiş bir canlandırmasıdır.</p>
 
-  <nav class="ileri-geri" aria-label="Deneyler arası geçiş">
-    <a href="1-parcalama.html"><small>← Önceki deney</small>Metin nasıl parçalanır?</a>
-    <a class="sonraki" href="3-zaman.html"><small>Sonraki deney →</small>Soruyu sorduktan sonra ne oluyor?</a>
-  </nav>
+  <nav class="ileri-geri" data-oto aria-label="Deneyler arası geçiş"></nav>
 </main>
 
 <footer class="alt">

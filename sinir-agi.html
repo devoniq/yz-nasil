@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Canlı Sinir Ağı · Yapay Zekâ Nasıl Düşünür?</title>
+<meta name="description" content="Küçük bir yapay sinir ağının noktaları ayırmayı öğrenişini tarayıcında canlı izle.">
+<meta property="og:title" content="Canlı sinir ağı · Yapay Zekâ Nasıl Düşünür?">
+<meta property="og:description" content="Küçük bir yapay sinir ağının öğrenişini canlı izle.">
+<meta property="og:image" content="https://devoniq.github.io/yz-nasil/ikon-512.png">
+<meta name="theme-color" content="#3646c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<script>try{const t=localStorage.getItem("tema");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="ortak.css">
+<script src="ortak.js" defer></script>
+<style>
+:root{--turuncu:#e8590c;--mavi:#1c7ed6}
+.oyun-alani{display:grid;grid-template-columns:minmax(0,360px) 1fr;gap:20px;align-items:start}
+.alan-kap{position:relative;width:100%;max-width:360px;aspect-ratio:1}
+#alan{width:100%;height:100%;border-radius:14px;border:2px solid var(--cizgi);touch-action:none;cursor:crosshair;display:block}
+.olcumler{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.olcumler div{background:var(--kart2);border:1px solid var(--cizgi);border-radius:12px;padding:8px;text-align:center}
+.olcumler b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
+.olcumler span{font-size:12px;color:var(--soluk)}
+#egri{width:100%;height:60px;display:block;background:var(--kart2);border:1px solid var(--cizgi);border-radius:10px}
+.ayar-baslik{font-weight:700;margin:14px 0 6px}
+.ayar-baslik:first-child{margin-top:0}
+.renk-sec{display:inline-flex;gap:6px}
+.renk-sec button{width:40px;height:40px;border-radius:10px;border:3px solid transparent;cursor:pointer}
+.renk-sec button[aria-pressed="true"]{border-color:var(--yazi)}
+#ag{width:100%;height:auto;display:block;margin-top:6px}
+#ag text{fill:var(--soluk);font-size:11px}
+.oyun-yan .cipler{margin:4px 0}
+@media (max-width:700px){.oyun-alani{grid-template-columns:1fr}.alan-kap{margin:0 auto}}
+</style>
+</head>
+<body data-sayfa="sinir">
+<header class="ust"><div class="ust-ic">
+  <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
+  <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
+</div></header>
+
+<main class="sayfa">
+  <span class="etiket" data-oto>&nbsp;</span>
+  <h1>Canlı sinir ağı</h1>
+  <p class="giris">ChatGPT gibi modellerin içinde <strong>yapay sinir ağı</strong> denen bir yapı var. Adı beyinden geliyor, ama aslında çok sayıda basit hesap biriminin birbirine bağlanmasından oluşuyor. Burada minicik bir sinir ağı var. Turuncu ve mavi noktaları birbirinden ayırmayı <strong>senin gözünün önünde</strong> öğrenecek.</p>
+
+  <section class="kutu deney" aria-labelledby="d-sinir">
+    <h2 id="d-sinir" style="margin-top:0">Dene: Ağı eğit, öğrenişini izle</h2>
+    <div class="oyun-alani">
+      <div>
+        <div class="alan-kap"><canvas id="alan" width="360" height="360" aria-label="Noktalar ve ağın tahmin haritası. Dokunarak nokta ekleyebilirsin."></canvas></div>
+        <div class="olcumler" aria-live="off">
+          <div><b id="tur">0</b><span>tur</span></div>
+          <div><b id="dogru">–</b><span>doğruluk</span></div>
+          <div><b id="hata">–</b><span>hata</span></div>
+        </div>
+        <canvas id="egri" width="360" height="60" aria-label="Hata grafiği"></canvas>
+      </div>
+      <div class="oyun-yan">
+        <p class="ayar-baslik">1. Bir veri seti seç</p>
+        <div class="cipler" id="setler" role="group" aria-label="Veri seti"></div>
+        <p class="ipucu kucuk">Ya da noktaları kendin koy: Renk seç, alana dokun. <span class="renk-sec"><button type="button" id="rTuruncu" style="background:var(--turuncu)" aria-label="Turuncu nokta" aria-pressed="true"></button><button type="button" id="rMavi" style="background:var(--mavi)" aria-label="Mavi nokta" aria-pressed="false"></button></span></p>
+
+        <p class="ayar-baslik">2. Ağın büyüklüğü</p>
+        <div class="cipler" id="boyutlar" role="group" aria-label="Ağ büyüklüğü"></div>
+
+        <p class="ayar-baslik">3. Eğit</p>
+        <div class="dugmeler" style="margin-top:4px">
+          <button class="dugme" type="button" id="oynat">▶ Öğrenmeye başla</button>
+          <button class="dugme ikincil" type="button" id="sifirla">↺ Unuttur</button>
+        </div>
+        <svg id="ag" viewBox="0 0 320 170" role="img" aria-label="Ağın bağlantıları. Kalın çizgiler güçlü bağlantılardır."></svg>
+        <p class="ipucu kucuk">Çizgiler ağın bağlantıları. Turuncu çizgi olumlu, mavi çizgi olumsuz etki demek. Kalınlık bağlantının gücünü gösteriyor. Eğitim sırasında bu kalınlıklar değişir. Öğrenmek dediğimiz şey tam olarak bu.</p>
+      </div>
+    </div>
+  </section>
+
+  <h2>Şu deneyleri yap</h2>
+  <div class="kutu">
+    <ul style="margin:0;padding-left:22px">
+      <li><b>“İki küme”</b> ile <b>“Sadece çizgi”</b> ağını eğit. Kolayca başarır, çünkü iki grubu düz bir çizgi ayırabilir.</li>
+      <li><b>“Halka”</b> veri setini <b>“Sadece çizgi”</b> ile dene. Ne kadar beklesen de başaramaz. Düz bir çizgiyle halkayı ayıramazsın.</li>
+      <li>Aynı halkayı <b>“Orta”</b> ağla dene. Ara katmandaki nöronlar sayesinde ağ eğri sınırlar çizebiliyor.</li>
+      <li><b>“Spiral”</b> en zoru. <b>“Büyük”</b> ağla dene ve sabırlı ol.</li>
+    </ul>
+  </div>
+
+  <h2>Neler oluyor?</h2>
+  <p>Ağ ilk başta tamamen <strong>rastgele</strong> ayarlarla başlar. Arka plandaki renkler ağın tahminidir: Turuncu bölgeye düşen bir noktayı “turuncu” sanar.</p>
+  <p>Her turda ağ bütün noktalara bakar, nerede yanıldığını hesaplar ve <strong>bağlantılarının gücünü azıcık düzeltir</strong>. Hata her seferinde biraz azalır. Binlerce küçük düzeltmeden sonra sınır yerine oturur. Bu yönteme <em>geri yayılım</em> (backpropagation) denir. Bütün büyük yapay zekâ modelleri, bu sayfadakinden milyarlarca kat büyük ölçekte aynı yöntemle eğitilir.</p>
+
+  <details class="derin">
+    <summary>Daha derine in: Bir nöron ne yapar?</summary>
+    <p>Yapay bir nöron çok basit bir hesap yapar:</p>
+    <ol>
+      <li>Gelen her sayıyı bir <strong>ağırlıkla</strong> çarpar. Ağırlık, o bağlantının ne kadar önemli olduğunu gösterir.</li>
+      <li>Sonuçları toplar.</li>
+      <li>Toplamı bir “sıkıştırma” işleminden geçirir, böylece sonuç -1 ile 1 arasında kalır.</li>
+    </ol>
+    <p>Tek bir nöron ancak düz bir çizgi çizebilir. Ama nöronları katmanlar halinde arka arkaya bağlayınca, ağ çok karmaşık şekilleri de ayırt edebilir hale gelir. “Derin öğrenme” adı da çok katmanlı (derin) ağlardan geliyor.</p>
+    <p><strong>Ölçek karşılaştırması:</strong> Bu sayfadaki “Büyük” ağın yaklaşık 70 ağırlığı var. Büyük dil modellerinin ise yüz milyarlarca ağırlığı var ve eğitimleri binlerce özel bilgisayarda haftalar sürüyor.</p>
+    <p><strong>Ezberleme tehlikesi:</strong> Çok büyük bir ağ, az sayıda noktayı “ezberleyebilir”. Gördüğü noktalara mükemmel uyar, ama yeni noktalarda yanılır. Buna <em>aşırı öğrenme</em> (overfitting) denir. İyi bir model ezberlemez, genelleştirir.</p>
+  </details>
+
+  <aside class="ogrendik">
+    <h2>Ne öğrendik?</h2>
+    <ul>
+      <li>Yapay sinir ağı, birbirine bağlı basit hesap birimlerinden (nöronlardan) oluşur.</li>
+      <li>Ağ <strong>rastgele başlar</strong>, hatalarına bakarak bağlantılarını azar azar düzeltir. Öğrenme budur.</li>
+      <li>Daha büyük ağ daha karmaşık şekiller öğrenebilir, ama eğitimi daha uzun sürer.</li>
+      <li>Dil modelleri de aynı yöntemle, çok daha büyük ölçekte eğitilir.</li>
+    </ul>
+  </aside>
+
+  <h2>Kendini dene</h2>
+  <script type="application/json" class="test-veri" data-modul="sinir">[
+    {"soru":"Sinir ağı eğitimin başında nasıldır?",
+     "secenekler":["Her şeyi zaten bilir","Bağlantıları rastgeledir, hiçbir şey bilmez","Programcının yazdığı kurallarla başlar"],
+     "dogru":1,"aciklama":"Ağırlıklar rastgele başlar. Ağ, hatalarından yola çıkarak onları adım adım düzeltir."},
+    {"soru":"Eğitim sırasında ağın içinde değişen şey nedir?",
+     "secenekler":["Bağlantıların güçleri (ağırlıklar)","Ekrandaki noktaların yeri","Nöronların sayısı"],
+     "dogru":0,"aciklama":"Öğrenme, ağırlıkların küçük adımlarla ayarlanmasıdır. Ağın yapısı ve veri aynı kalır."},
+    {"soru":"“Sadece çizgi” ağı halka veri setini neden öğrenemez?",
+     "secenekler":["Yeterince beklenmediği için","Tek bir nöron yalnızca düz bir sınır çizebildiği için","Noktalar çok az olduğu için"],
+     "dogru":1,"aciklama":"Ara katmanı olmayan ağ yalnızca düz bir çizgi çizebilir. Halkayı ayırmak için eğri bir sınır gerekir."}
+  ]</script>
+
+  <p class="not">Bu sayfadaki sinir ağı gerçektir ve tamamen senin tarayıcında eğitilir. Hiçbir yere veri gönderilmez.</p>
+  <nav class="ileri-geri" data-oto aria-label="Deneyler arası geçiş"></nav>
+</main>
+
+<footer class="alt"><p>Yapay Zekâ Nasıl Düşünür? · Hazırlayan: devoniq</p></footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const R = () => Math.random() * 2 - 1;
+function gauss() { return Math.sqrt(-2 * Math.log(Math.random() + 1e-9)) * Math.cos(2 * Math.PI * Math.random()); }
+
+// ---------- Veri setleri: [x, y, sınıf(0 turuncu / 1 mavi)] ; koordinatlar -1..1 ----------
+const SETLER = {
+  "İki küme": () => { const v = []; for (let i = 0; i < 70; i++) { v.push([-.45 + gauss() * .2, -.4 + gauss() * .2, 0]); v.push([.45 + gauss() * .2, .4 + gauss() * .2, 1]); } return v; },
+  "Halka": () => { const v = []; for (let i = 0; i < 80; i++) { const a = Math.random() * 6.283; const r1 = Math.random() * .35, r2 = .6 + Math.random() * .3;
+      v.push([r1 * Math.cos(a), r1 * Math.sin(a), 1]); const b = Math.random() * 6.283; v.push([r2 * Math.cos(b), r2 * Math.sin(b), 0]); } return v; },
+  "Çapraz": () => { const v = []; for (let i = 0; i < 150; i++) { let x = R(), y = R(); x += x > 0 ? .05 : -.05; y += y > 0 ? .05 : -.05; v.push([x * .9, y * .9, x * y > 0 ? 1 : 0]); } return v; },
+  "Spiral": () => { const v = []; for (let i = 0; i < 90; i++) { const r = i / 90 * .85 + .05, t = i / 90 * 3.2 * Math.PI;
+      v.push([r * Math.sin(t) + gauss() * .02, r * Math.cos(t) + gauss() * .02, 0]); v.push([-r * Math.sin(t) + gauss() * .02, -r * Math.cos(t) + gauss() * .02, 1]); } return v; },
+  "Boş (kendin koy)": () => [],
+};
+const BOYUTLAR = {"Sadece çizgi": [], "Küçük": [3], "Orta": [6], "Büyük": [8, 6]};
+
+let veri = [], katmanlar = [], ag = null, tur = 0, calisiyor = false, renk = 0, gecmis = [];
+let setAdi = "İki küme", boyutAdi = "Sadece çizgi";
+
+// ---------- Sinir ağı (tanh ara katmanlar, sigmoid çıkış) ----------
+function agKur() {
+  const boy = [2, ...BOYUTLAR[boyutAdi], 1];
+  ag = [];
+  for (let l = 1; l < boy.length; l++) {
+    const g = boy[l - 1], c = boy[l], s = Math.sqrt(1 / g);
+    ag.push({W: Array.from({length: c}, () => Array.from({length: g}, () => gauss() * s)), b: Array(c).fill(0), g, c});
+  }
+  tur = 0; gecmis = [];
+}
+function ileri(x) {
+  const ciktilar = [x];
+  let a = x;
+  ag.forEach((k, l) => {
+    const son = l === ag.length - 1;
+    a = k.W.map((w, j) => { let z = k.b[j]; for (let i = 0; i < k.g; i++) z += w[i] * a[i]; return son ? 1 / (1 + Math.exp(-z)) : Math.tanh(z); });
+    ciktilar.push(a);
+  });
+  return ciktilar;
+}
+function egitBirTur(oran) {
+  const sira = veri.map((_, i) => i).sort(() => Math.random() - .5);
+  let topHata = 0;
+  for (const i of sira) {
+    const [x, y, t] = veri[i];
+    const c = ileri([x, y]);
+    const p = c.at(-1)[0];
+    topHata += -(t * Math.log(p + 1e-9) + (1 - t) * Math.log(1 - p + 1e-9));
+    let delta = [p - t];
+    for (let l = ag.length - 1; l >= 0; l--) {
+      const k = ag[l], girdi = c[l];
+      const onceki = Array(k.g).fill(0);
+      for (let j = 0; j < k.c; j++) {
+        for (let i = 0; i < k.g; i++) { onceki[i] += k.W[j][i] * delta[j]; k.W[j][i] -= oran * delta[j] * girdi[i]; }
+        k.b[j] -= oran * delta[j];
+      }
+      delta = onceki.map((d, i) => d * (1 - girdi[i] * girdi[i]));
+    }
+  }
+  tur++;
+  return veri.length ? topHata / veri.length : 0;
+}
+function dogruluk() {
+  if (!veri.length) return null;
+  return veri.filter(([x, y, t]) => (ileri([x, y]).at(-1)[0] > .5 ? 1 : 0) === t).length / veri.length;
+}
+
+// ---------- Çizim ----------
+const alan = $("alan"), ac = alan.getContext("2d");
+const IZ = 60, iz = document.createElement("canvas"); iz.width = iz.height = IZ;
+const izc = iz.getContext("2d"), izImg = izc.createImageData(IZ, IZ);
+const TUR_RGB = [232, 89, 12], MAVI_RGB = [28, 126, 214];
+function koyu() { return getComputedStyle(document.documentElement).getPropertyValue("--bg").trim().toLowerCase() === "#111318"; }
+function alaniCiz() {
+  const zemin = koyu() ? [26, 29, 36] : [255, 255, 255];
+  for (let py = 0; py < IZ; py++) for (let px = 0; px < IZ; px++) {
+    const x = px / (IZ - 1) * 2 - 1, y = 1 - py / (IZ - 1) * 2;
+    const p = ileri([x, y]).at(-1)[0];
+    const guc = Math.min(1, Math.abs(p - .5) * 2) * .55;
+    const hedef = p > .5 ? MAVI_RGB : TUR_RGB;
+    const o = (py * IZ + px) * 4;
+    for (let k = 0; k < 3; k++) izImg.data[o + k] = zemin[k] + (hedef[k] - zemin[k]) * guc;
+    izImg.data[o + 3] = 255;
+  }
+  izc.putImageData(izImg, 0, 0);
+  ac.imageSmoothingEnabled = true;
+  ac.drawImage(iz, 0, 0, 360, 360);
+  for (const [x, y, t] of veri) {
+    const px = (x + 1) / 2 * 360, py = (1 - y) / 2 * 360;
+    ac.beginPath(); ac.arc(px, py, 5, 0, 7);
+    ac.fillStyle = t ? "#1c7ed6" : "#e8590c"; ac.fill();
+    ac.lineWidth = 1.5; ac.strokeStyle = "#fff"; ac.stroke();
+  }
+}
+function egriCiz() {
+  const e = $("egri"), c = e.getContext("2d"), w = e.width, h = e.height;
+  c.clearRect(0, 0, w, h);
+  if (gecmis.length < 2) return;
+  const enb = Math.max(...gecmis, .01);
+  c.beginPath();
+  gecmis.forEach((v, i) => { const x = i / (gecmis.length - 1) * (w - 8) + 4, y = h - 6 - v / enb * (h - 12); i ? c.lineTo(x, y) : c.moveTo(x, y); });
+  c.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--ana"); c.lineWidth = 2; c.stroke();
+}
+function agCiz() {
+  const svg = $("ag"), boy = [2, ...BOYUTLAR[boyutAdi], 1];
+  const W = 320, H = 170, sx = i => 30 + i * (W - 60) / (boy.length - 1);
+  const sy = (j, n) => H / 2 + (j - (n - 1) / 2) * Math.min(24, (H - 30) / Math.max(1, n - 1));
+  let s = "";
+  ag.forEach((k, l) => k.W.forEach((w, j) => w.forEach((v, i) => {
+    const kal = Math.min(5, .4 + Math.abs(v) * 1.6);
+    s += `<line x1="${sx(l)}" y1="${sy(i, k.g)}" x2="${sx(l + 1)}" y2="${sy(j, k.c)}" stroke="${v > 0 ? "#e8590c" : "#1c7ed6"}" stroke-width="${kal.toFixed(2)}" opacity=".7"/>`;
+  })));
+  boy.forEach((n, l) => { for (let j = 0; j < n; j++) s += `<circle cx="${sx(l)}" cy="${sy(j, n)}" r="8" fill="var(--kart)" stroke="var(--yazi)" stroke-width="1.5"/>`; });
+  s += `<text x="${sx(0)}" y="${H - 4}" text-anchor="middle">girdi</text><text x="${sx(boy.length - 1)}" y="${H - 4}" text-anchor="middle">çıktı</text>`;
+  svg.innerHTML = s;
+}
+function olcumleriYaz(h) {
+  $("tur").textContent = YZ.sayi(tur);
+  const d = dogruluk();
+  $("dogru").textContent = d === null ? "–" : "%" + Math.round(d * 100);
+  $("hata").textContent = h == null ? "–" : YZ.sayi(h, 2);
+}
+function hepsiniCiz(h) { alaniCiz(); egriCiz(); agCiz(); olcumleriYaz(h); }
+
+// ---------- Döngü ----------
+let kareSay = 0;
+function dongu() {
+  if (!calisiyor) return;
+  let h = 0;
+  const adim = BOYUTLAR[boyutAdi].length > 1 ? 3 : 4;
+  for (let i = 0; i < adim; i++) h = egitBirTur(.03);
+  if (veri.length) { gecmis.push(h); if (gecmis.length > 300) gecmis.shift(); }
+  alaniCiz(); egriCiz(); olcumleriYaz(h);
+  if (++kareSay % 6 === 0) agCiz();
+  if (tur > 6000) durdur();
+  else requestAnimationFrame(dongu);
+}
+function baslat() { if (!veri.length) return; calisiyor = true; $("oynat").textContent = "⏸ Durdur"; requestAnimationFrame(dongu); }
+function durdur() { calisiyor = false; $("oynat").textContent = "▶ Devam et"; agCiz(); }
+
+function setSec(ad) {
+  setAdi = ad; veri = SETLER[ad]();
+  document.querySelectorAll("#setler .cip").forEach(c => c.setAttribute("aria-pressed", c.textContent === ad));
+  agKur(); durdur(); $("oynat").textContent = "▶ Öğrenmeye başla"; hepsiniCiz();
+}
+function boyutSec(ad) {
+  boyutAdi = ad;
+  document.querySelectorAll("#boyutlar .cip").forEach(c => c.setAttribute("aria-pressed", c.textContent === ad));
+  agKur(); durdur(); $("oynat").textContent = "▶ Öğrenmeye başla"; hepsiniCiz();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  Object.keys(SETLER).forEach(ad => { const b = document.createElement("button"); b.type = "button"; b.className = "cip"; b.textContent = ad; b.addEventListener("click", () => setSec(ad)); $("setler").append(b); });
+  Object.keys(BOYUTLAR).forEach(ad => { const b = document.createElement("button"); b.type = "button"; b.className = "cip"; b.textContent = ad; b.addEventListener("click", () => boyutSec(ad)); $("boyutlar").append(b); });
+  $("oynat").addEventListener("click", () => calisiyor ? durdur() : baslat());
+  $("sifirla").addEventListener("click", () => { agKur(); durdur(); $("oynat").textContent = "▶ Öğrenmeye başla"; hepsiniCiz(); });
+  const rs = [$("rTuruncu"), $("rMavi")];
+  rs.forEach((b, i) => b.addEventListener("click", () => { renk = i; rs.forEach((x, j) => x.setAttribute("aria-pressed", j === i)); }));
+  alan.addEventListener("pointerdown", e => {
+    const r = alan.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width * 2 - 1, y = 1 - (e.clientY - r.top) / r.height * 2;
+    veri.push([x, y, renk]); if (!calisiyor) hepsiniCiz();
+  });
+  document.addEventListener("tema-degisti", () => hepsiniCiz());
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => hepsiniCiz());
+  setSec("İki küme"); boyutSec("Sadece çizgi");
+});
+</script>
+</body>
+</html>

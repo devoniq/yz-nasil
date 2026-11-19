@@ -48,14 +48,14 @@ textarea#metin{width:100%;min-height:96px;resize:vertical;border:1px solid var(-
 }
 </style>
 </head>
-<body>
+<body data-sayfa="1">
 <header class="ust"><div class="ust-ic">
   <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
   <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
 </div></header>
 
 <main class="sayfa">
-  <span class="etiket">Deney 1 / 4 · yaklaşık 5 dakika</span>
+  <span class="etiket" data-oto>&nbsp;</span>
   <h1>Metin nasıl parçalanır?</h1>
   <p class="giris">Sen bir soru yazdığında yapay zekâ onu harf harf ya da kelime kelime okumaz. Önce metni <strong>token</strong> denen küçük parçalara böler. Token bazen bir kelime, bazen bir kelimenin yarısı, bazen tek bir harftir.</p>
 
@@ -130,9 +130,7 @@ textarea#metin{width:100%;min-height:96px;resize:vertical;border:1px solid var(-
 
   <p class="not">Bu sayfadaki anlatım basitleştirilmiştir. Parçalama işlemi gerçek bir parçalayıcıyla, tamamen senin tarayıcında yapılır. Yazdıkların hiçbir yere gönderilmez.</p>
 
-  <nav class="ileri-geri" aria-label="Deneyler arası geçiş">
-    <a class="sonraki" href="2-sonraki-kelime.html"><small>Sonraki deney →</small>Sonraki kelime nasıl seçilir?</a>
-  </nav>
+  <nav class="ileri-geri" data-oto aria-label="Deneyler arası geçiş"></nav>
 </main>
 
 <footer class="alt">

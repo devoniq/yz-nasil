@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>İyi Soru Sorma Sanatı · Yapay Zekâ Nasıl Düşünür?</title>
+<meta name="description" content="Aynı istek, iki farklı yazım, iki farklı cevap. Yapay zekâdan iyi cevap almak için isteğini nasıl yazmalısın?">
+<meta property="og:title" content="İyi soru sorma sanatı · Yapay Zekâ Nasıl Düşünür?">
+<meta property="og:description" content="Yapay zekâdan iyi cevap almak için isteğini nasıl yazmalısın? Parçaları birleştirerek dene.">
+<meta property="og:image" content="https://devoniq.github.io/yz-nasil/ikon-512.png">
+<meta name="theme-color" content="#3646c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<script>try{const t=localStorage.getItem("tema");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="ortak.css">
+<script src="ortak.js" defer></script>
+<style>
+.ikili{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.taraf{border-radius:14px;padding:14px;border:2px solid var(--cizgi);background:var(--kart2)}
+.taraf.kotu{border-color:color-mix(in srgb,var(--kotu) 45%,transparent)}
+.taraf.iyi{border-color:color-mix(in srgb,var(--iyi) 55%,transparent)}
+.taraf h3{margin:0 0 8px;font-size:16px}
+.taraf.kotu h3{color:var(--kotu)}.taraf.iyi h3{color:var(--iyi)}
+.istek{background:var(--ana);color:var(--ana-yazi);border-radius:14px 14px 4px 14px;padding:10px 12px;font-size:15px;margin:0 0 10px}
+.yanit{background:var(--kart);border:1px solid var(--cizgi);border-radius:14px 14px 14px 4px;padding:10px 12px;font-size:15px;white-space:pre-line}
+.yorum{font-size:14px;margin:10px 0 0;color:var(--soluk)}
+.bloklar{display:grid;gap:8px}
+.blok{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:10px 12px;border:2px solid var(--cizgi);border-radius:12px;background:var(--kart2);cursor:pointer}
+.blok input{width:20px;height:20px;margin-top:2px;accent-color:var(--ana)}
+.blok b{display:block;font-size:15px}
+.blok span{font-size:14px;color:var(--soluk)}
+.blok:has(input:checked){border-color:var(--ana);background:var(--ana-acik)}
+.kurulan{font-size:16px;line-height:1.7}
+.kurulan mark{border-radius:5px;padding:1px 3px;color:inherit}
+.puan{display:flex;align-items:center;gap:12px;margin:10px 0}
+.puan .yol{flex:1;height:12px;border-radius:99px;background:var(--kart2);border:1px solid var(--cizgi);overflow:hidden}
+.puan .dol{height:100%;background:linear-gradient(90deg,var(--kotu),var(--vurgu),var(--iyi));transition:width .3s}
+.puan b{min-width:9ch;text-align:right}
+.formul{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:10px}
+.formul div{background:var(--kart);border:1px solid var(--cizgi);border-radius:14px;padding:12px;text-align:center}
+.formul b{display:block;font-size:17px}
+.formul span{font-size:14px;color:var(--soluk)}
+.formul i{font-style:normal;font-size:26px;display:block}
+@media (max-width:640px){.ikili{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-sayfa="soru">
+<header class="ust"><div class="ust-ic">
+  <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
+  <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
+</div></header>
+
+<main class="sayfa">
+  <span class="etiket" data-oto>&nbsp;</span>
+  <h1>İyi soru sorma sanatı</h1>
+  <p class="giris">Yapay zekâ senin aklını okuyamaz. Sadece yazdığın kelimeleri görür ve onlara <strong>en uygun devamı</strong> üretir. Ne kadar az şey söylersen, o kadar çok tahmin yapar. Tahminler de çoğu zaman ortalama, sıradan cevaplar demektir.</p>
+
+  <h2>Aynı istek, iki farklı yazım</h2>
+  <div class="cipler" role="tablist" id="senaryolar"></div>
+  <div class="ikili" id="karsilastirma"></div>
+
+  <section class="kutu deney" aria-labelledby="d-soru">
+    <h2 id="d-soru" style="margin-top:0">Dene: İsteğini parça parça kur</h2>
+    <p class="ipucu">Temel istek: <b>“Bana kahvaltı için bir tarif öner.”</b> Aşağıdaki parçaları ekleyip çıkar, cevabın nasıl değiştiğini gör.</p>
+    <div class="bloklar" id="bloklar"></div>
+    <h3>Senin isteğin</h3>
+    <p class="kurulan" id="kurulan"></p>
+    <div class="puan"><span class="kucuk">Netlik</span><div class="yol"><div class="dol" id="puanDol"></div></div><b id="puanYazi"></b></div>
+    <h3>Alacağın cevaba bir örnek</h3>
+    <div class="yanit" id="yanit" aria-live="polite"></div>
+    <p class="ipucu kucuk" id="yanitYorum"></p>
+  </section>
+
+  <h2>İyi bir isteğin formülü</h2>
+  <div class="formul">
+    <div><i>🎯</i><b>Ne istiyorsun?</b><span>Görevi açıkça söyle.</span></div>
+    <div><i>🧭</i><b>Bağlam ne?</b><span>Kimsin, durum ne, elinde ne var?</span></div>
+    <div><i>🚧</i><b>Sınırlar ne?</b><span>Süre, bütçe, seviye, olmazsa olmazlar.</span></div>
+    <div><i>📋</i><b>Nasıl bir biçim?</b><span>Liste mi, tablo mu, e-posta mı?</span></div>
+    <div><i>📏</i><b>Ne uzunlukta?</b><span>3 madde mi, bir paragraf mı?</span></div>
+  </div>
+
+  <h2>Altın ipuçları</h2>
+  <ul>
+    <li><strong>Sohbeti sürdür.</strong> İlk cevap mükemmel olmak zorunda değil. “Daha kısa yaz”, “örnek ver”, “daha basit anlat” diyerek düzelttirebilirsin.</li>
+    <li><strong>Örnek göster.</strong> “Şu tarzda yaz: …” diyerek beğendiğin bir örneği vermek, uzun açıklamalardan daha etkilidir.</li>
+    <li><strong>Adım adım iste.</strong> Karışık işlerde “Önce plan çıkar, sonra uygula” demek sonucu iyileştirir.</li>
+    <li><strong>Ne istemediğini de söyle.</strong> “Teknik terim kullanma”, “madde işareti kullanma” gibi.</li>
+    <li><strong>Kişisel bilgi verme.</strong> Bağlam vermek iyidir, ama şifre, kimlik numarası gibi bilgiler asla gerekmez.</li>
+  </ul>
+
+  <details class="derin">
+    <summary>Daha derine in: Bağlam neden bu kadar işe yarıyor?</summary>
+    <p>2. deneyi hatırla: Model, önündeki metne bakarak sonraki kelimenin olasılıklarını hesaplıyor. “Kahvaltı tarifi öner” dediğinde, internette bu isteğe verilmiş milyonlarca cevabın <strong>ortalaması</strong> en olası devamdır: popüler, genel, belki de evinde olmayan malzemelerle bir tarif.</p>
+    <p>“Evde yumurta, domates ve peynir var” dediğinde ise olasılıklar değişir. Artık en uygun devam, bu malzemelerle yapılan bir tariftir. Her ek bilgi, modelin tahmin alanını daraltır ve cevabı sana özel hale getirir.</p>
+    <p>Yazılımcılar bu işe <em>prompt mühendisliği</em> (istem tasarımı) diyor. Ama özünde sadece şu: <strong>İyi bir insana iş verir gibi, açık ve eksiksiz anlat.</strong></p>
+  </details>
+
+  <aside class="ogrendik">
+    <h2>Ne öğrendik?</h2>
+    <ul>
+      <li>Yapay zekâ yalnızca yazdığını görür. Söylemediğin şeyi tahmin eder.</li>
+      <li>Bağlam, sınırlar, biçim ve uzunluk eklemek cevabı belirgin şekilde iyileştirir.</li>
+      <li>İlk cevabı sohbetle düzelttirmek normaldir ve işe yarar.</li>
+    </ul>
+  </aside>
+
+  <h2>Kendini dene</h2>
+  <script type="application/json" class="test-veri" data-modul="soru">[
+    {"soru":"Hangisi daha iyi bir istektir?",
+     "secenekler":["“Matematik ödevime yardım et.”","“6. sınıftayım. Kesirlerde toplama konusunu 3 basit örnekle, adım adım anlatır mısın?”","“Bana matematik öğret, hepsini.”"],
+     "dogru":1,"aciklama":"İkinci istekte seviye, konu, biçim ve miktar belli. Model tahmin yapmak zorunda kalmaz."},
+    {"soru":"Yapay zekânın ilk cevabı istediğin gibi değilse ne yapmalısın?",
+     "secenekler":["Vazgeçmelisin","Neyi değiştirmesini istediğini söyleyerek sohbete devam etmelisin","Aynı cümleyi tekrar tekrar yazmalısın"],
+     "dogru":1,"aciklama":"“Daha kısa yaz”, “örnek ver” gibi yönlendirmelerle cevap hızla iyileşir."},
+    {"soru":"İsteğine bağlam eklemek neden işe yarar?",
+     "secenekler":["Model daha hızlı çalışır","Modelin tahmin ettiği olasılıklar senin durumuna göre değişir","Model internete bağlanır"],
+     "dogru":1,"aciklama":"Model önündeki metne göre devam üretir. Bağlam, en olası cevabı senin ihtiyacına yaklaştırır."}
+  ]</script>
+
+  <p class="not">Bu sayfadaki cevaplar, farkı göstermek için hazırlanmış örneklerdir. Gerçek bir yapay zekânın cevabı her seferinde biraz farklı olur.</p>
+  <nav class="ileri-geri" data-oto aria-label="Deneyler arası geçiş"></nav>
+</main>
+
+<footer class="alt"><p>Yapay Zekâ Nasıl Düşünür? · Hazırlayan: devoniq</p></footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+// ---------- 1. Karşılaştırma senaryoları ----------
+const SENARYOLAR = [
+  {ad: "Ödev",
+   kotu: {istek: "Fotosentezi anlat.",
+     yanit: "Fotosentez, ototrof canlıların ışık enerjisini kullanarak inorganik maddelerden organik madde sentezlediği biyokimyasal bir süreçtir. Işığa bağımlı reaksiyonlar kloroplastın tilakoit zarlarında gerçekleşir ve bu aşamada ATP ile NADPH üretilir. Işıktan bağımsız reaksiyonlar ise stromada gerçekleşen Calvin döngüsüdür…",
+     yorum: "Doğru ama 7. sınıf öğrencisi için fazla ağır. Model kimin sorduğunu bilmediği için ders kitabı dilinde yazdı."},
+   iyi: {istek: "7. sınıf öğrencisiyim. Yarın fen dersinde fotosentezi arkadaşlarıma 1 dakikada anlatacağım. Basit bir dille, 4 madde halinde ve günlük hayattan bir benzetmeyle anlatır mısın?",
+     yanit: "Tabii! Fotosentezi bir mutfak gibi düşün:\n1. Malzemeler: Bitki kökleriyle su, yapraklarıyla havadan karbondioksit alır.\n2. Ocak: Güneş ışığı ocağın ateşi gibidir. Yapraktaki yeşil klorofil bu ışığı yakalar.\n3. Yemek: Bitki bu malzemelerle kendine besin (şeker) yapar.\n4. Yan ürün: Bu sırada havaya oksijen bırakır.\nKısacası: su + karbondioksit + güneş ışığı → besin + oksijen.",
+     yorum: "Seviye, süre, biçim ve anlatım tarzı belli. Cevap doğrudan kullanılabilir."}},
+  {ad: "E-posta",
+   kotu: {istek: "Okula izin maili yaz.",
+     yanit: "Sayın Yetkili,\n\n[Tarih] tarihinde [sebep] nedeniyle okula gelemeyeceğimi bildirmek isterim.\n\nGereğini arz ederim.\n[Adınız Soyadınız]",
+     yorum: "Model kime, ne zaman, neden yazıldığını bilmiyor. Boşlukları sen doldurmak zorundasın."},
+   iyi: {istek: "Oğlum Ahmet 6-B sınıfında. 21 Kasım'da diş doktoru randevusu nedeniyle saat 13.00'te okuldan ayrılması gerekiyor. Sınıf öğretmeni Ayşe Hanım'a gönderilecek kısa ve kibar bir e-posta yazar mısın? İmza: Mehmet Demir.",
+     yanit: "Konu: Ahmet Demir (6-B) – 21 Kasım erken ayrılış\n\nSayın Ayşe Hanım,\n\nOğlum Ahmet'in 21 Kasım günü diş doktoru randevusu bulunduğundan saat 13.00'te okuldan ayrılması gerekiyor. O gün işlenen konuları evde birlikte tamamlayacağız.\n\nAnlayışınız için teşekkür ederim.\n\nSaygılarımla,\nMehmet Demir",
+     yorum: "Bütün bilgiler istekte var. E-posta hemen gönderilebilir."}},
+  {ad: "Hafta sonu planı",
+   kotu: {istek: "Hafta sonu ne yapabilirim?",
+     yanit: "Hafta sonu için bazı öneriler:\n1. Kitap okuyabilirsin.\n2. Film izleyebilirsin.\n3. Yürüyüşe çıkabilirsin.\n4. Yeni bir hobi deneyebilirsin.\n5. Arkadaşlarınla buluşabilirsin.",
+     yorum: "Herkese uyan, kimseye özel olmayan bir liste. Model senin hakkında hiçbir şey bilmiyor."},
+   iyi: {istek: "8 ve 11 yaşında iki çocuğum var. Cumartesi hava yağmurlu olacak. Kişi başı en fazla 200 TL harcamak istiyoruz. Kapalı alanda, çocukların hem eğlenip hem bir şey öğreneceği 3 etkinlik önerir misin? Her biri için yaklaşık süreyi de yaz.",
+     yanit: "1. Bilim merkezi ya da müze (2-3 saat): Dokunarak deney yapılan bölümler bu yaş için idealdir. Belediyelerin bilim merkezleri çoğunlukla ücretsizdir.\n2. Evde mutfak bilimi (1-2 saat): Karbonat ve sirkeyle volkan, kırmızı lahana suyuyla renk değiştiren sıvı deneyleri. Malzemeler evde bulunur.\n3. Kütüphane ve kutu oyunu günü (2 saat): Halk kütüphanesinin çocuk bölümünde kitap seçin, dönüşte strateji oyunu oynayın.\nNot: Gitmeden önce açılış saatlerini ve ücretleri kontrol edin.",
+     yorum: "Yaş, hava, bütçe ve amaç belli. Öneriler gerçekten işe yarar hale geldi."}},
+];
+function senaryoGoster(i) {
+  document.querySelectorAll("#senaryolar .cip").forEach((c, j) => { c.setAttribute("aria-pressed", i === j); c.setAttribute("aria-selected", i === j); });
+  const s = SENARYOLAR[i], k = $("karsilastirma"); k.replaceChildren();
+  [["kotu", "😕 Belirsiz istek", s.kotu], ["iyi", "😊 Net istek", s.iyi]].forEach(([sinif, baslik, v]) => {
+    const d = document.createElement("div"); d.className = "taraf " + sinif;
+    d.innerHTML = `<h3>${baslik}</h3><p class="istek"></p><div class="yanit"></div><p class="yorum"></p>`;
+    d.querySelector(".istek").textContent = v.istek;
+    d.querySelector(".yanit").textContent = v.yanit;
+    d.querySelector(".yorum").textContent = v.yorum;
+    k.append(d);
+  });
+}
+
+// ---------- 2. İstek kurucu ----------
+const BLOKLAR = [
+  {id: "rol", ad: "Rol ver", metin: "Sen pratik yemekler konusunda deneyimli bir aşçısın.", renk: "var(--t6)"},
+  {id: "baglam", ad: "Bağlam ver", metin: "İki kişiyiz, evde yumurta, domates, biber, peynir ve ekmek var.", renk: "var(--t2)"},
+  {id: "sinir", ad: "Sınır koy", metin: "15 dakikadan kısa sürsün, fırın kullanmayalım.", renk: "var(--t1)"},
+  {id: "bicim", ad: "Biçim belirt", metin: "Malzemeleri ve adımları ayrı listeler halinde yaz.", renk: "var(--t3)"},
+  {id: "uzunluk", ad: "Uzunluk belirt", metin: "Kısa tut, en fazla 6 adım olsun.", renk: "var(--t5)"},
+  {id: "ton", ad: "Anlatım tarzı", metin: "Mutfakta yeni olan birine anlatır gibi anlat.", renk: "var(--t4)"},
+];
+const TARIFLER = {
+  avokado: {ad: "Avokadolu ve somonlu tost", sure: "15 dakika", sef: "Avokadoyu son anda ez, yoksa kararır.",
+    malz: ["2 dilim ekşi mayalı ekmek", "1 olgun avokado", "100 g füme somon", "Limon, pul biber"],
+    adim: [["Ekmekleri kızart.", ""], ["Avokadoyu ez, limon ve tuz ekle.", "çatalla ezmek yeterli"], ["Ekmeklere sür, üzerine somonu yerleştir.", ""], ["Pul biber serp ve servis et.", ""]]},
+  firin: {ad: "Fırında peynirli yumurtalı ekmek", sure: "30 dakika", sef: "Bayat ekmek kullanırsan yumurtayı daha iyi emer.",
+    malz: ["4 dilim ekmek", "3 yumurta", "Peynir", "Domates"],
+    adim: [["Fırını 180 dereceye ısıt.", "fırının iyice ısınması 10 dakika sürer"], ["Ekmekleri fırın kabına diz.", ""], ["Yumurtaları çırp, peyniri ekle ve ekmeklerin üzerine dök.", "çatalla 1 dakika çırpman yeterli"], ["Domatesleri dilimleyip üstüne koy.", ""], ["20 dakika pişir.", "üstü kızarınca hazırdır"]]},
+  menemen: {ad: "Peynirli menemen", sure: "12 dakika", sef: "Tuzu en sonda ekle, peynir zaten tuzlu olabilir.",
+    malz: ["3 yumurta", "2 domates", "1 biber", "Bir avuç peynir", "1 yemek kaşığı yağ, tuz"],
+    adim: [["Biberi küçük doğra, yağda 2-3 dakika kavur.", "tavayı orta ateşte ısıt, yüksek ateş yakar"], ["Domatesleri doğrayıp ekle, suyunu çekene kadar pişir.", "yaklaşık 4-5 dakika, ara ara karıştır"], ["Yumurtaları kır, hafifçe karıştır.", "çok karıştırırsan omlet gibi kurur"], ["Peyniri ekle, ocağı kapat.", "tavanın sıcaklığı peyniri eritir"], ["Ekmekle sıcak servis et.", ""]]},
+};
+function cevapUret(s) {
+  const t = s.baglam ? (s.sinir ? TARIFLER.menemen : TARIFLER.firin) : TARIFLER.avokado;
+  const satirlar = [];
+  if (!s.uzunluk) satirlar.push("Harika bir soru! Kahvaltı günün en önemli öğünlerinden biridir ve güne enerjik başlamanı sağlar. Sana çok sevilen bir tarif önermek istiyorum.\n");
+  satirlar.push(`${t.ad} (${t.sure})`);
+  const adimYazi = ([a, ip]) => s.ton && ip ? `${a} (${ip.charAt(0).toLocaleUpperCase("tr-TR") + ip.slice(1)}.)` : a;
+  if (s.bicim) {
+    satirlar.push("\nMalzemeler:\n" + t.malz.map(m => "• " + m).join("\n"));
+    satirlar.push("\nYapılışı:\n" + t.adim.map((a, i) => `${i + 1}. ${adimYazi(a)}`).join("\n"));
+  } else {
+    satirlar.push(`Bunun için ${t.malz.join(", ").toLocaleLowerCase("tr-TR")} gerekiyor. ` + t.adim.map(adimYazi).join(" "));
+  }
+  if (s.rol) satirlar.push("\nŞef ipucu: " + t.sef);
+  if (!s.uzunluk) satirlar.push("\nBu tarifi farklı malzemelerle de zenginleştirebilirsin: mantar, sucuk, avokado ya da otlar ekleyebilirsin. Ayrıca yanında taze sıkılmış portakal suyu ve bir fincan çayla harika bir kahvaltı sofrası hazırlayabilirsin. Afiyet olsun!");
+  return satirlar.join("\n");
+}
+function yorumUret(s) {
+  const n = [];
+  if (!s.baglam) n.push("Evde ne olduğunu söylemediğin için model popüler ama evinde muhtemelen olmayan malzemeler önerdi.");
+  else if (!s.sinir) n.push("Malzemeler doğru, ama süre sınırı vermediğin için fırında 30 dakikalık bir tarif geldi.");
+  if (!s.bicim) n.push("Biçim istemediğin için her şey tek paragrafta, takip etmesi zor.");
+  if (!s.uzunluk) n.push("Uzunluk belirtmediğin için baştaki ve sondaki gereksiz sözler cevabı uzattı.");
+  if (!s.ton) n.push("Anlatım tarzı belirtmediğin için adımlar kısa ve ipuçsuz.");
+  return n.length ? n.join(" ") : "Mükemmel! Her parça cevabı bir yönden iyileştirdi. Cevap tam ihtiyacına göre.";
+}
+function kurucuyuCiz() {
+  const s = {}; BLOKLAR.forEach(b => s[b.id] = $("b-" + b.id).checked);
+  const k = $("kurulan"); k.replaceChildren();
+  BLOKLAR.filter(b => b.id === "rol" && s.rol).forEach(b => { const m = document.createElement("mark"); m.style.background = b.renk; m.textContent = b.metin; k.append(m, " "); });
+  k.append("Bana kahvaltı için bir tarif öner. ");
+  BLOKLAR.filter(b => b.id !== "rol" && s[b.id]).forEach(b => { const m = document.createElement("mark"); m.style.background = b.renk; m.textContent = b.metin; k.append(m, " "); });
+  const n = Object.values(s).filter(Boolean).length;
+  $("puanDol").style.width = (15 + n / BLOKLAR.length * 85) + "%";
+  $("puanYazi").textContent = ["Çok belirsiz", "Belirsiz", "Fena değil", "İyi", "Çok iyi", "Harika", "Mükemmel"][n];
+  $("yanit").textContent = cevapUret(s);
+  $("yanitYorum").textContent = yorumUret(s);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  SENARYOLAR.forEach((s, i) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "cip"; b.setAttribute("role", "tab"); b.textContent = s.ad;
+    b.addEventListener("click", () => senaryoGoster(i)); $("senaryolar").append(b);
+  });
+  senaryoGoster(0);
+  BLOKLAR.forEach(b => {
+    const l = document.createElement("label"); l.className = "blok";
+    l.innerHTML = `<input type="checkbox" id="b-${b.id}"><span><b></b><span></span></span>`;
+    l.querySelector("b").textContent = b.ad; l.querySelector("span span").textContent = "“" + b.metin + "”";
+    l.querySelector("input").addEventListener("change", kurucuyuCiz);
+    $("bloklar").append(l);
+  });
+  kurucuyuCiz();
+});
+</script>
+</body>
+</html>
