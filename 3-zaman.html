@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Soruyu Sorduktan Sonra Ne Oluyor? · Yapay Zekâ Nasıl Düşünür?</title>
+<meta name="description" content="Yapay zekâya soru sorduktan sonra cevap gelene kadar geçen süreyi aşama aşama zaman çizelgesinde gör.">
+<meta property="og:title" content="Soruyu sorduktan sonra ne oluyor? · Yapay Zekâ Nasıl Düşünür?">
+<meta property="og:description" content="Bekleme, okuma, yazma: cevabın neden kelime kelime aktığını zaman çizelgesinde gör.">
+<meta property="og:image" content="https://devoniq.github.io/yz-nasil/ikon-512.png">
+<meta name="theme-color" content="#3646c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<script>try{const t=localStorage.getItem("tema");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="ortak.css">
+<script src="ortak.js" defer></script>
+<style>
+:root{--f-ag:#9aa3b2;--f-sira:#e7b416;--f-yukle:#d0679d;--f-oku:#3e8fd8;--f-yaz:#2f9e6a}
+.secim-grup{border:0;padding:0;margin:0 0 14px}
+.secim-grup legend{font-weight:700;margin-bottom:8px;padding:0}
+.model-kartlar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.model-kart{position:relative;display:block;cursor:pointer}
+.model-kart input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.model-kart span{display:block;height:100%;border:2px solid var(--cizgi);border-radius:14px;padding:12px;background:var(--kart2)}
+.model-kart b{display:block;font-size:16px}
+.model-kart small{display:block;color:var(--soluk);font-size:13px;line-height:1.4;margin-top:4px}
+.model-kart input:checked + span{border-color:var(--ana);background:var(--ana-acik)}
+.model-kart input:focus-visible + span{outline:3px solid var(--ana);outline-offset:2px}
+.ayarlar{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ayarlar select{width:100%;min-height:46px;border-radius:12px;border:1px solid var(--cizgi);background:var(--kart2);padding:8px 12px}
+.ayarlar label b{display:block;margin-bottom:6px}
+.anahtar{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:15px;margin:12px 0 0}
+.anahtar input{width:20px;height:20px;accent-color:var(--ana)}
+.sohbet{background:var(--kart2);border:1px solid var(--cizgi);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:180px}
+.balon{max-width:88%;padding:10px 14px;border-radius:16px;line-height:1.5}
+.balon.sen{align-self:flex-end;background:var(--ana);color:var(--ana-yazi);border-bottom-right-radius:4px}
+.balon.yz{align-self:flex-start;background:var(--kart);border:1px solid var(--cizgi);border-bottom-left-radius:4px;min-height:44px}
+.balon.yz .durum-yazi{color:var(--soluk);font-style:italic;font-size:15px}
+.balon.yz .devam{display:block;color:var(--soluk);font-size:14px;margin-top:6px}
+.nokta{display:inline-flex;gap:4px;margin-right:8px;vertical-align:middle}
+.nokta i{width:7px;height:7px;border-radius:50%;background:var(--soluk);animation:zipla 1s infinite}
+.nokta i:nth-child(2){animation-delay:.15s}.nokta i:nth-child(3){animation-delay:.3s}
+@keyframes zipla{0%,60%,100%{transform:none;opacity:.5}30%{transform:translateY(-4px);opacity:1}}
+.sayac-satir{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:16px 0 8px;flex-wrap:wrap}
+.sayac{font-size:40px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.sayac small{font-size:18px;font-weight:600;color:var(--soluk)}
+.asama-yazi{font-weight:600;color:var(--soluk)}
+.cizelge{position:relative;display:flex;height:40px;border-radius:10px;overflow:hidden;background:var(--kart2);border:1px solid var(--cizgi)}
+.cizelge .parca{position:relative;height:100%;min-width:3px;background:none!important}
+.cizelge .parca::before{content:"";position:absolute;inset:0;background:var(--renk);opacity:.25}
+.cizelge .parca .dol{position:absolute;inset:0 auto 0 0;width:0}
+.isaret{position:absolute;top:16px;bottom:-6px;width:2px;background:var(--yazi)}
+.isaret span{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:12px;font-weight:700;
+  background:var(--yazi);color:var(--bg);padding:1px 6px;border-radius:6px;margin-bottom:2px}
+.cizelge-kap{position:relative;padding-top:22px}
+.lejant{display:flex;flex-wrap:wrap;gap:8px 16px;margin:12px 0 0;font-size:14px}
+.lejant span{display:inline-flex;align-items:center;gap:6px}
+.lejant i{width:14px;height:14px;border-radius:4px;flex:none}
+.lejant em{font-style:normal;color:var(--soluk);font-variant-numeric:tabular-nums}
+.ozet{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 0}
+.ozet div{background:var(--kart2);border:1px solid var(--cizgi);border-radius:12px;padding:10px;text-align:center}
+.ozet b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
+.ozet span{font-size:13px;color:var(--soluk)}
+.gecmis-satir{margin:12px 0}
+.gecmis-satir p{margin:0 0 4px;font-size:14px}
+.gecmis-satir p b{font-variant-numeric:tabular-nums}
+.gecmis-cubuk{display:flex;height:20px;border-radius:6px;overflow:hidden;background:var(--kart2)}
+.gecmis-cubuk i{height:100%}
+.asamalar dt{font-weight:700;display:flex;align-items:center;gap:8px;margin-top:14px}
+.asamalar dt i{width:14px;height:14px;border-radius:4px}
+.asamalar dd{margin:4px 0 0 22px;color:var(--soluk)}
+@media (max-width:620px){
+  .model-kartlar{grid-template-columns:1fr}
+  .ayarlar{grid-template-columns:1fr}
+  .ozet{grid-template-columns:1fr 1fr 1fr}
+  .ozet b{font-size:18px}
+}
+</style>
+</head>
+<body>
+<header class="ust"><div class="ust-ic">
+  <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
+  <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
+</div></header>
+
+<main class="sayfa">
+  <span class="etiket">Deney 3 / 4 · yaklaşık 5 dakika</span>
+  <h1>Soruyu sorduktan sonra ne oluyor?</h1>
+  <p class="giris">“Gönder”e bastın. Önce birkaç saniye hiçbir şey olmuyor, sonra cevap kelime kelime akmaya başlıyor. Bu arada perde arkasında neler oluyor? Bir soru gönder ve zaman çizelgesini izle.</p>
+
+  <section class="kutu deney" aria-labelledby="d3">
+    <h2 id="d3" style="margin-top:0">Dene: Bir soru gönder, süreyi izle</h2>
+
+    <fieldset class="secim-grup">
+      <legend>1. Hangi model cevap versin?</legend>
+      <div class="model-kartlar" id="modeller"></div>
+    </fieldset>
+
+    <div class="ayarlar">
+      <label><b>2. Ne soruyorsun?</b>
+        <select id="soru">
+          <option value="kisa">Kısa bir soru</option>
+          <option value="uzun">Uzun bir metin + “bunu özetle”</option>
+        </select></label>
+      <label><b>3. Ne kadar uzun bir cevap?</b>
+        <select id="cevap">
+          <option value="40">Kısa (birkaç cümle)</option>
+          <option value="150" selected>Orta (bir paragraf)</option>
+          <option value="450">Uzun (bir sayfa)</option>
+        </select></label>
+    </div>
+    <label class="anahtar" id="ilkKezEtiket"><input type="checkbox" id="ilkKez"> Model ilk kez açılıyor (önce belleğe yüklenecek)</label>
+    <label class="anahtar">Oynatma hızı:
+      <select id="hizli" style="min-height:40px;border-radius:10px;border:1px solid var(--cizgi);background:var(--kart2);padding:4px 8px">
+        <option value="1">Gerçek süre</option><option value="3" selected>3 kat hızlı</option><option value="10">10 kat hızlı</option>
+      </select>
+      <span class="ipucu kucuk">Sayaç her zaman gerçek süreyi gösterir.</span></label>
+
+    <div class="dugmeler">
+      <button class="dugme" type="button" id="gonder">Soruyu gönder ➤</button>
+      <button class="dugme ikincil" type="button" id="durdur" disabled>Durdur</button>
+    </div>
+
+    <div class="sohbet" aria-live="off">
+      <div class="balon sen" id="soruBalon"></div>
+      <div class="balon yz" id="cevapBalon"><span class="durum-yazi">Cevap burada görünecek.</span></div>
+    </div>
+
+    <div class="sayac-satir">
+      <div class="sayac" id="sayac" aria-live="off">0,0 <small>sn</small></div>
+      <div class="asama-yazi" id="asamaYazi" aria-live="polite">Hazır</div>
+    </div>
+    <div class="cizelge-kap"><div class="cizelge" id="cizelge" aria-hidden="true"></div></div>
+    <div class="lejant" id="lejant"></div>
+    <div class="ozet" id="ozet" hidden>
+      <div><b id="oz-ilk">–</b><span>ilk kelimeye kadar</span></div>
+      <div><b id="oz-top">–</b><span>toplam süre</span></div>
+      <div><b id="oz-hiz">–</b><span>yazma hızı</span></div>
+    </div>
+  </section>
+
+  <h2>Karşılaştır</h2>
+  <p>Farklı modelleri ve ayarları dene. Her denemen aynı ölçekte burada birikir.</p>
+  <div class="kutu" id="gecmis"><p class="ipucu" id="gecmisBos" style="margin:0">Henüz deneme yok. Yukarıdan bir soru gönder.</p></div>
+
+  <h2>Aşamalar ne anlama geliyor?</h2>
+  <dl class="asamalar">
+    <dt><i style="background:var(--f-ag)"></i>Gönderme</dt>
+    <dd>Sorun internet üzerinden şirketin sunucusuna gider. Genelde göz açıp kapayıncaya kadar sürer. Kendi bilgisayarında çalışan modelde bu adım yoktur.</dd>
+    <dt><i style="background:var(--f-sira)"></i>Sırada bekleme</dt>
+    <dd>Aynı anda milyonlarca kişi soru soruyor. Sorun, boş bir hesaplama kartı (GPU) bulunana kadar kısa bir süre sırada bekler. Yoğun saatlerde bu süre uzayabilir.</dd>
+    <dt><i style="background:var(--f-yukle)"></i>Belleğe yükleme</dt>
+    <dd>Model, milyarlarca sayıdan oluşan büyük bir dosyadır (birkaç gigabayt). Kendi bilgisayarında ilk kez çalıştırdığında bu dosyanın diskten belleğe okunması gerekir. Bulut hizmetlerinde modeller hep açık durduğu için bu adımı görmezsin.</dd>
+    <dt><i style="background:var(--f-oku)"></i>Soruyu okuma</dt>
+    <dd>Model sorunun <strong>tamamını tek seferde, paralel olarak</strong> işler. Bu yüzden hızlıdır. Ama çok uzun bir metin yapıştırdıysan, özellikle sıradan bir bilgisayarda belirgin süre alır.</dd>
+    <dt><i style="background:var(--f-yaz)"></i>Cevabı yazma</dt>
+    <dd>Asıl yavaş kısım budur. 2. deneyde gördüğün gibi her kelime, önceki kelimelere bakılarak <strong>tek tek</strong> üretilir. Bir sonraki kelime, öncekisi bitmeden hesaplanamaz. Bu yüzden cevap kelime kelime akar. Uzun cevap istemek, toplam süreyi doğrudan uzatır.</dd>
+  </dl>
+
+  <details class="derin">
+    <summary>Daha derine in: Neden cevap “akarak” geliyor?</summary>
+    <p>Model cevabın tamamını bitirip sonra gösterebilirdi. Ama o zaman bir sayfalık cevap için 10-20 saniye boş ekrana bakardın. Bunun yerine her kelime üretilir üretilmez sana gönderilir. Bu yönteme <em>akış</em> (streaming) denir. Toplam süre aynıdır, ama okumaya hemen başlarsın.</p>
+    <p>Bu yüzden uzmanlar iki ayrı süreye bakar:</p>
+    <ul>
+      <li><strong>İlk kelimeye kadar geçen süre:</strong> Ne kadar beklediğini hissettiren süre.</li>
+      <li><strong>Saniyedeki token sayısı:</strong> Cevabın ne kadar hızlı aktığı. İnsanlar saniyede yaklaşık 4-6 token okur. Bulut modelleri çoğu zaman bundan çok daha hızlı yazar.</li>
+    </ul>
+    <p><strong>Büyük model neden daha yavaş?</strong> Her token için modelin bütün sayılarının bellekten okunup hesaba katılması gerekir. 12 milyar sayılık bir model, 4 milyarlık bir modelden yaklaşık üç kat fazla iş yapar. Bulut şirketleri bu işi çok pahalı ve hızlı hesaplama kartlarıyla (GPU) yapar. Sıradan bir bilgisayar ise çoğu zaman yalnızca işlemciyle (CPU) çalışır.</p>
+    <p class="kucuk">Bilgisayarda çalışan modeller için kullanılan değerler, sıradan bir ofis bilgisayarında ölçülen yaklaşık değerlerdir (küçük model ≈ 9, büyük model ≈ 4 token/saniye). Bulut değerleri tipik örneklerdir. Gerçek süreler donanıma, hizmete ve yoğunluğa göre değişir.</p>
+  </details>
+
+  <aside class="ogrendik">
+    <h2>Ne öğrendik?</h2>
+    <ul>
+      <li>Cevap gelmeden önce soru <strong>gönderilir, sıraya girer ve okunur</strong>. İlk kelimeyi beklemenin sebebi budur.</li>
+      <li>Model sorunun tamamını <strong>hızlıca, tek seferde</strong> okur, ama cevabı <strong>kelime kelime</strong> yazar.</li>
+      <li>Uzun cevap = daha uzun süre. Büyük model = daha yavaş ama genelde daha akıllı.</li>
+      <li>Cevabın akarak gelmesi, beklemeyi kısa hissettirmek içindir.</li>
+    </ul>
+  </aside>
+
+  <h2>Kendini dene</h2>
+  <script type="application/json" class="test-veri" data-modul="3">[
+    {"soru":"Cevabın ilk kelimesi neden biraz gecikmeli gelir?",
+     "secenekler":["Model önce cevabın tamamını yazıp sonra gösterir","Soru gönderilir, sırada bekler ve model önce soruyu okur","Bilgisayar ekranı yavaştır"],
+     "dogru":1,"aciklama":"İlk kelimeden önce gönderme, bekleme ve soruyu okuma aşamaları vardır. Cevap tamamen bitmeden akmaya başlar."},
+    {"soru":"Cevap neden kelime kelime akarak gelir?",
+     "secenekler":["Model her kelimeyi öncekilere bakarak tek tek ürettiği için","Etkileyici görünsün diye yavaşlatıldığı için","İnternet kelimeleri tek tek taşıdığı için"],
+     "dogru":0,"aciklama":"Her kelime öncekilere bağlıdır. Model bir kelimeyi bitirmeden sonrakini hesaplayamaz. Üretilen her kelime de hemen sana gönderilir."},
+    {"soru":"Çok uzun bir cevap istemek en çok neyi etkiler?",
+     "secenekler":["İlk kelimenin gelme süresini","Toplam süreyi","Hiçbir şeyi"],
+     "dogru":1,"aciklama":"İlk kelime aşağı yukarı aynı anda gelir. Ama yazılacak kelime sayısı arttıkça toplam süre uzar."}
+  ]</script>
+
+  <p class="not">Bu sayfa gerçek bir yapay zekâya bağlanmaz. Süreler, gerçek ölçümlere dayanan yaklaşık değerlerle yapılmış bir canlandırmadır.</p>
+
+  <nav class="ileri-geri" aria-label="Deneyler arası geçiş">
+    <a href="2-sonraki-kelime.html"><small>← Önceki deney</small>Sonraki kelime nasıl seçilir?</a>
+    <a class="sonraki" href="4-uydurma.html"><small>Sonraki deney →</small>Yapay zekâ neden uydurur?</a>
+  </nav>
+</main>
+
+<footer class="alt">
+  <p>Yapay Zekâ Nasıl Düşünür? · Hazırlayan: devoniq</p>
+</footer>
+
+<script>
+const MODELLER = {
+  kucuk: {ad: "Küçük model", alt: "Bu bilgisayarda · 4 milyar sayı", yerel: true, yukle: 4, oku: 60, yaz: 9},
+  buyuk: {ad: "Büyük model", alt: "Bu bilgisayarda · 12 milyar sayı", yerel: true, yukle: 9, oku: 22, yaz: 4},
+  bulut: {ad: "Bulut hizmeti", alt: "İnternetteki güçlü sunucular", yerel: false, ag: 0.15, sira: 0.6, oku: 4000, yaz: 70},
+};
+const SORULAR = {
+  kisa: {token: 20, metin: "Kediler neden mırlar?",
+    cevap: "Kediler çoğunlukla mutlu ve rahat olduklarında mırlar. Ama tek sebep mutluluk değildir. Korktuklarında, canları yandığında ya da kendilerini sakinleştirmek istediklerinde de mırlayabilirler. Mırlama, gırtlaktaki küçük kasların çok hızlı kasılıp gevşemesiyle oluşur. Yavru kediler doğduktan birkaç gün sonra mırlamaya başlar ve böylece annelerine iyi olduklarını haber verir. Bazı araştırmacılar, bu titreşimin kemik ve dokuların iyileşmesine yardımcı olabileceğini düşünüyor. Yani kucağında mırlayan bir kedinin büyük ihtimalle keyfi yerindedir. Yine de kedinin genel davranışına dikkat etmek iyi olur."},
+  uzun: {token: 2000, metin: "📄 [5 sayfalık bir metin yapıştırıldı] Bu metni kısaca özetler misin?",
+    cevap: "Elbette. Metnin ana fikri, düzenli okuma alışkanlığının öğrencilerin başarısını nasıl etkilediği. Yazar önce bu alışkanlığın küçük yaşta kazanılmasının önemini anlatıyor. Ardından ailelerin ve öğretmenlerin bu süreçteki rolüne değiniyor. Üçüncü bölümde, günde yalnızca yirmi dakika okumanın bile kelime dağarcığını belirgin şekilde geliştirdiği vurgulanıyor. Son bölümde ekran süresi arttıkça okumaya ayrılan zamanın azaldığı belirtiliyor ve okul kütüphanelerinin daha etkin kullanılması öneriliyor. Kısacası metin, okumanın bir ödev değil, keyifli bir alışkanlık olarak görülmesi gerektiğini savunuyor."},
+};
+const ASAMA = {
+  ag:    {ad: "Gönderme", renk: "var(--f-ag)", yazi: "Soru sunucuya gönderiliyor…"},
+  sira:  {ad: "Sırada bekleme", renk: "var(--f-sira)", yazi: "Sırada bekliyor…"},
+  yukle: {ad: "Belleğe yükleme", renk: "var(--f-yukle)", yazi: "Model belleğe yükleniyor…"},
+  oku:   {ad: "Soruyu okuma", renk: "var(--f-oku)", yazi: "Soruyu okuyor…"},
+  yaz:   {ad: "Cevabı yazma", renk: "var(--f-yaz)", yazi: "Cevabı yazıyor…"},
+};
+const $ = id => document.getElementById(id);
+const sn = x => YZ.sayi(x, x < 10 ? 1 : 0) + " sn";
+let calisan = null;
+const gecmis = [];
+
+function secilen() {
+  const m = MODELLER[document.querySelector('input[name="model"]:checked').value];
+  const s = SORULAR[$("soru").value];
+  const cevapToken = +$("cevap").value;
+  const asamalar = [];
+  if (!m.yerel) { asamalar.push(["ag", m.ag], ["sira", m.sira]); }
+  if (m.yerel && $("ilkKez").checked) asamalar.push(["yukle", m.yukle]);
+  asamalar.push(["oku", s.token / m.oku], ["yaz", cevapToken / m.yaz]);
+  return {m, s, cevapToken, asamalar, toplam: asamalar.reduce((t, a) => t + a[1], 0)};
+}
+
+// Cevap metnini kelimelere böl; her kelimeye yaklaşık token maliyeti ver (Türkçede ~3,5 harf = 1 token).
+function kelimeler(metin) {
+  let top = 0;
+  return metin.split(" ").map(k => { top += Math.max(1, Math.round(k.length / 3.5)); return {k, t: top}; });
+}
+
+function cizelgeKur(plan) {
+  const c = $("cizelge"); c.replaceChildren(); c.parentElement.querySelectorAll(".isaret").forEach(x => x.remove());
+  plan.asamalar.forEach(([ad, sure]) => {
+    const p = document.createElement("div");
+    p.className = "parca"; p.style.flexGrow = sure; p.style.setProperty("--renk", ASAMA[ad].renk);
+    const d = document.createElement("div"); d.className = "dol"; d.style.background = ASAMA[ad].renk;
+    p.append(d); c.append(p);
+  });
+  const l = $("lejant"); l.replaceChildren();
+  plan.asamalar.forEach(([ad, sure]) => {
+    const s = document.createElement("span");
+    s.innerHTML = `<i style="background:${ASAMA[ad].renk}"></i>${ASAMA[ad].ad} <em>${sn(sure)}</em>`;
+    l.append(s);
+  });
+}
+
+function baslat() {
+  durdur();
+  const plan = secilen();
+  $("ozet").hidden = true;
+  $("soruBalon").textContent = plan.s.metin;
+  cizelgeKur(plan);
+  const parcalar = [...$("cizelge").children];
+  const kel = kelimeler(plan.s.cevap);
+  const balon = $("cevapBalon");
+  const hiz = +$("hizli").value;
+  const yazBas = plan.toplam - plan.asamalar.at(-1)[1];
+  const baslangic = performance.now();
+  let sonAsama = -1, ilkIsaret = false;
+  $("gonder").disabled = true; $("durdur").disabled = false;
+  balon.innerHTML = '<span class="nokta"><i></i><i></i><i></i></span><span class="durum-yazi"></span>';
+
+  function kare(simdi) {
+    const t = Math.min(plan.toplam, (simdi - baslangic) / 1000 * hiz);
+    // Hangi aşamadayız?
+    let bas = 0, i = 0;
+    for (; i < plan.asamalar.length; i++) {
+      const sure = plan.asamalar[i][1];
+      const oran = Math.max(0, Math.min(1, (t - bas) / sure));
+      parcalar[i].firstChild.style.width = (oran * 100) + "%";
+      parcalar[i].classList.toggle("bitti", oran >= 1);
+      if (t < bas + sure) break;
+      bas += sure;
+    }
+    const aktif = Math.min(i, plan.asamalar.length - 1);
+    if (aktif !== sonAsama) {
+      sonAsama = aktif;
+      const ad = plan.asamalar[aktif][0];
+      $("asamaYazi").textContent = ASAMA[ad].yazi;
+      if (ad !== "yaz") balon.querySelector(".durum-yazi").textContent = ASAMA[ad].yazi;
+    }
+    $("sayac").innerHTML = `${YZ.sayi(t, 1)} <small>sn</small>`;
+
+    if (t >= yazBas) {
+      if (!ilkIsaret) {
+        ilkIsaret = true;
+        const is = document.createElement("div"); is.className = "isaret";
+        is.style.left = `calc(${yazBas / plan.toplam * 100}% - 1px)`;
+        is.innerHTML = `<span>İlk kelime: ${sn(yazBas)}</span>`;
+        const konum = yazBas / plan.toplam;
+        if (konum < .2) is.firstChild.style.transform = "translateX(-4px)";
+        else if (konum > .8) is.firstChild.style.transform = "translateX(calc(-100% + 4px))";
+        $("cizelge").parentElement.append(is);
+      }
+      const uretilen = Math.min(plan.cevapToken, Math.floor((t - yazBas) * plan.m.yaz));
+      const gorunen = kel.filter(w => w.t <= uretilen).map(w => w.k).join(" ");
+      const kalan = plan.cevapToken - Math.min(uretilen, kel.at(-1).t);
+      balon.textContent = gorunen || " ";
+      if (uretilen > kel.at(-1).t || (uretilen >= plan.cevapToken && kalan > 0)) {
+        const d = document.createElement("span"); d.className = "devam";
+        d.textContent = `(Örnek metin burada bitti. Model yazmaya devam ediyor: ${uretilen} / ${plan.cevapToken} token)`;
+        balon.append(d);
+      } else if (plan.cevapToken < kel.at(-1).t && uretilen >= plan.cevapToken) {
+        balon.textContent = gorunen + " …";
+      }
+    }
+
+    if (t < plan.toplam) calisan = requestAnimationFrame(kare);
+    else bitir(plan, yazBas);
+  }
+  calisan = requestAnimationFrame(kare);
+}
+
+function bitir(plan, ilk) {
+  calisan = null;
+  $("gonder").disabled = false; $("durdur").disabled = true;
+  $("asamaYazi").textContent = "Cevap tamamlandı ✓";
+  $("oz-ilk").textContent = sn(ilk);
+  $("oz-top").textContent = sn(plan.toplam);
+  $("oz-hiz").textContent = `${plan.m.yaz} token/sn`;
+  $("ozet").hidden = false;
+  gecmis.unshift({plan, ilk});
+  if (gecmis.length > 6) gecmis.pop();
+  gecmisiCiz();
+}
+function durdur() {
+  if (calisan) cancelAnimationFrame(calisan);
+  calisan = null;
+  $("gonder").disabled = false; $("durdur").disabled = true;
+}
+
+function gecmisiCiz() {
+  const k = $("gecmis"); k.replaceChildren();
+  const enUzun = Math.max(...gecmis.map(g => g.plan.toplam));
+  gecmis.forEach(({plan, ilk}) => {
+    const d = document.createElement("div"); d.className = "gecmis-satir";
+    const soru = $("soru").querySelector(`option[value="${Object.keys(SORULAR).find(x => SORULAR[x] === plan.s)}"]`).textContent;
+    const cevap = $("cevap").querySelector(`option[value="${plan.cevapToken}"]`).textContent;
+    const yukle = plan.asamalar.some(a => a[0] === "yukle") ? " · ilk açılış" : "";
+    d.innerHTML = `<p><b>${plan.m.ad}</b> · ${soru.toLocaleLowerCase("tr-TR")} · ${cevap.toLocaleLowerCase("tr-TR")} cevap${yukle} → ilk kelime <b>${sn(ilk)}</b>, toplam <b>${sn(plan.toplam)}</b></p>`;
+    const c = document.createElement("div"); c.className = "gecmis-cubuk";
+    plan.asamalar.forEach(([ad, s]) => { const i = document.createElement("i"); i.style.width = (s / enUzun * 100) + "%"; i.style.background = ASAMA[ad].renk; i.title = `${ASAMA[ad].ad}: ${sn(s)}`; c.append(i); });
+    d.append(c); k.append(d);
+  });
+}
+
+function onizle() {
+  if (calisan) return;
+  const plan = secilen();
+  $("soruBalon").textContent = plan.s.metin;
+  $("ilkKezEtiket").hidden = !plan.m.yerel;
+  cizelgeKur(plan);
+  $("sayac").innerHTML = `0,0 <small>sn</small>`;
+  $("asamaYazi").textContent = "Hazır";
+  $("ozet").hidden = true;
+  $("cevapBalon").innerHTML = '<span class="durum-yazi">Cevap burada görünecek.</span>';
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const mk = $("modeller");
+  Object.entries(MODELLER).forEach(([anahtar, m], j) => {
+    const l = document.createElement("label"); l.className = "model-kart";
+    l.innerHTML = `<input type="radio" name="model" value="${anahtar}" ${j === 2 ? "checked" : ""}><span><b>${m.ad}</b><small>${m.alt}<br>Yazma hızı ≈ ${m.yaz} token/sn</small></span>`;
+    mk.append(l);
+  });
+  document.querySelectorAll('input[name="model"], #soru, #cevap, #ilkKez').forEach(e => e.addEventListener("change", onizle));
+  $("gonder").addEventListener("click", baslat);
+  $("durdur").addEventListener("click", () => { durdur(); $("asamaYazi").textContent = "Durduruldu"; });
+  onizle();
+});
+</script>
+</body>
+</html>

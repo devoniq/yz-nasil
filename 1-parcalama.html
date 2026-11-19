@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Metin Nasıl Parçalanır? · Yapay Zekâ Nasıl Düşünür?</title>
+<meta name="description" content="Yapay zekâ kelimeleri değil token denen parçaları görür. Yazdığın cümlenin nasıl bölündüğünü canlı izle.">
+<meta property="og:title" content="Metin nasıl parçalanır? · Yapay Zekâ Nasıl Düşünür?">
+<meta property="og:description" content="Yazdığın cümlenin yapay zekâ tarafından nasıl parçalara bölündüğünü canlı izle.">
+<meta property="og:image" content="https://devoniq.github.io/yz-nasil/ikon-512.png">
+<meta name="theme-color" content="#3646c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<script>try{const t=localStorage.getItem("tema");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="ortak.css">
+<script src="ortak.js" defer></script>
+<script src="lib/o200k_base.js" defer></script>
+<style>
+textarea#metin{width:100%;min-height:96px;resize:vertical;border:1px solid var(--cizgi);border-radius:12px;background:var(--kart2);
+  padding:12px 14px;font-size:18px;line-height:1.5}
+.parcalar{min-height:64px;padding:14px;border-radius:12px;background:var(--kart2);border:1px solid var(--cizgi);
+  font-size:19px;line-height:2.1;white-space:pre-wrap;word-break:break-word}
+.parcalar .tk{padding:3px 1px;border-radius:5px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.parcalar .tk:nth-child(6n+1){background:var(--t1)}.parcalar .tk:nth-child(6n+2){background:var(--t2)}
+.parcalar .tk:nth-child(6n+3){background:var(--t3)}.parcalar .tk:nth-child(6n+4){background:var(--t4)}
+.parcalar .tk:nth-child(6n+5){background:var(--t5)}.parcalar .tk:nth-child(6n+6){background:var(--t6)}
+.parcalar.sayilar{font-family:ui-monospace,Consolas,monospace;font-size:16px}
+.parcalar.sayilar .tk{padding:3px 6px;margin-right:4px}
+.parcalar .bos{color:var(--soluk);font-style:italic}
+.istatistik{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0 4px}
+.istatistik div{background:var(--kart2);border:1px solid var(--cizgi);border-radius:12px;padding:10px;text-align:center}
+.istatistik b{display:block;font-size:26px;font-variant-numeric:tabular-nums;line-height:1.2}
+.istatistik span{font-size:13px;color:var(--soluk)}
+.istatistik .vurgulu{background:var(--ana-acik);border-color:transparent}
+.istatistik .vurgulu b{color:var(--ana)}
+.anahtar{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;font-size:15px;margin:10px 0 0}
+.anahtar input{width:20px;height:20px;accent-color:var(--ana)}
+.uyari{background:var(--vurgu-acik);border-radius:12px;padding:10px 14px;font-size:15px}
+.karsilastir{display:flex;flex-direction:column;gap:18px}
+.cift .cumle{font-size:15px;color:var(--soluk);margin:0 0 4px}
+.cift .cubuk-satir{grid-template-columns:90px 1fr 70px}
+.cift .tr .cubuk-dolgu{background:var(--vurgu)}
+.cift .en .cubuk-dolgu{background:var(--ana)}
+@media (max-width:520px){
+  .istatistik{grid-template-columns:repeat(2,1fr)}
+  .parcalar{font-size:17px}
+}
+</style>
+</head>
+<body>
+<header class="ust"><div class="ust-ic">
+  <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
+  <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
+</div></header>
+
+<main class="sayfa">
+  <span class="etiket">Deney 1 / 4 · yaklaşık 5 dakika</span>
+  <h1>Metin nasıl parçalanır?</h1>
+  <p class="giris">Sen bir soru yazdığında yapay zekâ onu harf harf ya da kelime kelime okumaz. Önce metni <strong>token</strong> denen küçük parçalara böler. Token bazen bir kelime, bazen bir kelimenin yarısı, bazen tek bir harftir.</p>
+
+  <section class="kutu deney" aria-labelledby="d1">
+    <h2 id="d1" style="margin-top:0">Dene: Bir şey yaz, parçalara ayrılışını izle</h2>
+    <label for="metin" class="gizli">Parçalanacak metin</label>
+    <textarea id="metin" maxlength="2000" spellcheck="false">Yapay zekâ kelimeleri parçalara ayırarak okur.</textarea>
+    <div class="cipler" role="group" aria-label="Hazır örnekler">
+      <button class="cip" type="button" data-ornek="Çekoslovakyalılaştıramadıklarımızdanmışsınız">Çok uzun bir kelime</button>
+      <button class="cip" type="button" data-ornek="Artificial intelligence reads text in pieces.">İngilizce</button>
+      <button class="cip" type="button" data-ornek="2026 yılında 1.250.000 kişi katıldı.">Sayılar</button>
+      <button class="cip" type="button" data-ornek="Bugün çok mutluyum 😄🎉">Emoji</button>
+      <button class="cip" type="button" data-ornek="ev evler evlerimiz evlerimizden evlerimizdekiler">Ekler eklendikçe</button>
+    </div>
+
+    <div id="durum" class="uyari" role="status">Parçalayıcı yükleniyor…</div>
+    <div class="istatistik" aria-live="polite">
+      <div><b id="s-harf">–</b><span>karakter</span></div>
+      <div><b id="s-kelime">–</b><span>kelime</span></div>
+      <div class="vurgulu"><b id="s-token">–</b><span>token</span></div>
+      <div><b id="s-oran">–</b><span>harf / token</span></div>
+    </div>
+    <h3>Yapay zekânın gördüğü parçalar</h3>
+    <div id="parcalar" class="parcalar" aria-live="polite"></div>
+    <label class="anahtar"><input type="checkbox" id="sayiGoster"> Parçaların yerine sayıları göster (model aslında bunları görür)</label>
+    <p class="ipucu kucuk" style="margin-top:12px">Her renk ayrı bir token. Boşluklar çoğu zaman bir sonraki kelimenin başına yapışır.</p>
+  </section>
+
+  <h2>Aynı anlam, farklı token sayısı</h2>
+  <p>Aynı cümle Türkçe ve İngilizce yazıldığında kaç token tutuyor? Çubuklar ne kadar uzunsa, yapay zekâ o cümle için o kadar çok parça işliyor demektir.</p>
+  <div class="kutu">
+    <div id="karsilastir" class="karsilastir"></div>
+  </div>
+  <p>Türkçede genelde daha çok token çıkar. Bunun sebebi Türkçenin “zor” olması değil. Parçalayıcı hazırlanırken kullanılan metinlerin çok büyük kısmı İngilizceydi. Sık görülen İngilizce kelimeler tek parça olarak öğrenildi. Türkçe kelimeler ve özellikle <em>-lar, -ımız, -dan</em> gibi ekler ise daha küçük parçalara bölünüyor.</p>
+
+  <details class="derin">
+    <summary>Daha derine in: Parçalar nasıl belirleniyor?</summary>
+    <p>Parçalayıcı (İngilizcesi <em>tokenizer</em>) bir kez, çok büyük bir metin yığını üzerinde hazırlanır. Kullanılan yöntemin adı <strong>Byte Pair Encoding (BPE)</strong>. Kabaca şöyle işler:</p>
+    <ol>
+      <li>Başta her harf ayrı bir parçadır.</li>
+      <li>Metinlerde en sık yan yana gelen iki parça bulunur ve birleştirilip yeni bir parça yapılır. Örneğin “l” ve “a” sık yan yana geliyorsa “la” olur.</li>
+      <li>Bu, parça sayısı belirlenen sınıra ulaşana kadar tekrarlanır. Bu sayfadaki parçalayıcıda yaklaşık 200.000 parça vardır.</li>
+    </ol>
+    <p>Sonunda sık kullanılan kelimeler tek parça, nadir kelimeler birkaç parça olur. Her parçanın bir sıra numarası vardır. Model metni değil, bu numaraları görür. “Sayıları göster” kutusunu işaretleyerek bunu görebilirsin.</p>
+    <p><strong>Bu neden önemli?</strong> Yapay zekâ hizmetleri ücreti ve sınırları token ile hesaplar. Bir modelin aynı anda “aklında tutabileceği” metin miktarı da token ile ölçülür. Cevabın üretilme hızı da token/saniye ile ifade edilir. Yani aynı içerik Türkçede biraz daha pahalı ve biraz daha yavaştır.</p>
+    <p><strong>Harf saymada neden zorlanır?</strong> “Çekoslovakyalılaştıramadıklarımızdanmışsınız kelimesinde kaç tane ‘a’ var?” gibi sorularda yapay zekâ sık hata yapar. Çünkü harfleri tek tek görmez, parçaları görür.</p>
+    <p class="kucuk">Bu sayfada GPT-4o modelinin kullandığı gerçek parçalayıcı (o200k_base) senin tarayıcında çalışıyor. Başka modellerin parçalayıcıları biraz farklı böler, ama mantık aynıdır.</p>
+  </details>
+
+  <aside class="ogrendik">
+    <h2>Ne öğrendik?</h2>
+    <ul>
+      <li>Yapay zekâ metni <strong>token</strong> denen parçalara bölerek okur.</li>
+      <li>Sık kullanılan kelimeler tek parça, nadir ve uzun kelimeler birkaç parça olur.</li>
+      <li>Model aslında metni değil, her parçanın <strong>numarasını</strong> görür.</li>
+      <li>Türkçe metinler genelde İngilizceden daha çok token tutar.</li>
+    </ul>
+  </aside>
+
+  <h2>Kendini dene</h2>
+  <script type="application/json" class="test-veri" data-modul="1">[
+    {"soru":"Yapay zekâ yazdığın metni nasıl okur?",
+     "secenekler":["Harf harf okur","Token denen parçalara bölerek okur","Cümle cümle okur"],
+     "dogru":1,"aciklama":"Metin önce token denen parçalara bölünür. Bir token bazen kelime, bazen hece, bazen tek harftir."},
+    {"soru":"Aynı anlamdaki cümle Türkçede genelde neden daha çok token tutar?",
+     "secenekler":["Türkçe daha zor bir dil olduğu için","Parçalayıcı çoğunlukla İngilizce metinlerle hazırlandığı için Türkçe kelimeler ve ekler daha küçük parçalara bölünür","Türkçe cümleler her zaman daha uzun olduğu için"],
+     "dogru":1,"aciklama":"Parçalayıcı en sık gördüğü harf gruplarını birleştirir. Gördüğü metinlerin çoğu İngilizce olduğu için Türkçe kelimeler daha çok parçaya ayrılır."},
+    {"soru":"Model, metnin parçalarını aslında hangi biçimde görür?",
+     "secenekler":["Renkli kutular olarak","Sayılar olarak","Resim olarak"],
+     "dogru":1,"aciklama":"Her token'ın bir sıra numarası vardır. Model bu sayılarla hesap yapar."}
+  ]</script>
+
+  <p class="not">Bu sayfadaki anlatım basitleştirilmiştir. Parçalama işlemi gerçek bir parçalayıcıyla, tamamen senin tarayıcında yapılır. Yazdıkların hiçbir yere gönderilmez.</p>
+
+  <nav class="ileri-geri" aria-label="Deneyler arası geçiş">
+    <a class="sonraki" href="2-sonraki-kelime.html"><small>Sonraki deney →</small>Sonraki kelime nasıl seçilir?</a>
+  </nav>
+</main>
+
+<footer class="alt">
+  <p>Yapay Zekâ Nasıl Düşünür? · Hazırlayan: devoniq</p>
+  <p>Parçalayıcı: <a href="lib/LICENSE-gpt-tokenizer.txt">gpt-tokenizer</a> (MIT lisansı)</p>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const T = window.GPTTokenizer_o200k_base;
+  const durum = document.getElementById("durum");
+  const metin = document.getElementById("metin");
+  const kutu = document.getElementById("parcalar");
+  const sayiGoster = document.getElementById("sayiGoster");
+
+  if (!T) {
+    durum.textContent = "Parçalayıcı yüklenemedi. İnternet bağlantını kontrol edip sayfayı yenile. Diğer deneyler çalışmaya devam eder.";
+    return;
+  }
+  durum.hidden = true;
+
+  // Metni token'lara böler. Bir harfi ikiye bölen token'lar (ör. bazı emojiler) birleştirilerek gösterilir.
+  function parcala(s) {
+    const ids = T.encode(s);
+    const parcalar = [];
+    let bekleyen = [];
+    for (const id of ids) {
+      bekleyen.push(id);
+      const yazi = T.decode(bekleyen);
+      if (!yazi.includes("�")) { parcalar.push({yazi, ids: bekleyen}); bekleyen = []; }
+    }
+    if (bekleyen.length) parcalar.push({yazi: T.decode(bekleyen), ids: bekleyen});
+    return {ids, parcalar};
+  }
+
+  function ciz() {
+    const s = metin.value;
+    const {ids, parcalar} = parcala(s);
+    kutu.classList.toggle("sayilar", sayiGoster.checked);
+    kutu.replaceChildren();
+    if (!s) {
+      const b = document.createElement("span"); b.className = "bos"; b.textContent = "Yukarıya bir şey yaz…"; kutu.append(b);
+    }
+    for (const p of parcalar) {
+      const sp = document.createElement("span");
+      sp.className = "tk";
+      if (sayiGoster.checked) sp.textContent = p.ids.join(" ");
+      else sp.textContent = p.yazi.replace(/\n/g, "↵\n");
+      sp.title = (p.ids.length > 1 ? `${p.ids.length} token: ` : "Token numarası: ") + p.ids.join(", ");
+      kutu.append(sp);
+    }
+    const harf = [...s].length;
+    const kelime = s.trim() ? s.trim().split(/\s+/).length : 0;
+    document.getElementById("s-harf").textContent = YZ.sayi(harf);
+    document.getElementById("s-kelime").textContent = YZ.sayi(kelime);
+    document.getElementById("s-token").textContent = YZ.sayi(ids.length);
+    document.getElementById("s-oran").textContent = ids.length ? YZ.sayi(harf / ids.length, 1) : "–";
+  }
+
+  let bekle = 0;
+  metin.addEventListener("input", () => { cancelAnimationFrame(bekle); bekle = requestAnimationFrame(ciz); });
+  sayiGoster.addEventListener("change", ciz);
+  document.querySelectorAll("[data-ornek]").forEach(b => b.addEventListener("click", () => {
+    metin.value = b.dataset.ornek; ciz(); metin.focus();
+  }));
+  ciz();
+
+  // Türkçe / İngilizce karşılaştırma
+  const ciftler = [
+    ["Merhaba, nasılsın?", "Hello, how are you?"],
+    ["Yarın sabah erkenden okula gideceğim.", "I will go to school early tomorrow morning."],
+    ["Gözlüklerimi nereye koyduğumu hatırlayamıyorum.", "I can't remember where I put my glasses."],
+    ["Öğretmenlerimizden öğrendiklerimizi unutmayacağız.", "We will not forget what we learned from our teachers."],
+  ];
+  const kap = document.getElementById("karsilastir");
+  const sayimlar = ciftler.map(([tr, en]) => [T.encode(tr).length, T.encode(en).length]);
+  const enBuyuk = Math.max(...sayimlar.flat());
+  ciftler.forEach(([tr, en], i) => {
+    const [a, b] = sayimlar[i];
+    const d = document.createElement("div");
+    d.className = "cift";
+    d.innerHTML = `
+      <p class="cumle"><b>TR</b> ${tr}<br><b>EN</b> ${en}</p>
+      <div class="cubuk-satir tr"><span class="cubuk-ad">Türkçe</span><span class="cubuk-yol"><span class="cubuk-dolgu" style="width:${a / enBuyuk * 100}%"></span></span><span class="cubuk-deger">${a} token</span></div>
+      <div class="cubuk-satir en"><span class="cubuk-ad">İngilizce</span><span class="cubuk-yol"><span class="cubuk-dolgu" style="width:${b / enBuyuk * 100}%"></span></span><span class="cubuk-deger">${b} token</span></div>`;
+    kap.append(d);
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yapay Zekâ Neden Uydurur? · Yapay Zekâ Nasıl Düşünür?</title>
+<meta name="description" content="Yapay zekânın yerine geç ve hiç var olmayan bir kasaba hakkında inandırıcı bir cevap üret. Uydurmanın nedenini oynayarak öğren.">
+<meta property="og:title" content="Yapay zekâ neden uydurur? · Yapay Zekâ Nasıl Düşünür?">
+<meta property="og:description" content="Yapay zekânın yerine geç ve var olmayan bir şey hakkında inandırıcı bir cevap üret.">
+<meta property="og:image" content="https://devoniq.github.io/yz-nasil/ikon-512.png">
+<meta name="theme-color" content="#3646c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<script>try{const t=localStorage.getItem("tema");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="ortak.css">
+<script src="ortak.js" defer></script>
+<style>
+.sohbet{background:var(--kart2);border:1px solid var(--cizgi);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.balon{max-width:90%;padding:10px 14px;border-radius:16px;line-height:1.55}
+.balon.sen{align-self:flex-end;background:var(--ana);color:var(--ana-yazi);border-bottom-right-radius:4px}
+.balon.yz{align-self:flex-start;background:var(--kart);border:1px solid var(--cizgi);border-bottom-left-radius:4px;min-height:46px;font-size:18px}
+.balon.yz .parca{animation:belir .35s ease}
+.balon.yz .imlec{display:inline-block;width:3px;height:1.05em;background:var(--ana);vertical-align:-.15em;margin-left:3px;animation:yanip 1s steps(1) infinite}
+@keyframes belir{from{opacity:0}}
+@keyframes yanip{50%{opacity:0}}
+.adim-baslik{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin:18px 0 8px}
+.adim-baslik h3{margin:0}
+.adim-no{font-size:14px;color:var(--soluk)}
+.adaylar{display:flex;flex-direction:column;gap:8px}
+.aday{position:relative;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;text-align:left;
+  padding:12px 14px;border-radius:12px;border:1px solid var(--cizgi);background:var(--kart);cursor:pointer;overflow:hidden;min-height:52px}
+.aday:hover{border-color:var(--ana)}
+.aday .dolgu{position:absolute;inset:0 auto 0 0;background:var(--ana-acik);z-index:0;transition:width .4s ease}
+.aday span,.aday b{position:relative;z-index:1}
+.aday b{font-variant-numeric:tabular-nums}
+.aday.durust .dolgu{background:var(--iyi-acik)}
+.uydurma{background:var(--kotu-acik);border-bottom:2px solid var(--kotu);border-radius:4px;padding:0 2px}
+.uydurma-etiket{display:inline-block;font-size:11px;font-weight:700;color:#fff;background:var(--kotu);border-radius:5px;padding:0 5px;
+  vertical-align:2px;white-space:nowrap}
+.ortaya-cikti{border-radius:16px;padding:18px;margin-top:16px;animation:belir .5s ease}
+.ortaya-cikti.kotu{background:var(--kotu-acik)}
+.ortaya-cikti.iyi{background:var(--iyi-acik)}
+.ortaya-cikti h3{margin:0 0 8px;font-size:21px}
+.kurallar{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px;counter-reset:k}
+.kural{background:var(--kart);border:1px solid var(--cizgi);border-radius:14px;padding:14px 16px;box-shadow:var(--golge)}
+.kural::before{counter-increment:k;content:counter(k);display:grid;place-items:center;width:30px;height:30px;border-radius:9px;
+  background:var(--vurgu-acik);color:var(--vurgu);font-weight:800;margin-bottom:8px}
+.kural b{display:block;margin-bottom:4px}
+.kural p{margin:0;font-size:15px;color:var(--soluk)}
+</style>
+</head>
+<body>
+<header class="ust"><div class="ust-ic">
+  <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
+  <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
+</div></header>
+
+<main class="sayfa">
+  <span class="etiket">Deney 4 / 4 · yaklaşık 6 dakika</span>
+  <h1>Yapay zekâ neden uydurur?</h1>
+  <p class="giris">Yapay zekâ bazen hiç var olmayan kitaplardan, kişilerden ya da olaylardan çok emin bir dille bahseder. Buna <strong>uydurma</strong> (İngilizcesi <em>hallucination</em>, yani “halüsinasyon”) denir. Peki neden olur? Bu oyunda yapay zekânın yerine sen geçiyorsun.</p>
+
+  <section class="kutu deney" aria-labelledby="d4">
+    <h2 id="d4" style="margin-top:0">Oyun: Yapay zekâ sensin</h2>
+    <p class="ipucu">Bir kullanıcı sana aşağıdaki soruyu sordu. Cevabını parça parça kuracaksın. Her adımda, okuduğun milyonlarca metne göre en olası devamlar ve olasılıkları gösteriliyor. Birini seç.</p>
+
+    <div class="sohbet">
+      <div class="balon sen">Zıpzıp Kasabası'nı kim kurdu?</div>
+      <div class="balon yz" id="cevap" aria-live="polite"></div>
+    </div>
+
+    <div id="oyun">
+      <div class="adim-baslik"><h3 id="adimBaslik">Cevabına nasıl başlarsın?</h3><span class="adim-no" id="adimNo"></span></div>
+      <div class="adaylar" id="adaylar" role="group" aria-labelledby="adimBaslik"></div>
+      <div class="dugmeler">
+        <button class="dugme ikincil" type="button" id="enOlasi">Gerçek bir model gibi oyna: en olasıyı seç</button>
+      </div>
+    </div>
+    <div id="sonuc"></div>
+  </section>
+
+  <h2>Neden böyle oluyor?</h2>
+  <p>2. deneyi hatırla: Dil modeli her adımda <strong>“Buraya en çok ne yakışır?”</strong> diye sorar. <strong>“Doğru olan ne?”</strong> diye sormaz. Bir bilgi kutusuna bakıp kontrol etmez.</p>
+  <p>Okuduğu milyonlarca metinde, “X'i kim kurdu?” gibi soruların ardından hemen hemen her zaman bir <em>cevap</em> gelir: bir tarih, bir isim, bir hikâye. “Bilmiyorum” cümlesi bu metinlerde çok nadirdir. Bu yüzden model, hiç duymadığı bir şey sorulduğunda bile <strong>cevaba benzeyen</strong> bir metin üretmeye yatkındır. Sonuç akıcı, kendinden emin ve inandırıcıdır, ama yanlıştır.</p>
+
+  <details class="derin">
+    <summary>Daha derine in: Uydurma tamamen önlenebilir mi?</summary>
+    <p>Yapay zekâ şirketleri bu sorunu azaltmak için çeşitli yöntemler kullanır:</p>
+    <ul>
+      <li><strong>Ek eğitim:</strong> Model eğitildikten sonra, insanların değerlendirdiği örneklerle ek bir eğitimden geçirilir. Bu sırada “emin olmadığında bunu söyle” davranışı ödüllendirilir.</li>
+      <li><strong>İnternette arama:</strong> Bazı araçlar cevap vermeden önce internette arama yapar ve bulduğu sayfalara dayanır. Bu, uydurmayı belirgin şekilde azaltır. Ama model bulduğu sayfayı yanlış özetleyebilir, sayfa da yanlış olabilir.</li>
+      <li><strong>Kaynak gösterme:</strong> Cevabın hangi belgeye dayandığını göstermek, kontrol etmeyi kolaylaştırır.</li>
+    </ul>
+    <p>Yine de bugün hiçbir yöntem uydurmayı <strong>tamamen</strong> ortadan kaldırmıyor. Özellikle az bilinen konular, kişiler, tam tarihler, rakamlar, alıntılar ve kaynak listeleri en riskli alanlardır. Çünkü model bu konularda az örnek görmüştür ve boşluğu “olası görünen” bir şeyle doldurur.</p>
+    <p class="kucuk">Not: “Zıpzıp Kasabası” bu oyun için uydurulmuş bir isimdir. Oyundaki olasılıklar da örnek değerlerdir.</p>
+  </details>
+
+  <h2>Uydurmaya karşı 5 altın kural</h2>
+  <div class="kurallar">
+    <div class="kural"><b>İsim, tarih, rakam ve kaynaklara dikkat et</b><p>Yapay zekâ en çok bu ayrıntılarda uydurur.</p></div>
+    <div class="kural"><b>Önemli bilgiyi doğrula</b><p>Ödev, sağlık, para ya da hukuk gibi konularda bilgiyi ders kitabı, resmî site veya güvenilir bir kaynaktan kontrol et.</p></div>
+    <div class="kural"><b>Kaynak iste ve kontrol et</b><p>Yapay zekâ var olmayan kitap ve makale adları da uydurabilir. Verdiği kaynağın gerçekten var olduğuna bak.</p></div>
+    <div class="kural"><b>“Emin değilsen söyle” de</b><p>Sorunun sonuna bunu eklemek riski azaltır, ama tamamen ortadan kaldırmaz.</p></div>
+    <div class="kural"><b>Emin dil, doğru demek değildir</b><p>Akıcı ve kendinden emin bir cevap, doğru olduğu anlamına gelmez. Model her cevabı aynı güvenle yazar.</p></div>
+  </div>
+
+  <aside class="ogrendik">
+    <h2>Ne öğrendik?</h2>
+    <ul>
+      <li>Yapay zekâ <strong>doğru olanı değil, en olası görüneni</strong> üretir. Çoğu zaman bunlar aynı şeydir, ama her zaman değil.</li>
+      <li>“Bilmiyorum” demek, okuduğu metinlerde nadir olduğu için modele “doğal” gelmez.</li>
+      <li>Uydurma en çok <strong>isim, tarih, rakam ve kaynaklarda</strong> görülür.</li>
+      <li>Önemli bilgileri <strong>mutlaka başka bir kaynaktan doğrula</strong>.</li>
+    </ul>
+  </aside>
+
+  <h2>Kendini dene</h2>
+  <script type="application/json" class="test-veri" data-modul="4">[
+    {"soru":"Yapay zekâ neden bazen bilgi uydurur?",
+     "secenekler":["Kullanıcıyı kandırmak istediği için","Doğru olanı değil, en olası ve akıcı görünen devamı ürettiği için","Bilgisayar virüsü bulaştığı için"],
+     "dogru":1,"aciklama":"Modelin bir niyeti yoktur. Her adımda en olası devamı seçer. Bilmediği bir konuda bu devam, inandırıcı ama yanlış bir cevap olabilir."},
+    {"soru":"Yapay zekâ ödevin için bir kitap ve yazar önerdi. Ne yapmalısın?",
+     "secenekler":["Hemen kaynakçana eklemelisin","Kitabın ve yazarın gerçekten var olduğunu kontrol etmelisin","Yapay zekâ kitap önerdiyse kesin doğrudur"],
+     "dogru":1,"aciklama":"Kaynak listeleri en sık uydurulan şeylerdendir. Kütüphane kataloğunda ya da internette arayıp kontrol et."},
+    {"soru":"Çok akıcı ve kendinden emin yazılmış bir cevap için hangisi doğrudur?",
+     "secenekler":["Mutlaka doğrudur","Doğru olduğu anlamına gelmez","Kesinlikle yanlıştır"],
+     "dogru":1,"aciklama":"Model doğru da yazsa yanlış da yazsa aynı akıcılıkla yazar. Dilin güveni, bilginin doğruluğunu göstermez."}
+  ]</script>
+
+  <p class="not">Bu oyun, gerçek bir modelin nasıl uydurduğunu anlatmak için hazırlanmış basitleştirilmiş bir canlandırmadır.</p>
+
+  <nav class="ileri-geri" aria-label="Deneyler arası geçiş">
+    <a href="3-zaman.html"><small>← Önceki deney</small>Soruyu sorduktan sonra ne oluyor?</a>
+    <a class="sonraki" href="./"><small>Bitti! 🎉</small>Ana sayfaya dön</a>
+  </nav>
+</main>
+
+<footer class="alt">
+  <p>Yapay Zekâ Nasıl Düşünür? · Hazırlayan: devoniq</p>
+</footer>
+
+<script>
+// Her adımda aday devamlar. d: dürüst seçenek (oyunu bitirir). e: uydurma etiketi.
+const ADIMLAR = [
+  {baslik: "Cevabına nasıl başlarsın?", adaylar: [
+    {m: "Zıpzıp Kasabası,", p: .55},
+    {m: "Tarihî kayıtlara göre Zıpzıp Kasabası,", p: .27, e: "uydurma kaynak", u: "Tarihî kayıtlara göre"},
+    {m: "Bu şirin kasaba,", p: .13},
+    {m: "Zıpzıp Kasabası diye bir yer bilmiyorum. Bana biraz daha bilgi verebilir misin?", p: .05, d: true},
+  ]},
+  {baslik: "Ne zaman kuruldu?", adaylar: [
+    {m: "1847 yılında", p: .46, e: "uydurma tarih"},
+    {m: "18. yüzyılın sonlarında", p: .31, e: "uydurma tarih"},
+    {m: "Osmanlı döneminde", p: .19, e: "uydurma tarih"},
+    {m: "… Bir dakika, aslında böyle bir kasaba hakkında güvenilir bir bilgim yok.", p: .04, d: true},
+  ]},
+  {baslik: "Kim kurdu?", adaylar: [
+    {m: "Mehmet Ali Bey tarafından", p: .44, e: "uydurma kişi"},
+    {m: "göçmen bir aile tarafından", p: .30, e: "uydurma bilgi"},
+    {m: "bir grup çiftçi tarafından", p: .22, e: "uydurma bilgi"},
+    {m: "… Aslında bunu doğrulayamıyorum, emin olmadığım bir şeyi söylemek istemem.", p: .04, d: true},
+  ]},
+  {baslik: "Cümleyi nasıl bitirirsin?", adaylar: [
+    {m: "kurulmuştur.", p: .71},
+    {m: "kurulduğu bilinmektedir.", p: .26},
+    {m: "kurulmuş olabilir, ama bu bilgiden emin değilim.", p: .03, d: true},
+  ]},
+  {baslik: "Bir ayrıntı ekle", adaylar: [
+    {m: "Kasabanın adı, bölgedeki zıplayan keçilerden gelir.", p: .38, e: "uydurma bilgi"},
+    {m: "Bugün yaklaşık 3.200 kişinin yaşadığı kasaba, el yapımı halılarıyla ünlüdür.", p: .35, e: "uydurma rakam"},
+    {m: "Kurucusunun adını taşıyan meydan, hâlâ kasabanın merkezidir.", p: .23, e: "uydurma bilgi"},
+    {m: "Ancak bu bilgileri güvenilir bir kaynaktan doğrulamanı öneririm.", p: .04, d: true},
+  ]},
+];
+
+const $ = id => document.getElementById(id);
+let adim = 0, secimler = [];
+// Dürüst bir seçeneğin en az bir adımda seçilme ihtimali (en olasıyı değil, olasılığa göre seçseydin).
+const durustSans = 1 - ADIMLAR.reduce((c, a) => c * (1 - a.adaylar.filter(x => x.d).reduce((t, x) => t + x.p, 0)), 1);
+
+function cevabiCiz(isaretle) {
+  const b = $("cevap"); b.replaceChildren();
+  secimler.forEach((s, i) => {
+    if (i) b.append(" ");
+    const sp = document.createElement("span"); sp.className = "parca";
+    if (isaretle && s.e) {
+      if (s.u) {
+        const u = document.createElement("span"); u.className = "uydurma"; u.textContent = s.u;
+        sp.append(u, s.m.slice(s.u.length));
+      } else {
+        const u = document.createElement("span"); u.className = "uydurma"; u.textContent = s.m.replace(/[.,]$/, "");
+        sp.append(u, s.m.match(/[.,]$/)?.[0] || "");
+      }
+      const et = document.createElement("span"); et.className = "uydurma-etiket"; et.textContent = s.e;
+      sp.append(" ", et);
+    } else sp.textContent = s.m;
+    b.append(sp);
+  });
+  if (!isaretle && adim < ADIMLAR.length) { const im = document.createElement("span"); im.className = "imlec"; b.append(im); }
+}
+
+function adimCiz() {
+  const a = ADIMLAR[adim];
+  $("adimBaslik").textContent = a.baslik;
+  $("adimNo").textContent = `Adım ${adim + 1} / ${ADIMLAR.length}`;
+  const k = $("adaylar"); k.replaceChildren();
+  a.adaylar.forEach(x => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "aday" + (x.d ? " durust" : "");
+    b.innerHTML = `<i class="dolgu" style="width:0"></i><span></span><b>%${Math.round(x.p * 100)}</b>`;
+    b.querySelector("span").textContent = x.m;
+    b.setAttribute("aria-label", `${x.m} — olasılık yüzde ${Math.round(x.p * 100)}`);
+    b.addEventListener("click", () => sec(x));
+    k.append(b);
+    requestAnimationFrame(() => requestAnimationFrame(() => b.querySelector(".dolgu").style.width = (x.p * 100) + "%"));
+  });
+}
+
+function sec(x) {
+  secimler.push(x);
+  adim++;
+  if (x.d || adim >= ADIMLAR.length) return bitir(!!x.d);
+  cevabiCiz(false); adimCiz();
+}
+
+function bitir(durust) {
+  adim = ADIMLAR.length;
+  $("oyun").hidden = true;
+  cevabiCiz(!durust);
+  const s = $("sonuc");
+  const d = document.createElement("div");
+  if (durust) {
+    d.className = "ortaya-cikti iyi";
+    d.innerHTML = `<h3>👏 Dürüst cevap!</h3>
+      <p>“Zıpzıp Kasabası” diye bir yer yok, bu ismi biz uydurduk. Sen de uydurmak yerine bilmediğini söyledin.</p>
+      <p><strong>Ama dikkat:</strong> Bu seçenekler hep en düşük olasılıklı olanlardı. Olasılıklara göre seçim yapan bir model, bu oyunda sadece yaklaşık <strong>%${Math.round(durustSans * 100)}</strong> ihtimalle dürüst bir cevaba ulaşır. Her adımda en olasıyı seçen bir model ise hiç ulaşamaz. Bir de “en olasıyı seç” düğmesiyle oyna ve ne olduğunu gör.</p>`;
+  } else {
+    d.className = "ortaya-cikti kotu";
+    d.innerHTML = `<h3>🚨 Sürpriz: Zıpzıp Kasabası diye bir yer yok!</h3>
+      <p>Bu ismi oyun için biz uydurduk. Ama yukarıdaki cevaba bak: Bir tarih, bir kurucu, hatta bir ayrıntı bile var. Akıcı, kendinden emin ve <strong>tamamen uydurma</strong>. Kırmızıyla işaretli her şey gerçek değil.</p>
+      <p>Sen de her adımda “en olası” görünen devamı seçtin. Gerçek bir dil modeli de tam olarak bunu yapıyor. Hiçbir adımda “Bu doğru mu?” diye sormadın, çünkü oyunun kuralı bunu gerektirmiyordu. Dil modelinin kuralı da bunu gerektirmiyor.</p>
+      <p>“Bilmiyorum” seçeneği her adımda vardı, ama şansı hep %3-5 civarındaydı.</p>`;
+  }
+  const t = document.createElement("button");
+  t.type = "button"; t.className = "dugme"; t.textContent = "↺ Tekrar oyna";
+  t.addEventListener("click", basla);
+  const dg = document.createElement("div"); dg.className = "dugmeler"; dg.append(t);
+  d.append(dg);
+  s.replaceChildren(d);
+  d.scrollIntoView({behavior: YZ.azHareket() ? "auto" : "smooth", block: "nearest"});
+}
+
+function basla() {
+  adim = 0; secimler = [];
+  $("oyun").hidden = false; $("sonuc").replaceChildren();
+  cevabiCiz(false); adimCiz();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  $("enOlasi").addEventListener("click", () => {
+    const a = ADIMLAR[adim];
+    sec(a.adaylar.reduce((x, y) => y.p > x.p ? y : x));
+  });
+  basla();
+});
+</script>
+</body>
+</html>

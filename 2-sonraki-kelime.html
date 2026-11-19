@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sonraki Kelime Nasıl Seçilir? · Yapay Zekâ Nasıl Düşünür?</title>
+<meta name="description" content="Yapay zekâ her adımda bir sonraki kelimenin olasılıklarını hesaplar ve birini seçer. Minik bir dil modeliyle kendin dene.">
+<meta property="og:title" content="Sonraki kelime nasıl seçilir? · Yapay Zekâ Nasıl Düşünür?">
+<meta property="og:description" content="Olasılıklar, zar atmak ve yaratıcılık ayarı: minik bir dil modeliyle kendi cümleni kur.">
+<meta property="og:image" content="https://devoniq.github.io/yz-nasil/ikon-512.png">
+<meta name="theme-color" content="#3646c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<script>try{const t=localStorage.getItem("tema");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="ortak.css">
+<script src="ortak.js" defer></script>
+<style>
+.cumle-alani{font-size:clamp(22px,5vw,28px);font-weight:600;line-height:1.7;min-height:2.2em;padding:14px 16px;
+  background:var(--kart2);border:1px solid var(--cizgi);border-radius:14px;margin:12px 0}
+.cumle-alani .baslangic{color:var(--soluk)}
+.cumle-alani .uretilen{background:var(--ana-acik);color:var(--ana);border-radius:8px;padding:1px 6px;margin:0 1px;
+  animation:belir .35s ease}
+.cumle-alani .imlec{display:inline-block;width:3px;height:1.1em;background:var(--ana);vertical-align:-.15em;margin-left:4px;
+  animation:yanip 1s steps(1) infinite}
+@keyframes belir{from{opacity:0;transform:translateY(6px)}}
+@keyframes yanip{50%{opacity:0}}
+.baglam{font-size:15px;color:var(--soluk);margin:4px 0 10px}
+.baglam b{color:var(--yazi);background:var(--vurgu-acik);border-radius:6px;padding:1px 6px}
+#cubuklar .cubuk-satir{grid-template-columns:minmax(90px,34%) 1fr 54px;cursor:pointer;border-radius:10px;padding:2px 4px;margin:4px -4px}
+#cubuklar .cubuk-satir:hover{background:var(--ana-acik)}
+#cubuklar .cubuk-satir.diger{cursor:default;opacity:.7}
+#cubuklar .cubuk-satir.diger:hover{background:none}
+#cubuklar .cubuk-satir.secildi{background:var(--vurgu-acik)}
+.cubuk-hayalet{position:absolute;top:3px;bottom:3px;width:3px;background:var(--yazi);opacity:.45;border-radius:2px;transition:left .35s ease}
+.sicaklik{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;margin:16px 0 4px}
+.sicaklik input{width:100%;accent-color:var(--vurgu);height:28px}
+.sicaklik output{font-weight:700;font-variant-numeric:tabular-nums;min-width:3.5em;text-align:right}
+.sicaklik-etiketler{display:flex;justify-content:space-between;font-size:13px;color:var(--soluk);margin:0 0 4px}
+.sicaklik-aciklama{font-size:15px;background:var(--vurgu-acik);border-radius:10px;padding:8px 12px;margin:8px 0 0}
+.lejant{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--soluk);margin:6px 0 0}
+.lejant i{display:inline-block;width:14px;height:10px;border-radius:3px;background:var(--ana);margin-right:6px;vertical-align:0}
+.lejant i.h{width:3px;height:14px;background:var(--yazi);opacity:.45;vertical-align:-2px}
+.bitti{background:var(--iyi-acik);color:var(--iyi);font-weight:600;border-radius:10px;padding:8px 12px}
+ol.denemeler{margin:8px 0 0;padding-left:24px}
+ol.denemeler li{margin:6px 0;font-size:17px}
+.bolum-baslik{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.bolum-baslik h3{margin:0}
+</style>
+</head>
+<body>
+<header class="ust"><div class="ust-ic">
+  <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
+  <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
+</div></header>
+
+<main class="sayfa">
+  <span class="etiket">Deney 2 / 4 · yaklaşık 7 dakika</span>
+  <h1>Sonraki kelime nasıl seçilir?</h1>
+  <p class="giris">Yapay zekâ cevabını tek seferde yazmaz. Her adımda <strong>“Buraya hangi kelime gelebilir?”</strong> diye sorar, her aday kelimeye bir olasılık verir ve birini seçer. Sonra aynı şeyi bir sonraki kelime için tekrarlar.</p>
+
+  <section class="kutu deney" aria-labelledby="d2">
+    <h2 id="d2" style="margin-top:0">Dene: Minik bir modelle cümle kur</h2>
+    <p class="ipucu">Bu sayfada çok küçük bir dil modeli çalışıyor. Sadece <strong id="cumleSayisi">80</strong> kısa Türkçe cümle okuyarak “öğrendi”. Bir başlangıç seç, sonra kelimeleri tek tek ekle.</p>
+    <div class="cipler" role="group" aria-label="Başlangıç seç" id="baslangiclar"></div>
+
+    <div class="cumle-alani" id="cumle" aria-live="polite"></div>
+
+    <div class="bolum-baslik">
+      <h3>Sıradaki kelime için olasılıklar</h3>
+    </div>
+    <p class="baglam" id="baglam"></p>
+    <div id="cubuklar" role="list"></div>
+    <div class="lejant"><span><i></i>Seçilme şansı</span><span><i class="h"></i>Yaratıcılık ayarı 1 iken şansı</span></div>
+    <p class="ipucu kucuk">İpucu: Bir kelimeye dokunursan onu sen seçersin.</p>
+
+    <div class="sicaklik">
+      <label for="sicaklik"><b>Yaratıcılık</b></label>
+      <input type="range" id="sicaklik" min="0" max="2" step="0.1" value="0.8">
+      <output id="sicaklikDeger" for="sicaklik">0,8</output>
+    </div>
+    <div class="sicaklik-etiketler"><span>0 · Hep en olası</span><span>1 · Normal</span><span>2 · Çılgın</span></div>
+    <p class="sicaklik-aciklama" id="sicaklikAciklama"></p>
+
+    <div class="dugmeler">
+      <button class="dugme" type="button" id="birKelime">🎲 Bir kelime seç</button>
+      <button class="dugme ikincil" type="button" id="bitir">▶ Cümleyi bitir</button>
+      <button class="dugme ikincil" type="button" id="bastan">↺ Baştan</button>
+    </div>
+  </section>
+
+  <h2>Aynı başlangıç, farklı cevaplar</h2>
+  <p>Aynı başlangıçla beş cümle üretelim. Yaratıcılığı 0 yapıp bir kez, 1,5 yapıp bir kez daha dene. Farkı gör.</p>
+  <div class="kutu">
+    <div class="dugmeler" style="margin-top:0">
+      <button class="dugme" type="button" id="besKez">5 cümle üret</button>
+    </div>
+    <ol class="denemeler" id="denemeler"></ol>
+    <p class="ipucu kucuk" id="denemeNot"></p>
+  </div>
+  <p>ChatGPT gibi bir araca aynı soruyu iki kez sorduğunda farklı cevaplar almanın sebebi budur. Kelimeler her seferinde olasılıklara göre, biraz da şansa bağlı olarak seçilir.</p>
+
+  <details class="derin">
+    <summary>Daha derine in: Bu minik model ile gerçek modeller arasındaki fark</summary>
+    <p>Bu sayfadaki model, okuduğu cümlelerde hangi kelimeden sonra hangi kelimenin geldiğini <strong>saymış</strong>. “hava çok” sözünden sonra 4 kez “güzel”, 2 kez “sıcak” geldiyse “güzel” daha olası olur. Model en fazla <strong>son iki kelimeye</strong> bakar. Bu tür modellere <em>n-gram modeli</em> denir.</p>
+    <p>Gerçek modeller ise:</p>
+    <ul>
+      <li>Milyarlarca sayfa metinle eğitilir.</li>
+      <li>Son iki kelimeye değil, <strong>yüz binlerce token geriye</strong> bakabilir: sorunun tamamına ve sohbetin geçmişine.</li>
+      <li>Saymak yerine milyarlarca ayarlanabilir sayıdan (parametreden) oluşan bir <strong>sinir ağı</strong> kullanır. Bu ağ, kelimeler arasındaki anlam ilişkilerini de yakalar.</li>
+    </ul>
+    <p>Ama temel iş aynıdır: <strong>Olasılıkları hesapla, bir kelime seç, tekrarla.</strong></p>
+    <p><strong>Yaratıcılık ayarının gerçek adı “sıcaklık” (temperature).</strong> Sıcaklık düşükken yüksek olasılıklı kelimelerin şansı daha da artar ve model hep aynı, güvenli cümleleri kurar. Sıcaklık yükseldikçe olasılıklar birbirine yaklaşır ve düşük olasılıklı kelimeler de seçilebilir hale gelir. Metin daha şaşırtıcı olur, ama saçmalama riski de artar. Yazılımcılar bu ayarı kendi uygulamalarında değiştirebilir.</p>
+  </details>
+
+  <aside class="ogrendik">
+    <h2>Ne öğrendik?</h2>
+    <ul>
+      <li>Dil modeli cevabını <strong>kelime kelime</strong> (token token) kurar.</li>
+      <li>Her adımda olası kelimelere <strong>olasılık</strong> verir ve birini seçer.</li>
+      <li><strong>Yaratıcılık (sıcaklık)</strong> ayarı ne kadar “risk alacağını” belirler.</li>
+      <li>Aynı soruya farklı cevap gelmesi normaldir, çünkü seçimde şans payı vardır.</li>
+    </ul>
+  </aside>
+
+  <h2>Kendini dene</h2>
+  <script type="application/json" class="test-veri" data-modul="2">[
+    {"soru":"Dil modeli cevap yazarken her adımda ne yapar?",
+     "secenekler":["İnternetten doğru cevabı arar","Sıradaki kelime için olasılıkları hesaplar ve birini seçer","Ezberlediği cevabı olduğu gibi okur"],
+     "dogru":1,"aciklama":"Her adımda aday kelimelere olasılık verir, birini seçer, sonra bir sonraki kelimeye geçer."},
+    {"soru":"Yaratıcılık (sıcaklık) değerini çok yükseltirsen ne olur?",
+     "secenekler":["Cevaplar daha doğru olur","Düşük olasılıklı kelimeler de sık seçilir, metin tuhaflaşabilir","Model daha hızlı çalışır"],
+     "dogru":1,"aciklama":"Yüksek sıcaklık olasılıkları birbirine yaklaştırır. Beklenmedik kelimeler seçilir, metin yaratıcı ama tutarsız olabilir."},
+    {"soru":"Aynı soruyu iki kez sorduğunda farklı cevaplar almanın sebebi nedir?",
+     "secenekler":["Model bozulmuştur","Kelimeler olasılıklara göre, biraz şansla seçilir","İnternet bağlantısı değişmiştir"],
+     "dogru":1,"aciklama":"Seçimde şans payı olduğu için her seferinde biraz farklı bir yol izlenir. Bu bir hata değil, tasarımın parçasıdır."}
+  ]</script>
+
+  <p class="not">Bu sayfadaki model eğitim amaçlı, çok küçük bir modeldir ve tamamen senin tarayıcında çalışır. Gerçek modellerin nasıl karar verdiğinin basitleştirilmiş bir canlandırmasıdır.</p>
+
+  <nav class="ileri-geri" aria-label="Deneyler arası geçiş">
+    <a href="1-parcalama.html"><small>← Önceki deney</small>Metin nasıl parçalanır?</a>
+    <a class="sonraki" href="3-zaman.html"><small>Sonraki deney →</small>Soruyu sorduktan sonra ne oluyor?</a>
+  </nav>
+</main>
+
+<footer class="alt">
+  <p>Yapay Zekâ Nasıl Düşünür? · Hazırlayan: devoniq</p>
+</footer>
+
+<script>
+// ---------- Minik dil modelinin "okuduğu" cümleler ----------
+const METINLER = `
+bugün hava çok güzel .
+bugün hava çok güzel .
+dışarıda hava çok güzel .
+bugün hava çok sıcak .
+bugün hava çok güzel ve güneşli .
+bugün hava çok güzel , dışarı çıkalım .
+bugün hava çok soğuk .
+bugün hava biraz soğuk .
+bugün hava biraz bulutlu ama yağmur yok .
+bugün hava güzel olduğu için parka gittik .
+bugün hava çok sıcak olduğu için denize gittik .
+bugün okula gitmedim çünkü hastaydım .
+bugün çok mutluyum .
+bugün okulda resim yaptık .
+yarın hava yağmurlu olacak .
+yarın hava daha sıcak olacak .
+yarın hava çok güzel olacak .
+dün hava çok soğuktu .
+hava güzel olunca herkes dışarı çıkar .
+hava kararınca eve döndük .
+hava çok güzel olduğu için bahçede oynadık .
+kedi süt içmeyi çok sever .
+kedi bahçede uyuyor .
+kedi pencerenin önünde uyuyor .
+kedi fareyi kovaladı .
+kedi çok tatlı bir hayvandır .
+kedi ve köpek iyi arkadaştır .
+kedi bütün gün uyudu .
+kedi topla oynamayı sever .
+kedi masanın üstüne çıktı .
+kedi çok meraklı bir hayvandır .
+kedi bahçede kuşları izliyor .
+köpek bahçede koşuyor .
+köpek topla oynamayı çok sever .
+köpek çok sadık bir hayvandır .
+köpek kapının önünde bekliyor .
+ben okula otobüsle gidiyorum .
+ben okula yürüyerek gidiyorum .
+ben okula her sabah yürüyerek gidiyorum .
+ben okula erken gidiyorum .
+ben okula gitmeyi çok seviyorum .
+ben okula giderken arkadaşımla buluşuyorum .
+ben kitap okumayı çok seviyorum .
+ben bugün çok mutluyum .
+ben kedileri çok seviyorum .
+ben yapay zekâ hakkında daha çok şey öğrenmek istiyorum .
+okulda yeni bir arkadaş edindim .
+okulda bugün sınav vardı .
+okulda en sevdiğim ders matematik .
+öğretmenimiz bize yeni bir konu anlattı .
+arkadaşım bana güzel bir kitap verdi .
+annem bize çok güzel bir yemek yaptı .
+yapay zekâ bir sonraki kelimeyi tahmin eder .
+yapay zekâ çok hızlı öğrenir .
+yapay zekâ bazen hata yapar .
+yapay zekâ bazen bilgi uydurur .
+yapay zekâ çok sayıda metinden öğrenir .
+yapay zekâ insan gibi düşünmez .
+yapay zekâ insanlara yardım eder .
+yapay zekâ ödevlerde yardımcı olabilir .
+yapay zekâ ile resim çizilebilir .
+yapay zekâ ile şiir yazılabilir .
+yapay zekâ hakkında daha çok şey öğrenmek istiyorum .
+yapay zekâ kelimeleri parçalara ayırır .
+yapay zekâ her zaman doğruyu söylemez .
+yapay zekâ güzel bir şiir yazdı .
+bilgisayar çok hızlı hesap yapar .
+bilgisayar bazen yavaş çalışır .
+telefonum bugün çok yavaş çalışıyor .
+kitap okumak insanı mutlu eder .
+bahçede çok güzel çiçekler var .
+parkta çocuklar oynuyor .
+denize gitmeyi çok seviyorum .
+kuşlar sabah erkenden ötmeye başlar .
+güneş doğunca kuşlar ötmeye başlar .
+akşam yemeğinde çorba içtik .
+kardeşim bütün gün oyun oynadı .
+yağmur yağınca sokaklar ıslandı .
+kar yağınca kardan adam yaptık .
+çay içmeyi çok seviyorum .
+müzik dinlemek beni mutlu eder .
+hafta sonu ailemle pikniğe gittik .
+`.trim().split("\n");
+
+const BASLANGICLAR = ["bugün hava", "kedi", "ben okula", "yapay zekâ", "yarın"];
+const AZAMI_KELIME = 18;
+
+// ---------- Model: kelime sayımları (n-gram) ----------
+const ikili = new Map(), uclu = new Map(), tekli = new Map();
+function say(harita, anahtar, kelime) {
+  if (!harita.has(anahtar)) harita.set(anahtar, new Map());
+  const m = harita.get(anahtar); m.set(kelime, (m.get(kelime) || 0) + 1);
+}
+for (const satir of METINLER) {
+  const k = ["<b>", "<b>", ...satir.split(" ")];
+  for (let i = 2; i < k.length; i++) {
+    say(uclu, k[i - 2] + " " + k[i - 1], k[i]);
+    say(ikili, k[i - 1], k[i]);
+    tekli.set(k[i], (tekli.get(k[i]) || 0) + 1);
+  }
+}
+const oranla = m => { let t = 0; m.forEach(v => t += v); const o = new Map(); m.forEach((v, k) => o.set(k, v / t)); return o; };
+
+// Son iki kelimeye bakar; bulamazsa son kelimeye, onu da bulamazsa genel sıklığa.
+function dagilim(baglam) {
+  const a = baglam[baglam.length - 2] ?? "<b>", b = baglam[baglam.length - 1] ?? "<b>";
+  const u = uclu.get(a + " " + b), i = ikili.get(b);
+  if (u) {
+    const p3 = oranla(u), p2 = oranla(i), sonuc = new Map();
+    // Biraz da "son kelimeye" bakarak karıştır: yaratıcılık yüksekken sürprizler buradan çıkar.
+    new Set([...p3.keys(), ...p2.keys()]).forEach(k => sonuc.set(k, .82 * (p3.get(k) || 0) + .18 * (p2.get(k) || 0)));
+    const bakilan = [a, b].filter(x => x !== "<b>");
+    return {p: sonuc, bakilan, tur: bakilan.length};
+  }
+  if (i) return {p: oranla(i), bakilan: [b], tur: 1};
+  return {p: oranla(tekli), bakilan: [], tur: 0};
+}
+
+// Sıcaklık: olasılıkları keskinleştirir (düşük) ya da düzleştirir (yüksek).
+function isit(p, T) {
+  const liste = [...p.entries()].sort((x, y) => y[1] - x[1]);
+  if (T <= 0.001) return liste.map(([k], j) => [k, j === 0 ? 1 : 0, p.get(k)]);
+  const us = liste.map(([k, v]) => [k, Math.pow(v, 1 / T)]);
+  const top = us.reduce((s, x) => s + x[1], 0);
+  return us.map(([k, v]) => [k, v / top, p.get(k)]);
+}
+function sec(liste) {
+  let r = Math.random(), s = 0;
+  for (const [k, v] of liste) { s += v; if (r < s) return k; }
+  return liste[0][0];
+}
+
+// ---------- Görünüm ----------
+const $ = id => document.getElementById(id);
+let baslangic = [], uretilen = [], bitti = false, otomatik = 0;
+
+function metneCevir(kelimeler) {
+  let s = "";
+  kelimeler.forEach((k, j) => { s += (j && !/^[.,]$/.test(k) ? " " : "") + k; });
+  return s.charAt(0).toLocaleUpperCase("tr-TR") + s.slice(1);
+}
+const yuzde = v => (v > 0 && v < .01) ? "<%1" : "%" + YZ.sayi(v * 100);
+function yaz(k) { return k === "." ? "· (nokta)" : k === "," ? ", (virgül)" : k; }
+
+function cumleyiCiz() {
+  const alan = $("cumle"); alan.replaceChildren();
+  const hepsi = [...baslangic, ...uretilen.map(u => u.k)];
+  hepsi.forEach((k, j) => {
+    const yazi = (j === 0 ? k.charAt(0).toLocaleUpperCase("tr-TR") + k.slice(1) : k);
+    if (j && !/^[.,]$/.test(k)) alan.append(" ");
+    const sp = document.createElement("span");
+    sp.textContent = yazi;
+    if (j >= baslangic.length) {
+      const u = uretilen[j - baslangic.length];
+      sp.className = "uretilen";
+      sp.title = `Seçilme şansı: %${YZ.sayi(u.p * 100)}`;
+    } else sp.className = "baslangic";
+    alan.append(sp);
+  });
+  if (!bitti) { const im = document.createElement("span"); im.className = "imlec"; alan.append(im); }
+}
+
+function cubuklariCiz() {
+  const kap = $("cubuklar"); kap.replaceChildren();
+  if (bitti) {
+    $("baglam").innerHTML = "";
+    const d = document.createElement("p"); d.className = "bitti";
+    d.textContent = "Cümle bitti. Model “nokta” kelimesini seçti. Baştan başlayabilir ya da başka bir başlangıç seçebilirsin.";
+    kap.append(d); return;
+  }
+  const baglam = [...baslangic, ...uretilen.map(u => u.k)];
+  const {p, bakilan, tur} = dagilim(baglam);
+  const T = +$("sicaklik").value;
+  const liste = isit(p, T);
+  $("baglam").innerHTML = tur === 0 ? "Model bu kelimeleri hiç görmemiş, genel kelime sıklığına bakıyor."
+    : `Model ${tur === 2 ? "son iki kelimeye" : "son kelimeye"} bakıyor: <b>${bakilan.map(yaz).join(" ")}</b>`;
+  const goster = liste.slice(0, 7);
+  const kalan = liste.slice(7);
+  goster.forEach(([k, v, ham]) => {
+    const s = document.createElement("div");
+    s.className = "cubuk-satir"; s.setAttribute("role", "listitem"); s.tabIndex = 0;
+    s.setAttribute("aria-label", `${yaz(k)}: yüzde ${Math.round(v * 100)}. Seçmek için dokun.`);
+    s.innerHTML = `<span class="cubuk-ad"></span><span class="cubuk-yol"><span class="cubuk-dolgu" style="width:${v * 100}%"></span><span class="cubuk-hayalet" style="left:calc(${ham * 100}% - 1px)"></span></span><span class="cubuk-deger">${yuzde(v)}</span>`;
+    s.querySelector(".cubuk-ad").textContent = yaz(k);
+    const al = () => ekle(k, v, s);
+    s.addEventListener("click", al);
+    s.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); al(); } });
+    kap.append(s);
+  });
+  if (kalan.length) {
+    const top = kalan.reduce((t, x) => t + x[1], 0), ham = kalan.reduce((t, x) => t + x[2], 0);
+    const s = document.createElement("div"); s.className = "cubuk-satir diger";
+    s.innerHTML = `<span class="cubuk-ad">diğer ${kalan.length} kelime</span><span class="cubuk-yol"><span class="cubuk-dolgu" style="width:${top * 100}%;opacity:.5"></span><span class="cubuk-hayalet" style="left:calc(${ham * 100}% - 1px)"></span></span><span class="cubuk-deger">${yuzde(top)}</span>`;
+    kap.append(s);
+  }
+}
+
+function ekle(k, p, satir) {
+  if (bitti) return;
+  if (satir) satir.classList.add("secildi");
+  uretilen.push({k, p});
+  if (k === "." || baslangic.length + uretilen.length >= AZAMI_KELIME) bitti = true;
+  cumleyiCiz(); cubuklariCiz(); dugmeler();
+}
+function rastgeleEkle() {
+  const baglam = [...baslangic, ...uretilen.map(u => u.k)];
+  const liste = isit(dagilim(baglam).p, +$("sicaklik").value);
+  const k = sec(liste);
+  ekle(k, liste.find(x => x[0] === k)[1]);
+}
+function durdur() { clearInterval(otomatik); otomatik = 0; dugmeler(); }
+function dugmeler() {
+  $("birKelime").disabled = bitti || !!otomatik;
+  $("bitir").disabled = bitti || !!otomatik;
+}
+function basla(b) {
+  durdur();
+  baslangic = b.split(" "); uretilen = []; bitti = false;
+  document.querySelectorAll("#baslangiclar .cip").forEach(c => c.setAttribute("aria-pressed", c.dataset.b === b));
+  cumleyiCiz(); cubuklariCiz(); dugmeler();
+}
+
+function sicaklikYaz() {
+  const T = +$("sicaklik").value;
+  $("sicaklikDeger").textContent = YZ.sayi(T, 1);
+  $("sicaklikAciklama").textContent =
+    T === 0 ? "Hep en yüksek olasılıklı kelime seçilir. Her seferinde aynı cümle çıkar." :
+    T < 0.7 ? "Temkinli: Olası kelimeler daha da öne çıkar. Cümleler güvenli ama birbirine benzer." :
+    T <= 1.2 ? "Dengeli: Kelimeler olduğu gibi, okuduğu metinlerdeki sıklığa göre seçilir." :
+    "Çılgın: Düşük olasılıklı kelimelerin de şansı artar. Şaşırtıcı, bazen anlamsız cümleler çıkar.";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  $("cumleSayisi").textContent = METINLER.length;
+  const bk = $("baslangiclar");
+  BASLANGICLAR.forEach(b => {
+    const c = document.createElement("button");
+    c.type = "button"; c.className = "cip"; c.dataset.b = b;
+    c.textContent = b.charAt(0).toLocaleUpperCase("tr-TR") + b.slice(1) + "…";
+    c.addEventListener("click", () => basla(b));
+    bk.append(c);
+  });
+  $("sicaklik").addEventListener("input", () => { sicaklikYaz(); cubuklariCiz(); });
+  $("birKelime").addEventListener("click", rastgeleEkle);
+  $("bastan").addEventListener("click", () => basla(baslangic.join(" ")));
+  $("bitir").addEventListener("click", () => {
+    if (YZ.azHareket()) { while (!bitti) rastgeleEkle(); return; }
+    otomatik = setInterval(() => { if (bitti) durdur(); else rastgeleEkle(); }, 450);
+    dugmeler();
+  });
+  $("besKez").addEventListener("click", () => {
+    const ol = $("denemeler"); ol.replaceChildren();
+    const T = +$("sicaklik").value;
+    for (let n = 0; n < 5; n++) {
+      const k = [...baslangic];
+      while (k.length < AZAMI_KELIME) {
+        const w = sec(isit(dagilim(k).p, T)); k.push(w); if (w === ".") break;
+      }
+      const li = document.createElement("li"); li.textContent = metneCevir(k); ol.append(li);
+    }
+    $("denemeNot").textContent = `Başlangıç: “${metneCevir(baslangic)}”, yaratıcılık: ${YZ.sayi(T, 1)}`;
+  });
+  sicaklikYaz();
+  basla(BASLANGICLAR[0]);
+});
+</script>
+</body>
+</html>

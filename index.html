@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yapay Zekâ Nasıl Düşünür?</title>
+<meta name="description" content="Yapay zekânın nasıl çalıştığını dört kısa deneyle kendin gör. Türkçe, etkileşimli, ücretsiz; üyelik yok, veri toplanmaz.">
+<meta property="og:title" content="Yapay Zekâ Nasıl Düşünür?">
+<meta property="og:description" content="Aslında düşünmüyor, tahmin ediyor. Dört kısa deneyle kendin gör.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://devoniq.github.io/yz-nasil/ikon-512.png">
+<meta name="theme-color" content="#3646c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<script>try{const t=localStorage.getItem("tema");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="ortak.css">
+<script src="ortak.js" defer></script>
+<style>
+.kahraman{padding:28px 0 8px}
+.kahraman h1{font-size:clamp(34px,8vw,56px);margin:.25em 0 .2em}
+.kahraman h1 em{font-style:normal;color:var(--ana)}
+.kahraman .giris{font-size:clamp(18px,3.4vw,21px)}
+.ornek-cumle{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:22px 0 6px;font-size:clamp(18px,4vw,22px);font-weight:600}
+.ornek-cumle .t{padding:4px 9px;border-radius:9px}
+.ornek-cumle .t:nth-child(6n+1){background:var(--t1)}.ornek-cumle .t:nth-child(6n+2){background:var(--t2)}
+.ornek-cumle .t:nth-child(6n+3){background:var(--t3)}.ornek-cumle .t:nth-child(6n+4){background:var(--t4)}
+.ornek-cumle .soru-isareti{border:2px dashed var(--ana);color:var(--ana);border-radius:9px;padding:2px 12px;
+  animation:nabiz 1.6s ease-in-out infinite}
+@keyframes nabiz{50%{opacity:.35}}
+.moduller{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:14px;margin:26px 0}
+.modul{position:relative;display:flex;gap:16px;background:var(--kart);border:1px solid var(--cizgi);border-radius:18px;
+  padding:18px;text-decoration:none;color:var(--yazi);box-shadow:var(--golge);transition:transform .15s,border-color .15s}
+.modul:hover{transform:translateY(-2px);border-color:var(--ana)}
+.modul .no{flex:none;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:24px;font-weight:800}
+.modul:nth-child(1) .no{background:var(--t1)}.modul:nth-child(2) .no{background:var(--t2)}
+.modul:nth-child(3) .no{background:var(--t3)}.modul:nth-child(4) .no{background:var(--t4)}
+.modul h2{font-size:19px;margin:0 0 4px}
+.modul p{margin:0;color:var(--soluk);font-size:15px;line-height:1.5}
+.modul .sure{font-size:13px;color:var(--soluk);margin-top:8px;display:block}
+.modul .tamam{position:absolute;top:12px;right:12px;font-size:13px;font-weight:700;color:var(--iyi);background:var(--iyi-acik);
+  border-radius:999px;padding:2px 10px}
+.bilgi-izgara{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}
+.bilgi-izgara .kutu{margin:0}
+.bilgi-izgara h3{margin-top:0;font-size:17px}
+.bilgi-izgara p{font-size:15px;color:var(--soluk);margin:0}
+</style>
+</head>
+<body>
+<header class="ust"><div class="ust-ic">
+  <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
+  <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
+</div></header>
+
+<main class="sayfa">
+  <section class="kahraman">
+    <span class="etiket">Türkçe · Ücretsiz · Üyelik yok</span>
+    <h1>Yapay zekâ nasıl <em>düşünür?</em></h1>
+    <p class="giris">Kısa cevap: Aslında düşünmüyor, <strong>bir sonraki kelimeyi tahmin ediyor.</strong> Ama bunu o kadar iyi yapıyor ki düşünüyormuş gibi görünüyor. Dört kısa deneyle nasıl çalıştığını kendin gör.</p>
+    <div class="ornek-cumle" aria-label="Örnek: Bugün hava çok... sonraki kelime ne olacak?">
+      <span class="t">Bugün</span><span class="t">hava</span><span class="t">çok</span><span class="soru-isareti">?</span>
+    </div>
+    <p class="ipucu">Sence soru işaretinin yerine hangi kelime gelir? Yapay zekâ da her kelimede bu soruyu soruyor.</p>
+  </section>
+
+  <div class="moduller">
+    <a class="modul" href="1-parcalama.html" data-modul="1">
+      <span class="no">1</span>
+      <span><h2>Metin nasıl parçalanır?</h2>
+      <p>Yapay zekâ kelimeleri değil, “token” denen parçaları görür. Yazdığın cümlenin nasıl bölündüğünü izle.</p>
+      <span class="sure">Yaklaşık 5 dakika</span></span>
+    </a>
+    <a class="modul" href="2-sonraki-kelime.html" data-modul="2">
+      <span class="no">2</span>
+      <span><h2>Sonraki kelime nasıl seçilir?</h2>
+      <p>Olasılıklar, zar atmak ve “yaratıcılık” ayarı. Minik bir dil modeliyle kendi cümleni kur.</p>
+      <span class="sure">Yaklaşık 7 dakika</span></span>
+    </a>
+    <a class="modul" href="3-zaman.html" data-modul="3">
+      <span class="no">3</span>
+      <span><h2>Soruyu sorduktan sonra ne oluyor?</h2>
+      <p>Cevap neden kelime kelime akıyor? Bekleme, okuma ve yazma aşamalarını zaman çizelgesinde gör.</p>
+      <span class="sure">Yaklaşık 5 dakika</span></span>
+    </a>
+    <a class="modul" href="4-uydurma.html" data-modul="4">
+      <span class="no">4</span>
+      <span><h2>Yapay zekâ neden uydurur?</h2>
+      <p>Bir oyunda yapay zekânın yerine geç ve hiç var olmayan bir şey hakkında inandırıcı bir cevap üret.</p>
+      <span class="sure">Yaklaşık 6 dakika</span></span>
+    </a>
+  </div>
+
+  <h2>Bu site kimin için?</h2>
+  <div class="bilgi-izgara">
+    <div class="kutu"><h3>Meraklılar</h3><p>ChatGPT, Gemini, Claude gibi araçları kullanıp “bu nasıl oluyor?” diye merak eden herkes. Teknik bilgi gerekmez.</p></div>
+    <div class="kutu"><h3>Öğrenciler</h3><p>Ortaokuldan üniversiteye. Her deneyin sonunda kısa bir test, isteyenler için “Daha derine in” bölümleri var.</p></div>
+    <div class="kutu"><h3>Öğretmenler</h3><p>Deneyleri sınıfta tahtaya yansıtarak birlikte yapabilirsiniz. Her biri bir ders saatinin bir bölümüne sığar.</p></div>
+  </div>
+
+  <p class="not">Gizlilik: Bu site hiçbir veri toplamaz. Çerez, üyelik ve takip kodu yoktur. Deneylere yazdıklarınız yalnızca sizin tarayıcınızda işlenir, hiçbir yere gönderilmez.</p>
+</main>
+
+<footer class="alt">
+  <p>Yapay Zekâ Nasıl Düşünür? · Hazırlayan: devoniq</p>
+  <p>Anlatımlar basitleştirilmiştir. Amaç, temel mantığı kavratmaktır.</p>
+</footer>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".modul").forEach(a => {
+    if (YZ.sakla.al("tamam-" + a.dataset.modul)) {
+      const r = document.createElement("span"); r.className = "tamam"; r.textContent = "✓ Tamamlandı"; a.appendChild(r);
+    }
+  });
+});
+</script>
+</body>
+</html>
