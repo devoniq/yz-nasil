@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yapay Zekâ Neden Önyargılı Olabilir? · Yapay Zekâ Nasıl Düşünür?</title>
+<meta name="description" content="Eğitim verisini değiştir, modelin kararlarının nasıl çarpıklaştığını gör. Yapay zekâda önyargı nereden gelir?">
+<meta property="og:title" content="Yapay zekâ neden önyargılı olabilir? · Yapay Zekâ Nasıl Düşünür?">
+<meta property="og:description" content="Eğitim verisini değiştir, modelin kararlarının nasıl çarpıklaştığını gör.">
+<meta property="og:image" content="https://devoniq.github.io/yz-nasil/ikon-512.png">
+<meta name="theme-color" content="#3646c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<script>try{const t=localStorage.getItem("tema");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="ortak.css">
+<script src="ortak.js" defer></script>
+<style>
+.kaydirici{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin:6px 0 4px}
+.kaydirici input{width:100%;accent-color:var(--vurgu);height:28px}
+.kaydirici output{font-weight:800;font-size:20px;min-width:4ch;text-align:right;font-variant-numeric:tabular-nums}
+.veri{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:4px;margin:10px 0}
+.kart{aspect-ratio:1;border-radius:7px;display:grid;place-items:center;font-size:19px;line-height:1}
+.kart.kar{background:linear-gradient(#e7f5ff,#fff)}
+.kart.cimen{background:linear-gradient(#d3f9d8,#8ce99a)}
+.lejant{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:var(--soluk)}
+.lejant i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:5px}
+.testler{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.test-kart{border:1px solid var(--cizgi);border-radius:14px;overflow:hidden;background:var(--kart)}
+.test-kart .gorsel{height:84px;display:grid;place-items:center;font-size:42px}
+.test-kart .bilgi{padding:8px 10px;font-size:14px}
+.test-kart .karar{font-weight:800;font-size:16px}
+.test-kart.dogru .karar{color:var(--iyi)}.test-kart.yanlis .karar{color:var(--kotu)}
+.bakis .cubuk-satir{grid-template-columns:minmax(120px,40%) 1fr 54px}
+.ornek-kart{background:var(--kart);border:1px solid var(--cizgi);border-radius:14px;padding:14px 16px;margin:12px 0}
+.ornek-kart h3{margin:0 0 6px;font-size:17px}
+.ornek-kart p{margin:0;color:var(--soluk);font-size:15.5px}
+.ceviri{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;font-size:16px;margin:6px 0}
+.ceviri .tr{background:var(--kart2);border-radius:10px;padding:6px 10px}
+.ceviri .en{border-radius:10px;padding:6px 10px;background:var(--kotu-acik)}
+.ceviri .en.dengeli{background:var(--iyi-acik)}
+@media (max-width:640px){.testler{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body data-sayfa="onyargi">
+<header class="ust"><div class="ust-ic">
+  <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
+  <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
+</div></header>
+
+<main class="sayfa">
+  <span class="etiket" data-oto>&nbsp;</span>
+  <h1>Yapay zekâ neden önyargılı olabilir?</h1>
+  <p class="giris">Yapay zekâ verilerden öğrenir. Veriler dünyayı nasıl gösteriyorsa, model de dünyayı öyle sanır. Verilerde bir <strong>çarpıklık</strong> varsa, model onu da öğrenir, hatta büyütür. Bir deneyle görelim.</p>
+
+  <section class="kutu deney" aria-labelledby="d-onyargi">
+    <h2 id="d-onyargi" style="margin-top:0">Dene: Kurt mu, köpek mi?</h2>
+    <p>Bir modele kurt ve köpek fotoğraflarını ayırmayı öğreteceğiz. Ama dikkat: Kurt fotoğrafları genelde <strong>karlı</strong> ortamlarda, köpek fotoğrafları genelde <strong>çimenlerde</strong> çekilmiş olabilir.</p>
+    <label for="oran"><b>Eğitimdeki kurt fotoğraflarının yüzde kaçı karda çekilmiş?</b></label>
+    <div class="kaydirici"><input type="range" id="oran" min="50" max="100" step="5" value="95"><output id="oranYazi" for="oran">%95</output></div>
+    <p class="ipucu kucuk" id="oranAciklama"></p>
+
+    <h3>Modelin gördüğü eğitim fotoğrafları</h3>
+    <div class="lejant"><span><i style="background:linear-gradient(#e7f5ff,#fff);border:1px solid var(--cizgi)"></i>Karlı ortam</span><span><i style="background:#8ce99a"></i>Çimenli ortam</span></div>
+    <div class="veri" id="veri" aria-label="Eğitim fotoğrafları"></div>
+
+    <h3>Model neye bakmayı öğrendi?</h3>
+    <div class="bakis" id="bakis"></div>
+
+    <h3>Yeni fotoğraflarla test</h3>
+    <div class="testler" id="testler"></div>
+    <p id="testYorum" class="ipucu" aria-live="polite"></p>
+  </section>
+
+  <h2>Ne oldu?</h2>
+  <p>Kurtların neredeyse hepsi karda olunca, model için en kolay ipucu hayvanın kendisi değil <strong>arka plandaki kar</strong> oldu. Model “kar varsa kurttur” kısayolunu öğrendi. Eğitim verisinde bu kısayol neredeyse hep doğru çıktığı için kimse fark etmedi. Ama karda oynayan bir köpek görünce model yanıldı.</p>
+  <p>Model “haksızlık” yapmak istemedi. Sadece verideki <strong>tesadüfi bir ilişkiyi</strong> gerçek bir kural sandı. Gerçek hayatta bu tesadüfi ilişki bazen insanların cinsiyeti, yaşı, aksanı ya da yaşadığı yer olabiliyor.</p>
+
+  <h2>Gerçek hayattan örnekler</h2>
+  <div class="ornek-kart">
+    <h3>📄 İşe alım</h3>
+    <p>Büyük bir teknoloji şirketinin geliştirdiği özgeçmiş değerlendirme aracı, geçmişte çoğunlukla erkeklerin işe alındığı verilerle eğitilmişti. Araç, kadın adayların özgeçmişlerine daha düşük puan vermeye başladı. Bu durum 2018'de haberlere yansıdı ve araç kullanımdan kaldırıldı.</p>
+  </div>
+  <div class="ornek-kart">
+    <h3>🌐 Çeviri</h3>
+    <p>Türkçede “o” zamiri cinsiyet belirtmez. İngilizceye çevirirken model bir tahmin yapmak zorunda kalır. Bazı çeviri araçları geçmişte bu tahmini kalıp yargılara göre yapıyordu:</p>
+    <div style="margin-top:10px" id="ceviriler"></div>
+    <label class="anahtar" style="display:flex;gap:8px;align-items:center;margin-top:8px;font-size:15px;cursor:pointer"><input type="checkbox" id="dengeli" style="width:20px;height:20px;accent-color:var(--iyi)"> Düzeltilmiş hali göster</label>
+  </div>
+  <div class="ornek-kart">
+    <h3>📷 Yüz tanıma</h3>
+    <p>2018'de yapılan bir araştırma, bazı ticari yüz analiz sistemlerinin açık tenli erkeklerde çok az, koyu tenli kadınlarda ise çok daha fazla hata yaptığını gösterdi. Sebeplerden biri, eğitim verilerinde bu grupların az temsil edilmesiydi.</p>
+  </div>
+  <div class="ornek-kart">
+    <h3>🎨 Resim üretme</h3>
+    <p>“Bir şirket yöneticisi çiz” gibi isteklerde resim üreten modellerin çoğunlukla belirli bir yaş, cinsiyet ve görünüşte insanlar çizdiği defalarca gösterildi. Model, internetteki resimlerde en sık gördüğü kalıbı tekrar ediyor.</p>
+  </div>
+
+  <h2>Ne yapılabilir?</h2>
+  <ul>
+    <li><strong>Çeşitli veri:</strong> Eğitim verisinin farklı insanları ve durumları dengeli temsil etmesi.</li>
+    <li><strong>Test etmek:</strong> Modeli farklı gruplar üzerinde ayrı ayrı denemek ve sonuçları karşılaştırmak.</li>
+    <li><strong>İnsan denetimi:</strong> İşe alım, kredi, sağlık gibi önemli kararları tamamen yapay zekâya bırakmamak.</li>
+    <li><strong>Senin yapabileceğin:</strong> Yapay zekânın verdiği cevaplarda kalıp yargıları fark etmek ve sorgulamak.</li>
+  </ul>
+
+  <details class="derin">
+    <summary>Daha derine in: “Tarafsız” veri var mı?</summary>
+    <p>Tamamen tarafsız bir veri seti bulmak çok zordur, çünkü veriler insanların geçmişte yaptıklarının kaydıdır. Geçmişte bir meslekte çoğunlukla erkekler çalıştıysa, “doğru” veri de bunu gösterir. Model bu durumu “olması gereken” sanabilir.</p>
+    <p>Bu yüzden önyargıyı azaltmak yalnızca teknik bir iş değildir. “Model nasıl davranmalı?” sorusu bir değer sorusudur. Bazen verideki durumu yansıtmak, bazen de bilinçli olarak dengelemek gerekir. Bu kararları kimin, nasıl verdiği önemlidir. Bu da “İyi cevabı sen seç” deneyindeki geri bildirim konusuna bağlanır.</p>
+    <p class="kucuk">Not: Kurt-köpek deneyi, yapay zekâ araştırmalarında sık anlatılan bir örnekten esinlenmiştir. Bu sayfadaki model, tarayıcında eğitilen gerçek ama çok basit bir modeldir.</p>
+  </details>
+
+  <aside class="ogrendik">
+    <h2>Ne öğrendik?</h2>
+    <ul>
+      <li>Model verideki <strong>çarpıklıkları da öğrenir</strong>.</li>
+      <li>Model bazen asıl konuya değil, verideki <strong>tesadüfi ipuçlarına</strong> bakmayı öğrenir.</li>
+      <li>Önyargılı bir model, insanlara haksızlık eden kararlar verebilir.</li>
+      <li>Çeşitli veri, dikkatli test ve insan denetimi bu riski azaltır.</li>
+    </ul>
+  </aside>
+
+  <h2>Kendini dene</h2>
+  <script type="application/json" class="test-veri" data-modul="onyargi">[
+    {"soru":"Kurt fotoğraflarının neredeyse hepsi karda çekilmişse model ne öğrenebilir?",
+     "secenekler":["Kurtların gerçek özelliklerini","“Kar varsa kurttur” kısayolunu","Hiçbir şey öğrenemez"],
+     "dogru":1,"aciklama":"Model en kolay ipucunu kullanır. Eğitim verisinde kar neredeyse hep kurtla birlikteyse, kara bakmak yeterli olur."},
+    {"soru":"Yapay zekâdaki önyargının en yaygın kaynağı nedir?",
+     "secenekler":["Modelin kötü niyeti","Eğitim verisindeki dengesizlikler ve kalıplar","Bilgisayarın donanımı"],
+     "dogru":1,"aciklama":"Modelin bir niyeti yoktur. Verideki çarpıklıkları öğrenir ve tekrar eder."},
+    {"soru":"Önemli kararlarda (işe alım, kredi, sağlık) yapay zekâ nasıl kullanılmalı?",
+     "secenekler":["Karar tamamen yapay zekâya bırakılmalı","Yapay zekâ yardımcı olabilir ama son karar insan denetiminde olmalı","Hiçbir zaman kullanılmamalı"],
+     "dogru":1,"aciklama":"Yapay zekâ işleri hızlandırabilir, ama hataları ve önyargıları fark etmek için insan denetimi gerekir."}
+  ]</script>
+
+  <p class="not">Kurt-köpek deneyindeki model, tarayıcında gerçekten eğitilen basit bir modeldir. Gerçek hayattan örnekler kamuya açık haber ve araştırmalara dayanır, sade bir dille özetlenmiştir.</p>
+  <nav class="ileri-geri" data-oto aria-label="Deneyler arası geçiş"></nav>
+</main>
+
+<footer class="alt"><p>Yapay Zekâ Nasıl Düşünür? · Hazırlayan: devoniq</p></footer>
+
+<script>
+const $ = id => document.getElementById(id);
+function rastgele(t) { let s = t >>> 0 || 1; return () => { s ^= s << 13; s ^= s >>> 17; s ^= s << 5; return (s >>> 0) / 4294967296; }; }
+
+// Her fotoğraf: hayvan (1 kurt, 0 köpek), "kurtsu görünüm" (0..1, iki tür biraz örtüşür), kar (1/0)
+function veriUret(oran) {
+  const r = rastgele(42), v = [];
+  for (let i = 0; i < 40; i++) {
+    const kurt = i % 2 === 0 ? 1 : 0;
+    const gorunum = Math.min(1, Math.max(0, (kurt ? .66 : .38) + (r() + r() + r() - 1.5) * .32));
+    const kar = kurt ? (r() < oran ? 1 : 0) : (r() < oran ? 0 : 1);
+    v.push({kurt, gorunum, kar});
+  }
+  return v;
+}
+// Basit lojistik regresyon (tarayıcıda eğitilir)
+function egit(v) {
+  let w1 = 0, w2 = 0, b = 0;
+  for (let e = 0; e < 1500; e++) {
+    let g1 = 0, g2 = 0, gb = 0;
+    for (const x of v) {
+      const p = 1 / (1 + Math.exp(-(w1 * (x.gorunum - .5) * 2 + w2 * (x.kar - .5) * 2 + b)));
+      const d = p - x.kurt; g1 += d * (x.gorunum - .5) * 2; g2 += d * (x.kar - .5) * 2; gb += d;
+    }
+    w1 -= .5 * g1 / v.length; w2 -= .5 * g2 / v.length; b -= .5 * gb / v.length;
+  }
+  return {w1, w2, b, tahmin: (g, k) => 1 / (1 + Math.exp(-(w1 * (g - .5) * 2 + w2 * (k - .5) * 2 + b)))};
+}
+const TESTLER = [
+  {ad: "Karda oynayan köpek", kurt: 0, gorunum: .32, kar: 1},
+  {ad: "Çimende bir kurt", kurt: 1, gorunum: .72, kar: 0},
+  {ad: "Karda bir kurt", kurt: 1, gorunum: .7, kar: 1},
+  {ad: "Çimende köpek", kurt: 0, gorunum: .35, kar: 0},
+];
+function ciz() {
+  const oran = +$("oran").value / 100;
+  $("oranYazi").textContent = "%" + Math.round(oran * 100);
+  $("oranAciklama").textContent = oran <= .55 ? "Dengeli: Hem kurtlar hem köpekler her iki ortamda da eşit sıklıkta çekilmiş."
+    : oran < .85 ? "Biraz dengesiz: Kurtlar daha çok karda, köpekler daha çok çimende."
+    : "Çok dengesiz: Kurtların neredeyse hepsi karda, köpeklerin neredeyse hepsi çimende.";
+  const v = veriUret(oran);
+  const vk = $("veri"); vk.replaceChildren();
+  v.forEach(x => { const d = document.createElement("div"); d.className = "kart " + (x.kar ? "kar" : "cimen"); d.textContent = x.kurt ? "🐺" : "🐕"; d.title = (x.kurt ? "Kurt" : "Köpek") + ", " + (x.kar ? "karda" : "çimende"); vk.append(d); });
+  const m = egit(v);
+  const a = Math.abs(m.w1), k = Math.abs(m.w2), top = a + k || 1;
+  $("bakis").innerHTML = [["Hayvanın kendisine", a / top, "var(--iyi)"], ["Arka plandaki kara", k / top, "var(--vurgu)"]].map(([ad, p, r]) =>
+    `<div class="cubuk-satir"><span class="cubuk-ad">${ad}</span><span class="cubuk-yol"><span class="cubuk-dolgu" style="width:${p * 100}%;background:${r}"></span></span><span class="cubuk-deger">%${Math.round(p * 100)}</span></div>`).join("");
+  const tk = $("testler"); tk.replaceChildren();
+  let hata = 0;
+  TESTLER.forEach(t => {
+    const p = m.tahmin(t.gorunum, t.kar), der = p > .5 ? 1 : 0, dogru = der === t.kurt;
+    if (!dogru) hata++;
+    const d = document.createElement("div"); d.className = "test-kart " + (dogru ? "dogru" : "yanlis");
+    d.innerHTML = `<div class="gorsel kart ${t.kar ? "kar" : "cimen"}" style="border-radius:0">${t.kurt ? "🐺" : "🐕"}</div><div class="bilgi"><div>${t.ad}</div><div class="karar">${dogru ? "✓" : "✗"} Model: ${der ? "Kurt" : "Köpek"}</div><div class="kucuk" style="color:var(--soluk)">%${Math.round((der ? p : 1 - p) * 100)} emin</div></div>`;
+    tk.append(d);
+  });
+  $("testYorum").textContent = hata
+    ? `Model ${hata} fotoğrafta yanıldı. Yanıldığı fotoğraflara bak: Hayvanın “alışılmadık” bir ortamda olduğu fotoğraflar. Kaydırıcıyı %50'ye çekip tekrar dene.`
+    : "Model dört fotoğrafı da doğru bildi. Çünkü arka plan bir ipucu taşımadığı için hayvanın kendisine bakmayı öğrendi. Şimdi kaydırıcıyı %95'e çek.";
+}
+const CEVIRI = [["O bir doktor.", "He is a doctor.", "She/He is a doctor."], ["O bir hemşire.", "She is a nurse.", "She/He is a nurse."], ["O bir mühendis.", "He is an engineer.", "She/He is an engineer."], ["O yemek yapıyor.", "She is cooking.", "She/He is cooking."]];
+function ceviriCiz() {
+  const d = $("dengeli").checked;
+  $("ceviriler").innerHTML = CEVIRI.map(([tr, a, b]) => `<div class="ceviri"><span class="tr">${tr}</span><span>→</span><span class="en ${d ? "dengeli" : ""}">${d ? b : a}</span></div>`).join("");
+}
+document.addEventListener("DOMContentLoaded", () => {
+  $("oran").addEventListener("input", ciz);
+  $("dengeli").addEventListener("change", ceviriCiz);
+  ciz(); ceviriCiz();
+});
+</script>
+</body>
+</html>

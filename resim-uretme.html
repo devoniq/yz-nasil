@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Resim Üreten Yapay Zekâ · Yapay Zekâ Nasıl Düşünür?</title>
+<meta name="description" content="Resim üreten yapay zekâ, karıncalı bir gürültüden başlayıp adım adım resim ortaya çıkarır. Kaydırıcıyla izle.">
+<meta property="og:title" content="Resim üreten yapay zekâ · Yapay Zekâ Nasıl Düşünür?">
+<meta property="og:description" content="Gürültüden resme: Resim üreten yapay zekâ nasıl çalışır?">
+<meta property="og:image" content="https://devoniq.github.io/yz-nasil/ikon-512.png">
+<meta name="theme-color" content="#3646c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<script>try{const t=localStorage.getItem("tema");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="ortak.css">
+<script src="ortak.js" defer></script>
+<style>
+.uretim{display:grid;grid-template-columns:minmax(0,320px) 1fr;gap:20px;align-items:start}
+#resim{width:100%;max-width:320px;aspect-ratio:1;border-radius:14px;border:1px solid var(--cizgi);display:block;background:#888}
+.adim-sayac{font-size:15px;color:var(--soluk);margin:8px 0 0;text-align:center}
+.kaydirici{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;margin:10px 0}
+.kaydirici input{width:100%;accent-color:var(--ana);height:28px}
+.kaydirici span{font-size:13px;color:var(--soluk)}
+.istek-kutu{background:var(--ana);color:var(--ana-yazi);border-radius:14px 14px 4px 14px;padding:10px 14px;font-weight:600;margin:6px 0 12px}
+.seritler{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+.seritler figure{margin:0;flex:none;text-align:center}
+.seritler canvas{width:84px;height:84px;border-radius:8px;border:1px solid var(--cizgi);display:block}
+.seritler figcaption{font-size:12px;color:var(--soluk);margin-top:2px}
+@media (max-width:640px){.uretim{grid-template-columns:1fr}#resim{margin:0 auto}}
+</style>
+</head>
+<body data-sayfa="resim">
+<header class="ust"><div class="ust-ic">
+  <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
+  <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
+</div></header>
+
+<main class="sayfa">
+  <span class="etiket" data-oto>&nbsp;</span>
+  <h1>Resim üreten yapay zekâ</h1>
+  <p class="giris">“Denizde batan güneş” yazıyorsun, birkaç saniye sonra hiç var olmamış bir resim çıkıyor. Model resmi bir yerden kopyalamıyor. <strong>Televizyon karıncası gibi rastgele bir gürültüyle başlıyor</strong> ve onu adım adım temizleyerek resme dönüştürüyor.</p>
+
+  <section class="kutu deney" aria-labelledby="d-resim">
+    <h2 id="d-resim" style="margin-top:0">Dene: Gürültüden resim çıkar</h2>
+    <div class="uretim">
+      <div>
+        <canvas id="resim" width="160" height="160" aria-label="Üretilen resim"></canvas>
+        <p class="adim-sayac" id="adimYazi" aria-live="polite"></p>
+      </div>
+      <div>
+        <p style="margin:0"><b>1. İsteğini seç</b></p>
+        <div class="cipler" id="istekler" role="group" aria-label="İstek seç"></div>
+        <p class="istek-kutu" id="istekYazi"></p>
+        <p style="margin:0"><b>2. Üret ya da kaydırıcıyla adım adım izle</b></p>
+        <div class="dugmeler">
+          <button class="dugme" type="button" id="uret">✨ Üret</button>
+          <button class="dugme ikincil" type="button" id="tohum">🎲 Yeni tohum</button>
+        </div>
+        <div class="kaydirici">
+          <span>Gürültü</span>
+          <input type="range" id="adim" min="0" max="40" value="40" aria-label="Adım">
+          <span>Resim</span>
+        </div>
+        <p class="ipucu kucuk">“Yeni tohum” başlangıç gürültüsünü değiştirir. Aynı istekten farklı bir resim çıkar.</p>
+      </div>
+    </div>
+
+    <h3>Adım adım</h3>
+    <div class="seritler" id="seritler" aria-label="Üretimin aşamaları"></div>
+  </section>
+
+  <h2>Nasıl öğreniyor? Tersinden!</h2>
+  <p>Model eğitilirken milyonlarca gerçek resim alınır ve bunlara <strong>adım adım gürültü eklenir</strong>, ta ki resim tamamen karıncaya dönene kadar. Model her adımda şu soruyu çözmeyi öğrenir: <strong>“Bu resme hangi gürültü eklendi?”</strong></p>
+  <p>Bunu çok iyi öğrendikten sonra işlem tersine çevrilir. Saf gürültüyle başlanır. Model her adımda “burada olması gereken gürültü bu” diye tahmin eder ve onu çıkarır. Hangi gürültünün çıkarılacağına karar verirken yazdığın isteğe bakar. Bu yüzden aynı gürültüden “kedi” isteyince kedi, “ev” isteyince ev çıkar.</p>
+  <div class="kutu">
+    <p style="margin-top:0"><b>Eğitimi gör:</b> Aşağıdaki gerçek resme adım adım gürültü eklenmesini izle. Model, bu işlemin tersini yapmayı öğreniyor.</p>
+    <div class="seritler" id="egitimSerit"></div>
+  </div>
+
+  <details class="derin">
+    <summary>Daha derine in: Bu yöntemin adı ne, sınırları neler?</summary>
+    <p>Bu yönteme <strong>difüzyon</strong> (yayılma) modeli denir. Adını, mürekkebin suda yavaş yavaş dağılmasına benzeyen gürültü ekleme işleminden alır. Bilinen resim üretme araçlarının çoğu bu fikre dayanır.</p>
+    <ul>
+      <li><strong>İsteği nasıl anlıyor?</strong> İstek önce bir dil modeliyle sayılara çevrilir (anlam haritası deneyini hatırla). Resim modeli her adımda bu sayılara dikkat eder.</li>
+      <li><strong>Neden eller ve yazılar bozuk çıkabiliyor?</strong> Model “el neye benzer” fikrini öğrenmiştir, ama parmak saymayı bilmez. Yazılarda da harfleri değil, harflerin görünüşünü taklit eder.</li>
+      <li><strong>Telif ve sahte görüntüler:</strong> Modeller, sahiplerinin izni olmadan toplanmış resimlerle eğitilebiliyor. Bu tartışmalı bir konu. Gerçek kişilerin sahte görüntülerini üretmek de ciddi zararlara yol açabiliyor. Bu yüzden internette gördüğün her “fotoğrafa” hemen inanma.</li>
+    </ul>
+    <p class="kucuk">Not: Bu sayfadaki canlandırma hedef resmi önceden bildiği için “hile” yapıyor. Gerçek bir model sonucu bilmez, her adımda tahmin eder. Ama adımların görünüşü gerçeğe benzer.</p>
+  </details>
+
+  <aside class="ogrendik">
+    <h2>Ne öğrendik?</h2>
+    <ul>
+      <li>Resim üreten modeller rastgele <strong>gürültüyle başlar</strong> ve onu adım adım temizler.</li>
+      <li>Model bunu, gerçek resimlere eklenen gürültüyü tahmin etmeyi öğrenerek başarır.</li>
+      <li>Yazdığın istek, her adımda hangi yöne temizleneceğini belirler.</li>
+      <li>Başlangıç gürültüsü (tohum) değişince, aynı istekten farklı bir resim çıkar.</li>
+    </ul>
+  </aside>
+
+  <h2>Kendini dene</h2>
+  <script type="application/json" class="test-veri" data-modul="resim">[
+    {"soru":"Resim üreten yapay zekâ üretime neyle başlar?",
+     "secenekler":["İnternetten bulduğu benzer bir resimle","Rastgele gürültüyle","Boş beyaz bir sayfayla"],
+     "dogru":1,"aciklama":"Üretim saf gürültüyle başlar. Model gürültüyü adım adım temizleyerek resmi ortaya çıkarır."},
+    {"soru":"Model eğitim sırasında neyi öğrenir?",
+     "secenekler":["Bir resme hangi gürültünün eklendiğini tahmin etmeyi","Resimleri ezberlemeyi","Resimleri renklendirmeyi"],
+     "dogru":0,"aciklama":"Gerçek resimlere gürültü eklenir, model eklenen gürültüyü tahmin etmeyi öğrenir. Üretimde bu bilgiyi tersinden kullanır."},
+    {"soru":"Aynı isteği iki kez yazınca neden farklı resimler çıkar?",
+     "secenekler":["Model her seferinde farklı bir başlangıç gürültüsüyle başlar","Model sıkılır","İnternet hızı değişir"],
+     "dogru":0,"aciklama":"Başlangıç gürültüsü (tohum) her seferinde rastgeledir. Farklı gürültü, farklı bir resme götürür."}
+  ]</script>
+
+  <p class="not">Bu sayfadaki resimler tarayıcında çizilen basit sahnelerdir. Gürültüden resme geçiş, gerçek difüzyon modellerindeki matematiğe benzer bir canlandırmadır.</p>
+  <nav class="ileri-geri" data-oto aria-label="Deneyler arası geçiş"></nav>
+</main>
+
+<footer class="alt"><p>Yapay Zekâ Nasıl Düşünür? · Hazırlayan: devoniq</p></footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const S = 160, ADIM = 40;
+let tohum = 7, istek = 0, gurultu = null, hedef = null, oynuyor = 0;
+
+function rastgele(t) { let s = t >>> 0 || 1; return () => { s ^= s << 13; s ^= s >>> 17; s ^= s << 5; return ((s >>> 0) / 4294967296); }; }
+function gaussUret(r) { return Math.sqrt(-2 * Math.log(r() + 1e-9)) * Math.cos(2 * Math.PI * r()); }
+
+// ---------- Sahneler (tohuma göre küçük farklarla) ----------
+const ISTEKLER = [
+  {ad: "Güneşli bir günde ev", metin: "Güneşli bir günde, çimenlerin üzerinde küçük bir ev, yanında ağaç",
+   ciz(c, r) {
+     const g = c.createLinearGradient(0, 0, 0, S); g.addColorStop(0, "#5aa9f0"); g.addColorStop(1, "#cfe9ff"); c.fillStyle = g; c.fillRect(0, 0, S, S);
+     c.fillStyle = "#ffd43b"; c.beginPath(); c.arc(25 + r() * 110, 28 + r() * 10, 16, 0, 7); c.fill();
+     c.fillStyle = "#5cb85c"; c.fillRect(0, 112, S, 48);
+     const x = 30 + r() * 50, renk = ["#e8590c", "#c92a2a", "#f08c00", "#ae3ec9"][Math.floor(r() * 4)];
+     c.fillStyle = "#fff4e6"; c.fillRect(x, 78, 52, 40);
+     c.fillStyle = renk; c.beginPath(); c.moveTo(x - 6, 80); c.lineTo(x + 26, 54); c.lineTo(x + 58, 80); c.fill();
+     c.fillStyle = "#845ef7"; c.fillRect(x + 20, 96, 12, 22);
+     c.fillStyle = "#74c0fc"; c.fillRect(x + 6, 86, 10, 10); c.fillRect(x + 36, 86, 10, 10);
+     const ax = x > 60 ? 22 + r() * 10 : 120 + r() * 15;
+     c.fillStyle = "#8d5524"; c.fillRect(ax - 4, 90, 8, 26);
+     c.fillStyle = "#2b8a3e"; c.beginPath(); c.arc(ax, 82, 18, 0, 7); c.fill();
+   }},
+  {ad: "Gece denizde ay", metin: "Gece, sakin denizin üzerinde dolunay ve yıldızlar",
+   ciz(c, r) {
+     const g = c.createLinearGradient(0, 0, 0, S); g.addColorStop(0, "#0b1a3a"); g.addColorStop(.6, "#1d3a6e"); c.fillStyle = g; c.fillRect(0, 0, S, S);
+     c.fillStyle = "#fff"; for (let i = 0; i < 26; i++) c.fillRect(r() * S, r() * 85, 2, 2);
+     const mx = 40 + r() * 80;
+     c.fillStyle = "#fff3bf"; c.beginPath(); c.arc(mx, 42, 18, 0, 7); c.fill();
+     c.fillStyle = "#123a63"; c.fillRect(0, 100, S, 60);
+     c.fillStyle = "rgba(255,243,191,.55)"; for (let y = 104; y < 160; y += 7) c.fillRect(mx - 14 + r() * 6, y, 24 - (y - 104) / 6, 2);
+   }},
+  {ad: "Kırmızı balonlu kedi", metin: "Yeşil bir çayırda, kırmızı balon tutan turuncu kedi",
+   ciz(c, r) {
+     c.fillStyle = "#d0ebff"; c.fillRect(0, 0, S, S); c.fillStyle = "#94d82d"; c.fillRect(0, 118, S, 42);
+     const x = 55 + r() * 50;
+     c.strokeStyle = "#495057"; c.lineWidth = 1.5; c.beginPath(); c.moveTo(x + 18, 96); c.lineTo(x + 30, 50); c.stroke();
+     c.fillStyle = "#e03131"; c.beginPath(); c.ellipse(x + 30, 36, 15, 18, 0, 0, 7); c.fill();
+     const kedi = ["#f08c00", "#868e96", "#212529"][Math.floor(r() * 3)];
+     c.fillStyle = kedi; c.beginPath(); c.ellipse(x, 112, 22, 16, 0, 0, 7); c.fill();
+     c.beginPath(); c.arc(x - 4, 90, 14, 0, 7); c.fill();
+     c.beginPath(); c.moveTo(x - 16, 84); c.lineTo(x - 12, 70); c.lineTo(x - 6, 80); c.fill();
+     c.beginPath(); c.moveTo(x - 2, 80); c.lineTo(x + 4, 70); c.lineTo(x + 8, 84); c.fill();
+     c.fillStyle = "#fff"; c.fillRect(x - 10, 88, 4, 4); c.fillRect(x - 1, 88, 4, 4);
+   }},
+];
+
+function hedefCiz() {
+  const k = document.createElement("canvas"); k.width = k.height = S;
+  ISTEKLER[istek].ciz(k.getContext("2d"), rastgele(tohum * 977 + istek));
+  hedef = k.getContext("2d").getImageData(0, 0, S, S).data;
+  const r = rastgele(tohum * 131 + 3);
+  gurultu = new Float32Array(S * S * 3);
+  for (let i = 0; i < gurultu.length; i++) gurultu[i] = gaussUret(r);
+}
+// t: 0 = temiz resim, ADIM = saf gürültü
+function karistir(t, kaynak) {
+  const ab = Math.cos((t / ADIM) * Math.PI / 2) ** 2;
+  const a = Math.sqrt(ab), b = Math.sqrt(1 - ab);
+  const img = new ImageData(S, S);
+  for (let p = 0, q = 0; p < S * S * 4; p += 4, q += 3) {
+    for (let k = 0; k < 3; k++) {
+      const x = kaynak[p + k] / 127.5 - 1;
+      img.data[p + k] = Math.max(0, Math.min(255, (a * x + b * gurultu[q + k]) * 127.5 + 127.5));
+    }
+    img.data[p + 3] = 255;
+  }
+  return img;
+}
+function goster(t) {
+  $("resim").getContext("2d").putImageData(karistir(t, hedef), 0, 0);
+  $("adim").value = ADIM - t;
+  const yuzde = Math.round((1 - t / ADIM) * 100);
+  $("adimYazi").textContent = t === ADIM ? "Adım 0: Saf gürültü" : t === 0 ? `Adım ${ADIM}: Resim hazır ✓` : `Adım ${ADIM - t} / ${ADIM} · gürültünün %${yuzde}'i temizlendi`;
+}
+function seritCiz(kap, adimlar, ters) {
+  kap.replaceChildren();
+  adimlar.forEach(t => {
+    const f = document.createElement("figure"); const k = document.createElement("canvas"); k.width = k.height = S;
+    k.getContext("2d").putImageData(karistir(t, hedef), 0, 0);
+    const fc = document.createElement("figcaption"); fc.textContent = ters ? (t === 0 ? "Gerçek resim" : `+${t} adım gürültü`) : (t === ADIM ? "Başlangıç" : `Adım ${ADIM - t}`);
+    f.append(k, fc); kap.append(f);
+  });
+}
+function hepsi() {
+  hedefCiz();
+  $("istekYazi").textContent = "“" + ISTEKLER[istek].metin + "”";
+  goster(ADIM - +$("adim").value);
+  seritCiz($("seritler"), [40, 32, 24, 16, 8, 0], false);
+  seritCiz($("egitimSerit"), [0, 8, 16, 24, 32, 40], true);
+}
+function uret() {
+  cancelAnimationFrame(oynuyor);
+  if (YZ.azHareket()) { goster(0); return; }
+  let t = ADIM, son = 0;
+  const kare = z => {
+    if (z - son > 70) { goster(t); t--; son = z; }
+    if (t >= 0) oynuyor = requestAnimationFrame(kare);
+  };
+  oynuyor = requestAnimationFrame(kare);
+}
+document.addEventListener("DOMContentLoaded", () => {
+  ISTEKLER.forEach((x, i) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "cip"; b.textContent = x.ad;
+    b.addEventListener("click", () => { istek = i; document.querySelectorAll("#istekler .cip").forEach((c, j) => c.setAttribute("aria-pressed", i === j)); $("adim").value = 0; hepsi(); uret(); });
+    $("istekler").append(b);
+  });
+  $("istekler").firstChild.setAttribute("aria-pressed", "true");
+  $("adim").addEventListener("input", () => { cancelAnimationFrame(oynuyor); goster(ADIM - +$("adim").value); });
+  $("uret").addEventListener("click", uret);
+  $("tohum").addEventListener("click", () => { tohum = Math.floor(Math.random() * 1e6); $("adim").value = 0; hepsi(); uret(); });
+  $("adim").value = 0;
+  hepsi();
+});
+</script>
+</body>
+</html>

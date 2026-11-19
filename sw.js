@@ -1,7 +1,8 @@
 // Çevrimdışı çalışma: sayfaları önbelleğe alır. Önce ağ, olmazsa önbellek.
-const SURUM = "yz-v3";
+const SURUM = "yz-v4";
 const KABUK = ["./", "index.html", "1-parcalama.html", "2-sonraki-kelime.html", "3-zaman.html", "4-uydurma.html",
   "kendi-modelin.html", "sinir-agi.html", "soru-sorma.html", "anlam-haritasi.html", "dikkat.html", "iyi-cevap.html",
+  "resim-uretme.html", "onyargi.html",
   "ortak.css", "ortak.js", "manifest.webmanifest", "ikon.svg", "ikon-192.png", "ikon-512.png"];
 
 self.addEventListener("install", e => {
