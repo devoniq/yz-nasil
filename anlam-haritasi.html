@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kelimeler Nasıl Sayıya Dönüşür? · Yapay Zekâ Nasıl Düşünür?</title>
+<meta name="description" content="Yapay zekâ için her kelimenin bir adresi var. Anlamı yakın kelimeler haritada yan yana durur. Kelime matematiğini dene.">
+<meta property="og:title" content="Kelimeler nasıl sayıya dönüşür? · Yapay Zekâ Nasıl Düşünür?">
+<meta property="og:description" content="Anlam haritasında kelimelerin adresini keşfet: kral − erkek + kadın = ?">
+<meta property="og:image" content="https://devoniq.github.io/yz-nasil/ikon-512.png">
+<meta name="theme-color" content="#3646c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<script>try{const t=localStorage.getItem("tema");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="ortak.css">
+<script src="ortak.js" defer></script>
+<style>
+.harita-kap{background:var(--kart2);border:1px solid var(--cizgi);border-radius:14px;overflow:hidden}
+#harita{display:block;width:100%;height:auto;touch-action:manipulation}
+#harita .k{cursor:pointer}
+#harita .k text{font-size:19px;font-weight:600;fill:var(--yazi);paint-order:stroke;stroke:var(--kart2);stroke-width:5px;stroke-linejoin:round}
+#harita .k circle{fill:var(--soluk)}
+#harita .k.secili text{fill:var(--ana);font-size:23px}
+#harita .k.secili circle{fill:var(--ana);r:8}
+#harita .k.komsu text{fill:var(--iyi)}
+#harita .k.komsu circle{fill:var(--iyi)}
+#harita .k.soluk{opacity:.28}
+#harita .grup{font-size:15px;font-weight:700;fill:var(--soluk);opacity:.65;letter-spacing:.06em}
+#harita .bag{stroke:var(--iyi);stroke-width:2.5;stroke-dasharray:6 5;opacity:.8}
+#harita .ok{stroke-width:4;fill:none;marker-end:url(#okucu)}
+.adres{font-family:ui-monospace,Consolas,monospace;font-size:14px;background:var(--kart2);border:1px solid var(--cizgi);border-radius:10px;padding:8px 12px;overflow-wrap:anywhere}
+.denklem{font-size:clamp(20px,4.5vw,26px);font-weight:700;text-align:center;margin:10px 0}
+.denklem .sonuc{color:var(--iyi)}
+.yan-yana{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.kaydir-ipucu{display:none}
+@media (max-width:640px){
+  .yan-yana{grid-template-columns:1fr}
+  .harita-kap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  #harita{min-width:640px}
+  .kaydir-ipucu{display:block}
+}
+</style>
+</head>
+<body data-sayfa="anlam">
+<header class="ust"><div class="ust-ic">
+  <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
+  <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
+</div></header>
+
+<main class="sayfa">
+  <span class="etiket" data-oto>&nbsp;</span>
+  <h1>Kelimeler nasıl sayıya dönüşür?</h1>
+  <p class="giris">1. deneyde modelin her token'ı bir <strong>numara</strong> olarak gördüğünü öğrendin. Ama tek bir numara anlam taşımaz. Bu yüzden model her token'a bir <strong>adres</strong> verir: uzun bir sayı listesi. Bu adresler öyle ayarlanır ki <strong>anlamı yakın kelimeler birbirine yakın</strong> durur.</p>
+
+  <section class="kutu deney" aria-labelledby="d-anlam">
+    <h2 id="d-anlam" style="margin-top:0">Dene: Anlam haritasını keşfet</h2>
+    <p class="ipucu">Bir kelimeye dokun. En yakın komşuları yeşille işaretlenecek.</p>
+    <p class="ipucu kucuk kaydir-ipucu">← Haritanın tamamını görmek için yana kaydır →</p>
+    <div class="harita-kap"><svg id="harita" viewBox="0 0 1000 680" role="img" aria-label="Kelimelerin anlam haritası"></svg></div>
+    <div id="bilgi" aria-live="polite" style="margin-top:12px"></div>
+  </section>
+
+  <section class="kutu" aria-labelledby="d-mat">
+    <h2 id="d-mat" style="margin-top:0">Kelime matematiği</h2>
+    <p>Adresler sayı olduğu için onlarla <strong>toplama ve çıkarma</strong> yapılabilir. Bir denklem seç ve haritada izle.</p>
+    <div class="cipler" id="denklemler" role="group" aria-label="Denklem seç"></div>
+    <p class="denklem" id="denklem" aria-live="polite"></p>
+    <p class="ipucu" id="denklemAciklama"></p>
+  </section>
+
+  <h2>Neden işe yarıyor?</h2>
+  <p>Model bu adresleri kimseden hazır almaz. Eğitim sırasında milyarlarca cümle okurken <strong>benzer yerlerde geçen kelimelerin</strong> adreslerini birbirine yaklaştırır. “Kedi” ve “köpek” hep “besledim”, “sevdim”, “veteriner” gibi kelimelerin yanında geçtiği için adresleri yakın olur.</p>
+  <p>Bir dilbilimcinin ünlü sözü bunu özetler: <em>“Bir kelimeyi, yanında bulunduğu kelimelerden tanırsın.”</em></p>
+
+  <details class="derin">
+    <summary>Daha derine in: Gerçek adresler kaç boyutlu?</summary>
+    <p>Bu haritada her kelimenin iki sayısı var: sağ-sol ve yukarı-aşağı. Gerçek modellerde her token'ın adresi <strong>binlerce sayıdan</strong> oluşur. Örneğin bazı modellerde 4.096 sayı. Binlerce boyutlu bir uzayı hayal edemeyiz, ama matematik aynıdır. Yakınlık ölçülebilir, toplama-çıkarma yapılabilir.</p>
+    <p>Bu adreslere <em>embedding</em> (gömme, vektör) denir. Arama motorları, öneri sistemleri (“bunu beğenenler şunu da beğendi”) ve belge arama araçları da bu fikirle çalışır: Anlamca yakın olanı bul.</p>
+    <p><strong>Çok anlamlı kelimeler ne olacak?</strong> “Yüz” hem bir sayı, hem surat, hem de “yüzmek” fiilinden gelebilir. Başlangıçta tek bir adresi vardır. Model, cümledeki diğer kelimelere bakarak hangi anlamın kastedildiğini sonradan anlar. Bunu bir sonraki deneyde göreceksin.</p>
+    <p class="kucuk">Not: Bu harita gerçek bir modelden alınmadı. Fikri göstermek için elle hazırlanmış, iki boyutlu bir basitleştirmedir.</p>
+  </details>
+
+  <aside class="ogrendik">
+    <h2>Ne öğrendik?</h2>
+    <ul>
+      <li>Model her token'a bir <strong>adres</strong>, yani uzun bir sayı listesi verir.</li>
+      <li>Anlamı yakın kelimelerin adresleri birbirine <strong>yakındır</strong>.</li>
+      <li>Adresler, kelimelerin metinlerde hangi kelimelerle birlikte geçtiğine bakılarak öğrenilir.</li>
+      <li>Adreslerle toplama-çıkarma yapılabilir: kral − erkek + kadın ≈ kraliçe.</li>
+    </ul>
+  </aside>
+
+  <h2>Kendini dene</h2>
+  <script type="application/json" class="test-veri" data-modul="anlam">[
+    {"soru":"Anlam haritasında “elma” kelimesinin yakınında hangisi bulunur?",
+     "secenekler":["Otobüs","Armut","Öğretmen"],
+     "dogru":1,"aciklama":"Elma ve armut benzer cümlelerde (yemek, meyve, ağaç) geçtiği için adresleri yakındır."},
+    {"soru":"Model kelimelerin adreslerini nasıl öğrenir?",
+     "secenekler":["Bir sözlükten kopyalar","Metinlerde hangi kelimelerle birlikte geçtiklerine bakarak","Programcılar tek tek yazar"],
+     "dogru":1,"aciklama":"Benzer bağlamlarda geçen kelimelerin adresleri eğitim sırasında birbirine yaklaşır."},
+    {"soru":"“Paris − Fransa + Türkiye” işleminin sonucu hangi kelimeye en yakın çıkar?",
+     "secenekler":["Ankara","Kedi","Mutlu"],
+     "dogru":0,"aciklama":"Paris'ten Fransa'yı çıkarınca geriye “başkent olma” yönü kalır. Bunu Türkiye'ye eklersen Ankara'ya ulaşırsın."}
+  ]</script>
+
+  <p class="not">Bu sayfadaki harita, gerçek modellerdeki fikri anlatmak için elle hazırlanmış iki boyutlu bir basitleştirmedir.</p>
+  <nav class="ileri-geri" data-oto aria-label="Deneyler arası geçiş"></nav>
+</main>
+
+<footer class="alt"><p>Yapay Zekâ Nasıl Düşünür? · Hazırlayan: devoniq</p></footer>
+
+<script>
+const $ = id => document.getElementById(id);
+// [kelime, x, y]  — harita 1000 x 680
+const KELIMELER = [
+  ["kedi",150,165],["köpek",195,150],["aslan",245,215],["kaplan",270,250],["kuş",120,240],["balık",95,290],["at",225,105],["inek",275,85],
+  ["elma",140,505],["armut",175,540],["muz",215,580],["portakal",250,515],["çilek",110,575],["üzüm",165,620],["ekmek",300,450],["peynir",330,505],
+  ["araba",470,575],["otobüs",520,610],["tren",575,630],["uçak",620,535],["gemi",640,600],["bisiklet",420,625],
+  ["mutlu",450,120],["sevinçli",500,85],["neşeli",425,170],["üzgün",575,165],["kızgın",620,120],["korkmuş",600,215],
+  ["doktor",440,330],["hemşire",470,380],["öğretmen",560,330],["öğrenci",590,390],["aşçı",400,410],["mühendis",515,285],
+  ["erkek",760,265],["kadın",900,265],["baba",760,330],["anne",900,330],["kral",760,135],["kraliçe",900,135],["prens",760,200],["prenses",900,200],
+  ["Türkiye",770,450],["Ankara",770,540],["Fransa",870,440],["Paris",870,530],["Japonya",950,475],["Tokyo",950,565],
+];
+const GRUPLAR = [["HAYVANLAR",185,50],["YİYECEKLER",215,415],["TAŞITLAR",530,500],["DUYGULAR",520,40],["MESLEKLER",495,245],["İNSANLAR",830,70],["ÜLKELER VE BAŞKENTLER",860,400]];
+const DENKLEMLER = [
+  {a: "kral", b: "erkek", c: "kadın", aciklama: "“Kral”dan “erkek”liği çıkarınca geriye “hükümdarlık” yönü kalıyor. Buna “kadın” eklenince kraliçeye ulaşıyoruz."},
+  {a: "baba", b: "erkek", c: "kadın", aciklama: "Aynı yön başka kelimelerde de işliyor: Babadan erkekliği çıkar, kadınlığı ekle, anneyi bul."},
+  {a: "Paris", b: "Fransa", c: "Türkiye", aciklama: "Paris'ten Fransa'yı çıkarınca geriye “başkent olma” yönü kalıyor. Türkiye'ye eklenince Ankara."},
+  {a: "Tokyo", b: "Japonya", c: "Fransa", aciklama: "Aynı “başkent” yönü her ülke için işliyor."},
+];
+const konum = Object.fromEntries(KELIMELER.map(([k, x, y]) => [k, [x, y]]));
+const svg = $("harita");
+const ns = "http://www.w3.org/2000/svg";
+const el = (ad, ozellik = {}) => { const e = document.createElementNS(ns, ad); for (const k in ozellik) e.setAttribute(k, ozellik[k]); return e; };
+
+let katmanCizgi, katmanKelime;
+function kur() {
+  svg.innerHTML = `<defs><marker id="okucu" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker></defs>`;
+  GRUPLAR.forEach(([ad, x, y]) => { const t = el("text", {x, y, class: "grup", "text-anchor": "middle"}); t.textContent = ad; svg.append(t); });
+  katmanCizgi = el("g"); katmanKelime = el("g");
+  svg.append(katmanCizgi, katmanKelime);
+  KELIMELER.forEach(([k, x, y]) => {
+    const g = el("g", {class: "k", tabindex: 0, role: "button", "aria-label": k, "data-k": k});
+    g.append(el("circle", {cx: x, cy: y, r: 5}));
+    const t = el("text", {x, y: y - 11, "text-anchor": "middle"}); t.textContent = k; g.append(t);
+    g.addEventListener("click", () => sec(k));
+    g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); sec(k); } });
+    katmanKelime.append(g);
+  });
+}
+const uzak = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+function sec(k) {
+  katmanCizgi.replaceChildren();
+  const p = konum[k];
+  const komsular = KELIMELER.filter(([w]) => w !== k).map(([w, x, y]) => ({w, d: uzak(p, [x, y])})).sort((a, b) => a.d - b.d).slice(0, 5);
+  const ks = new Set(komsular.map(x => x.w));
+  katmanKelime.querySelectorAll(".k").forEach(g => {
+    const w = g.dataset.k;
+    g.classList.toggle("secili", w === k); g.classList.toggle("komsu", ks.has(w)); g.classList.toggle("soluk", w !== k && !ks.has(w));
+  });
+  komsular.forEach(({w}) => katmanCizgi.append(el("line", {x1: p[0], y1: p[1], x2: konum[w][0], y2: konum[w][1], class: "bag"})));
+  const benzerlik = d => Math.max(0, Math.round((1 - d / 700) * 100));
+  const b = $("bilgi");
+  b.innerHTML = `<p style="margin:0 0 6px"><b></b> kelimesinin en yakın komşuları:</p><div class="cipler" style="margin:0 0 10px"></div><p class="kucuk" style="margin:0 0 4px">Bu haritadaki adresi:</p><div class="adres"></div>`;
+  b.querySelector("b").textContent = "“" + k + "”";
+  komsular.forEach(({w, d}) => { const c = document.createElement("button"); c.type = "button"; c.className = "cip"; c.textContent = `${w} · %${benzerlik(d)} benzer`; c.addEventListener("click", () => sec(w)); b.querySelector(".cipler").append(c); });
+  // Gerçek modeldeki gibi uzun bir sayı listesini temsil eden örnek değerler (kelimeden türetilir).
+  let h = 0; for (const ch of k) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  const rnd = () => { h = (h * 1103515245 + 12345) >>> 0; return ((h / 4294967296) * 2 - 1).toFixed(2); };
+  const x2 = ((p[0] / 500) - 1).toFixed(2), y2 = (1 - p[1] / 340).toFixed(2);
+  b.querySelector(".adres").textContent = `[${x2}, ${y2}]   ← gerçek bir modelde: [${Array.from({length: 8}, rnd).join(", ")}, … toplam 4.096 sayı]`;
+}
+function denklemGoster(i) {
+  document.querySelectorAll("#denklemler .cip").forEach((c, j) => c.setAttribute("aria-pressed", i === j));
+  const {a, b, c, aciklama} = DENKLEMLER[i];
+  const pa = konum[a], pb = konum[b], pc = konum[c];
+  const hedef = [pa[0] - pb[0] + pc[0], pa[1] - pb[1] + pc[1]];
+  const en = KELIMELER.filter(([w]) => ![a, b, c].includes(w)).map(([w, x, y]) => ({w, d: uzak(hedef, [x, y])})).sort((x, y) => x.d - y.d)[0].w;
+  katmanCizgi.replaceChildren();
+  katmanKelime.querySelectorAll(".k").forEach(g => {
+    const w = g.dataset.k; const ilgili = [a, b, c, en].includes(w);
+    g.classList.toggle("secili", w === en); g.classList.remove("komsu"); g.classList.toggle("soluk", !ilgili);
+  });
+  const renk = getComputedStyle(document.documentElement);
+  katmanCizgi.append(el("line", {x1: pb[0], y1: pb[1], x2: pa[0], y2: pa[1] + 14, class: "ok", stroke: renk.getPropertyValue("--vurgu")}));
+  katmanCizgi.append(el("line", {x1: pc[0], y1: pc[1], x2: hedef[0], y2: hedef[1] + 14, class: "ok", stroke: renk.getPropertyValue("--iyi")}));
+  $("denklem").innerHTML = `${a} − ${b} + ${c} ≈ <span class="sonuc">${en}</span>`;
+  $("denklemAciklama").textContent = aciklama + " Turuncu ok çıkarılan farkı, yeşil ok aynı farkın eklenişini gösteriyor.";
+  $("bilgi").replaceChildren();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  kur();
+  DENKLEMLER.forEach((d, i) => { const b = document.createElement("button"); b.type = "button"; b.className = "cip"; b.textContent = `${d.a} − ${d.b} + ${d.c}`; b.addEventListener("click", () => denklemGoster(i)); $("denklemler").append(b); });
+  sec("kedi");
+});
+</script>
+</body>
+</html>

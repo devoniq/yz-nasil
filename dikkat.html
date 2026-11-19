@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Model Neye Dikkat Eder? · Yapay Zekâ Nasıl Düşünür?</title>
+<meta name="description" content="“O” kelimesi kimi kastediyor? Modelin bir kelimeyi anlamak için cümledeki hangi kelimelere baktığını gör.">
+<meta property="og:title" content="Model neye dikkat eder? · Yapay Zekâ Nasıl Düşünür?">
+<meta property="og:description" content="Dikkat mekanizması: Model bir kelimeyi anlamak için hangi kelimelere bakar?">
+<meta property="og:image" content="https://devoniq.github.io/yz-nasil/ikon-512.png">
+<meta name="theme-color" content="#3646c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<script>try{const t=localStorage.getItem("tema");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="ortak.css">
+<script src="ortak.js" defer></script>
+<style>
+.cumle{position:relative;display:flex;flex-wrap:wrap;gap:10px 8px;padding:52px 14px 18px;background:var(--kart2);border:1px solid var(--cizgi);border-radius:14px;font-size:clamp(19px,4.4vw,24px);font-weight:600}
+.cumle .w{position:relative;z-index:1;padding:4px 8px;border-radius:9px;transition:background .3s,color .3s}
+.cumle .w.hedef{cursor:pointer;border:2px dashed var(--ana);color:var(--ana)}
+.cumle .w.hedef.aktif{background:var(--ana);color:var(--ana-yazi);border-style:solid}
+#oklar{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+#oklar path{fill:none;stroke:var(--vurgu);stroke-linecap:round}
+.secenek-satir{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0 0;font-size:15px}
+.anlam{margin:14px 0 0;padding:12px 14px;border-radius:12px;background:var(--iyi-acik);font-size:17px}
+.anlam b{color:var(--iyi)}
+</style>
+</head>
+<body data-sayfa="dikkat">
+<header class="ust"><div class="ust-ic">
+  <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
+  <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
+</div></header>
+
+<main class="sayfa">
+  <span class="etiket" data-oto>&nbsp;</span>
+  <h1>Model neye dikkat eder?</h1>
+  <p class="giris">“Kedi mama kabına gitmedi çünkü <strong>o</strong> çok yorgundu.” Sen hemen anladın: “o” kedidir. Peki model bunu nasıl anlıyor? Cevap: Her kelime, anlamını netleştirmek için cümledeki <strong>diğer kelimelere bakar</strong>. Buna <strong>dikkat</strong> (attention) denir.</p>
+
+  <section class="kutu deney" aria-labelledby="d-dikkat">
+    <h2 id="d-dikkat" style="margin-top:0">Dene: Kesik çizgili kelimeye dokun</h2>
+    <div class="cipler" id="ornekler" role="group" aria-label="Örnek seç"></div>
+    <div class="cumle" id="cumle" aria-live="polite"><svg id="oklar" aria-hidden="true"></svg></div>
+    <div class="secenek-satir" id="degistir"></div>
+    <div id="sonuc" aria-live="polite"></div>
+    <div id="cubuklar" style="margin-top:12px"></div>
+  </section>
+
+  <h2>Ne gördün?</h2>
+  <p>Sondaki tek bir kelimeyi değiştirdiğinde (“yorgundu” → “uzaktaydı”), “o” kelimesinin dikkati <strong>kediden kaba</strong> kaydı. Çünkü yorgun olabilen şey kedidir, uzakta olabilen şey ise kap. Model bunu kurallardan değil, okuduğu milyonlarca cümleden öğrendi.</p>
+  <p>Aynı şey çok anlamlı kelimelerde de olur. “Yüz” kelimesi “metre” ve “havuz”un yanındaysa bir sayıdır. “Krem” ve “sürmek”in yanındaysa surattır. Kelimenin adresi, baktığı kelimelere göre güncellenir ve anlamı netleşir.</p>
+
+  <details class="derin">
+    <summary>Daha derine in: Transformer ve “GPT”deki T</summary>
+    <p>2017'de Google araştırmacıları <em>“Attention Is All You Need”</em> (Tek ihtiyacın dikkat) adlı bir makale yayınladı. Bu makalede tanıtılan <strong>Transformer</strong> mimarisi, bugünkü neredeyse bütün dil modellerinin temelidir. GPT'deki “T” de Transformer'dan gelir.</p>
+    <p>Transformer'da dikkat şöyle işler:</p>
+    <ol>
+      <li>Her kelime bir <strong>soru</strong> sorar: “Beni anlamak için kime bakmalıyım?”</li>
+      <li>Diğer her kelime bir <strong>etiket</strong> taşır: “Ben şu tür bilgiyi taşıyorum.”</li>
+      <li>Soru ile etiket ne kadar uyuşuyorsa, o kelimeye o kadar çok dikkat edilir. Kelime, dikkat ettiği kelimelerin bilgisini kendine katar.</li>
+    </ol>
+    <p>Gerçek modellerde bu işlem tek seferde değil, onlarca <strong>katmanda</strong> ve her katmanda düzinelerce ayrı <strong>dikkat başlığıyla</strong> yapılır. Bir başlık “o kimi kastediyor?” sorusuna bakarken, bir başkası fiil-özne uyumuna, bir başkası zamana bakabilir.</p>
+    <p>Dikkat, modelin uzun metinleri anlayabilmesinin de sırrıdır. Bir sayfanın sonundaki kelime, sayfanın başındaki bir isme doğrudan bakabilir.</p>
+    <p class="kucuk">Not: Bu sayfadaki dikkat değerleri gerçek bir modelden alınmadı. Fikri anlatmak için temsilî olarak hazırlandı.</p>
+  </details>
+
+  <aside class="ogrendik">
+    <h2>Ne öğrendik?</h2>
+    <ul>
+      <li>Model bir kelimeyi anlamak için cümledeki diğer kelimelere <strong>dikkat eder</strong>.</li>
+      <li>Tek bir kelimeyi değiştirmek, dikkatin nereye gideceğini değiştirebilir.</li>
+      <li>Çok anlamlı kelimelerin anlamı, dikkat edilen kelimelerle netleşir.</li>
+      <li>Bu mekanizmaya dayanan <strong>Transformer</strong>, bugünkü dil modellerinin temelidir.</li>
+    </ul>
+  </aside>
+
+  <h2>Kendini dene</h2>
+  <script type="application/json" class="test-veri" data-modul="dikkat">[
+    {"soru":"“Kedi kaba gitmedi çünkü o çok uzaktaydı.” cümlesinde “o” en çok hangi kelimeye dikkat eder?",
+     "secenekler":["Kedi","Kap","Gitmedi"],
+     "dogru":1,"aciklama":"Uzakta olabilen şey kaptır. Model bunu benzer cümlelerden öğrenmiştir."},
+    {"soru":"Dikkat mekanizması ne işe yarar?",
+     "secenekler":["Modelin daha hızlı yazmasını sağlar","Her kelimenin, anlamını netleştirmek için diğer kelimelere bakmasını sağlar","Yazım hatalarını düzeltir"],
+     "dogru":1,"aciklama":"Kelimeler birbirine bakarak bilgi toplar. Böylece “o”nun kim olduğu ya da “yüz”ün hangi anlamda kullanıldığı anlaşılır."},
+    {"soru":"GPT'deki “T” harfi neyin kısaltmasıdır?",
+     "secenekler":["Türkçe","Transformer","Teknoloji"],
+     "dogru":1,"aciklama":"GPT: Generative Pre-trained Transformer. Transformer, dikkat mekanizmasına dayanan model mimarisidir."}
+  ]</script>
+
+  <p class="not">Bu sayfadaki dikkat değerleri, fikri göstermek için hazırlanmış temsilî değerlerdir.</p>
+  <nav class="ileri-geri" data-oto aria-label="Deneyler arası geçiş"></nav>
+</main>
+
+<footer class="alt"><p>Yapay Zekâ Nasıl Düşünür? · Hazırlayan: devoniq</p></footer>
+
+<script>
+const $ = id => document.getElementById(id);
+// Her örnek: sözcükler, hedef sözcüğün sırası, değiştirilebilir son sözcük seçenekleri ve her seçenek için dikkat ağırlıkları.
+const ORNEKLER = [
+  {ad: "“O” kim?", hedef: 5,
+   kelimeler: ["Kedi", "mama", "kabına", "gitmedi", "çünkü", "o", "çok", "?"],
+   secenekler: [
+     {son: "yorgundu.", agirlik: [.62, .05, .07, .06, .04, 0, .03, .13], anlam: "“o” = <b>kedi</b>. Yorgun olabilen şey kedidir."},
+     {son: "uzaktaydı.", agirlik: [.08, .14, .55, .07, .04, 0, .03, .09], anlam: "“o” = <b>mama kabı</b>. Uzakta olabilen şey kaptır."},
+     {son: "doluydu.", agirlik: [.07, .21, .48, .05, .05, 0, .03, .11], anlam: "“o” = <b>mama kabı</b>. Dolu olabilen şey kaptır. Kedi de belki tokmuş."},
+   ]},
+  {ad: "Hangi “yüz”?", hedef: 1,
+   kelimeler: ["Havuzda", "yüz", "?", "?"],
+   secenekler: [
+     {kel: ["Havuzda", "yüz", "metre", "yüzdüm."], agirlik: [.26, 0, .52, .22], anlam: "“yüz” = <b>sayı (100)</b>. “Metre” kelimesi en güçlü ipucu."},
+     {kel: ["Yüzüne", "yüz", "kere", "baktım."], agirlik: [.18, 0, .58, .24], anlam: "İkinci “yüz” = <b>sayı (100)</b>. “Kere” kelimesi bir sayı beklendiğini gösteriyor."},
+     {kel: ["Güneşte", "yüz", "kremi", "sür."], agirlik: [.22, 0, .51, .27], anlam: "“yüz” = <b>surat</b>. “Krem” ve “sür” en güçlü ipuçları."},
+   ]},
+  {ad: "Hangi “çay”?", hedef: 1,
+   kelimeler: ["?", "çay", "?", "?"],
+   secenekler: [
+     {kel: ["Kahvaltıda", "çay", "içtik", "hep beraber."], agirlik: [.31, 0, .55, .14], anlam: "“çay” = <b>içecek</b>. “İçtik” ve “kahvaltı” en güçlü ipuçları."},
+     {kel: ["Ormandaki", "çay", "kenarında", "piknik yaptık."], agirlik: [.34, 0, .41, .25], anlam: "“çay” = <b>küçük akarsu</b>. “Kenarında” ve “orman” en güçlü ipuçları."},
+   ]},
+];
+let ornek = 0, secenek = 0, aktif = false;
+
+function kelimeleriAl() {
+  const o = ORNEKLER[ornek], s = o.secenekler[secenek];
+  if (s.kel) return s.kel;
+  return o.kelimeler.map((k, i) => i === o.kelimeler.length - 1 ? s.son : k).filter(k => k !== "?");
+}
+function ciz() {
+  const o = ORNEKLER[ornek], s = o.secenekler[secenek];
+  const kap = $("cumle"); const svg = $("oklar");
+  kap.querySelectorAll(".w").forEach(x => x.remove());
+  const kel = kelimeleriAl();
+  kel.forEach((k, i) => {
+    const sp = document.createElement("span"); sp.className = "w"; sp.textContent = k;
+    if (i === o.hedef) {
+      sp.classList.add("hedef"); sp.tabIndex = 0; sp.setAttribute("role", "button");
+      sp.setAttribute("aria-label", `“${k}” kelimesinin dikkatini göster`);
+      if (aktif) sp.classList.add("aktif");
+      const ac = () => { aktif = true; ciz(); };
+      sp.addEventListener("click", ac);
+      sp.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); ac(); } });
+    } else if (aktif) {
+      const w = s.agirlik[i];
+      sp.style.background = `color-mix(in srgb, var(--vurgu) ${Math.round(w * 140)}%, transparent)`;
+    }
+    kap.append(sp);
+  });
+  requestAnimationFrame(() => oklariCiz(kel));
+  // Değiştirme düğmeleri
+  const d = $("degistir"); d.replaceChildren();
+  d.append(o.secenekler[0].son ? "Son kelimeyi değiştir:" : "Cümleyi değiştir:");
+  o.secenekler.forEach((x, j) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "cip";
+    b.textContent = x.son || x.kel.join(" "); b.setAttribute("aria-pressed", j === secenek);
+    b.addEventListener("click", () => { secenek = j; ciz(); });
+    d.append(b);
+  });
+  // Sonuç ve çubuklar
+  const sn = $("sonuc"), cb = $("cubuklar");
+  sn.replaceChildren(); cb.replaceChildren();
+  if (!aktif) { sn.innerHTML = '<p class="ipucu" style="margin:12px 0 0">Kesik çizgili kelimeye dokun.</p>'; return; }
+  sn.innerHTML = `<p class="anlam">${s.anlam}</p>`;
+  const sirali = kel.map((k, i) => ({k, w: s.agirlik[i], i})).filter(x => x.i !== o.hedef).sort((a, b) => b.w - a.w);
+  const baslik = document.createElement("p"); baslik.className = "kucuk"; baslik.style.margin = "12px 0 4px";
+  baslik.textContent = `“${kel[o.hedef]}” kelimesinin dikkati nereye gidiyor?`; cb.append(baslik);
+  sirali.forEach(({k, w}) => {
+    const r = document.createElement("div"); r.className = "cubuk-satir";
+    r.innerHTML = `<span class="cubuk-ad"></span><span class="cubuk-yol"><span class="cubuk-dolgu" style="width:${w * 100}%;background:var(--vurgu)"></span></span><span class="cubuk-deger">%${Math.round(w * 100)}</span>`;
+    r.querySelector(".cubuk-ad").textContent = k; cb.append(r);
+  });
+}
+function oklariCiz(kel) {
+  const svg = $("oklar"); svg.replaceChildren();
+  if (!aktif) return;
+  const o = ORNEKLER[ornek], s = o.secenekler[secenek];
+  const kap = $("cumle").getBoundingClientRect();
+  const ws = [...$("cumle").querySelectorAll(".w")];
+  const h = ws[o.hedef].getBoundingClientRect();
+  const hx = h.left + h.width / 2 - kap.left, hy = h.top - kap.top;
+  ws.forEach((w, i) => {
+    if (i === o.hedef || s.agirlik[i] < .04) return;
+    const r = w.getBoundingClientRect();
+    const x = r.left + r.width / 2 - kap.left, y = r.top - kap.top;
+    const tepe = Math.min(hy, y) - 18 - Math.min(26, Math.abs(x - hx) / 8);
+    const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    p.setAttribute("d", `M${hx} ${hy} C ${hx} ${tepe}, ${x} ${tepe}, ${x} ${y}`);
+    p.setAttribute("stroke-width", (1 + s.agirlik[i] * 12).toFixed(1));
+    p.setAttribute("opacity", (.3 + s.agirlik[i]).toFixed(2));
+    svg.append(p);
+  });
+}
+document.addEventListener("DOMContentLoaded", () => {
+  ORNEKLER.forEach((o, i) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "cip"; b.textContent = o.ad;
+    b.addEventListener("click", () => { ornek = i; secenek = 0; aktif = false; document.querySelectorAll("#ornekler .cip").forEach((c, j) => c.setAttribute("aria-pressed", i === j)); ciz(); });
+    $("ornekler").append(b);
+  });
+  $("ornekler").firstChild.setAttribute("aria-pressed", "true");
+  ciz();
+  addEventListener("resize", () => oklariCiz(kelimeleriAl()));
+});
+</script>
+</body>
+</html>

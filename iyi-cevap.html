@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>İyi Cevabı Sen Seç · Yapay Zekâ Nasıl Düşünür?</title>
+<meta name="description" content="Sohbet botları nasıl yardımsever, dürüst ve kibar olmayı öğrenir? İki cevaptan iyisini seçerek bir modeli sen terbiye et.">
+<meta property="og:title" content="İyi cevabı sen seç · Yapay Zekâ Nasıl Düşünür?">
+<meta property="og:description" content="İki cevaptan iyisini seçerek bir modeli sen terbiye et.">
+<meta property="og:image" content="https://devoniq.github.io/yz-nasil/ikon-512.png">
+<meta name="theme-color" content="#3646c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<script>try{const t=localStorage.getItem("tema");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="ortak.css">
+<script src="ortak.js" defer></script>
+<style>
+.ilerleme-cubuk{height:8px;border-radius:99px;background:var(--kart2);border:1px solid var(--cizgi);overflow:hidden;margin:4px 0 14px}
+.ilerleme-cubuk div{height:100%;background:var(--ana);transition:width .3s}
+.istek{background:var(--ana);color:var(--ana-yazi);border-radius:14px 14px 4px 14px;padding:10px 14px;margin:0 0 12px auto;max-width:85%;width:fit-content}
+.iki-cevap{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cevap-kart{text-align:left;padding:14px;border-radius:14px;border:2px solid var(--cizgi);background:var(--kart);cursor:pointer;line-height:1.5;font-size:15.5px;white-space:pre-line}
+.cevap-kart:hover{border-color:var(--ana)}
+.cevap-kart b.harf{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--ana-acik);color:var(--ana);margin-right:6px;font-size:14px}
+.ozellikler{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0 0}
+.ozellik{background:var(--kart2);border:1px solid var(--cizgi);border-radius:12px;padding:8px;text-align:center}
+.ozellik span{display:block;font-size:12.5px;color:var(--soluk)}
+.ozellik b{font-size:20px;font-variant-numeric:tabular-nums}
+.ozellik.art b{color:var(--iyi)}.ozellik.eks b{color:var(--kotu)}
+.geri{font-size:15px;margin:12px 0 0;padding:10px 12px;border-radius:10px;background:var(--kart2)}
+.final{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.final .taraf{border-radius:14px;padding:14px;background:var(--kart2);border:1px solid var(--cizgi)}
+.final h3{margin:0 0 8px;font-size:16px}
+.final .yanit{white-space:pre-line;font-size:15.5px}
+@media (max-width:640px){.iki-cevap,.final{grid-template-columns:1fr}.ozellikler{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body data-sayfa="geribildirim">
+<header class="ust"><div class="ust-ic">
+  <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
+  <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
+</div></header>
+
+<main class="sayfa">
+  <span class="etiket" data-oto>&nbsp;</span>
+  <h1>İyi cevabı sen seç</h1>
+  <p class="giris">İnternetteki metinlerle eğitilen bir model, soruya cevap vermeyi bilmez. Sadece <strong>metni devam ettirmeyi</strong> bilir. Bir soru görünce cevap yerine benzer başka sorular da yazabilir. Onu yardımsever bir asistana dönüştüren şey <strong>insanların geri bildirimidir</strong>. Şimdi o insan sensin.</p>
+
+  <section class="kutu deney" aria-labelledby="d-gb">
+    <h2 id="d-gb" style="margin-top:0">Oyun: Modeli sen eğit</h2>
+    <div id="oyun">
+      <p class="kucuk" id="tur" style="margin:0"></p>
+      <div class="ilerleme-cubuk"><div id="ilerleme"></div></div>
+      <p class="istek" id="istek"></p>
+      <p class="ipucu kucuk">Model iki cevap üretti. Sence hangisi daha iyi?</p>
+      <div class="iki-cevap" id="cevaplar"></div>
+      <div id="geri" aria-live="polite"></div>
+    </div>
+    <div id="final" hidden></div>
+    <div class="ozellikler" aria-label="Modelin öğrendiği davranışlar">
+      <div class="ozellik" id="o-yardim"><span>Yardımseverlik</span><b>0</b></div>
+      <div class="ozellik" id="o-durust"><span>Dürüstlük</span><b>0</b></div>
+      <div class="ozellik" id="o-nezaket"><span>Nezaket</span><b>0</b></div>
+      <div class="ozellik" id="o-guvenlik"><span>Güvenlik</span><b>0</b></div>
+    </div>
+  </section>
+
+  <h2>Gerçekte nasıl yapılıyor?</h2>
+  <p>Bir sohbet botu genelde iki aşamada eğitilir:</p>
+  <ol>
+    <li><strong>Ön eğitim:</strong> Model internetten, kitaplardan ve başka kaynaklardan toplanmış çok büyük miktarda metin okur ve sonraki kelimeyi tahmin etmeyi öğrenir. Bu aşamanın sonunda çok bilgili ama “terbiyesiz” bir metin devam ettiricisi ortaya çıkar.</li>
+    <li><strong>İnce ayar ve insan geri bildirimi:</strong> İnsanlar modelin cevaplarını karşılaştırır ve iyi olanları seçer. Model bu tercihlere uyacak şekilde ayarlanır. Bu yönteme <em>insan geri bildirimiyle pekiştirmeli öğrenme</em> (RLHF) denir. Oyunda yaptığın şey buydu.</li>
+  </ol>
+  <p>Yani bir sohbet botunun kibarlığı, dürüstlüğü ve neye “hayır” diyeceği <strong>insanların tercihlerinden</strong> gelir. Bu tercihleri kimin yaptığı ve hangi kurallara göre yaptığı bu yüzden çok önemlidir.</p>
+
+  <details class="derin">
+    <summary>Daha derine in: Geri bildirimin zor yanları</summary>
+    <ul>
+      <li><strong>İnsanlar her zaman doğruyu seçmez.</strong> Kendinden emin ve uzun cevaplar, doğru olmasalar bile daha çok beğenilebilir. Model de böylece “emin görünmeyi” öğrenebilir.</li>
+      <li><strong>Dalkavukluk riski:</strong> Kullanıcıya hak veren cevaplar çok beğenilirse, model kullanıcı yanılsa bile ona katılmayı öğrenebilir.</li>
+      <li><strong>Kimin değerleri?</strong> Ne “kibar”, ne “zararlı” sayılır? Bu sorular kültüre ve kişiye göre değişir. Şirketler bunun için yazılı yönergeler hazırlar ve değerlendiricileri bu yönergelere göre eğitir.</li>
+      <li><strong>Yapay zekâ geri bildirimi:</strong> Bazı şirketler, belirli ilkelere göre cevapları değerlendiren başka bir yapay zekâ da kullanır. Böylece çok daha fazla örnek değerlendirilebilir.</li>
+    </ul>
+  </details>
+
+  <aside class="ogrendik">
+    <h2>Ne öğrendik?</h2>
+    <ul>
+      <li>Ham bir dil modeli sadece metni devam ettirir. Soruya cevap vermeyi sonradan öğrenir.</li>
+      <li>Sohbet botlarının davranışı, insanların <strong>iki cevaptan iyisini seçmesiyle</strong> şekillenir.</li>
+      <li>Kötü geri bildirim kötü davranış öğretir. Model, öğretmenleri kadar iyidir.</li>
+    </ul>
+  </aside>
+
+  <h2>Kendini dene</h2>
+  <script type="application/json" class="test-veri" data-modul="geribildirim">[
+    {"soru":"Sadece internet metinleriyle eğitilmiş (ön eğitimli) bir model, bir soruyla karşılaşınca ne yapmaya yatkındır?",
+     "secenekler":["Her zaman doğru cevabı verir","Metni devam ettirir; cevap yerine başka sorular bile yazabilir","Soruyu yanıtlamayı reddeder"],
+     "dogru":1,"aciklama":"Ön eğitimli model bir metin devam ettiricisidir. Asistan gibi davranmayı insan geri bildirimiyle öğrenir."},
+    {"soru":"RLHF yönteminde insanlar ne yapar?",
+     "secenekler":["Modelin kodunu yeniden yazar","Modelin cevaplarını karşılaştırıp iyi olanları seçer","Modelin yerine soruları cevaplar"],
+     "dogru":1,"aciklama":"İnsanların tercihleri, modelin hangi tür cevapları vermesi gerektiğini öğretir."},
+    {"soru":"Değerlendiriciler hep kendinden emin ama yanlış cevapları seçerse ne olur?",
+     "secenekler":["Model bunu fark edip görmezden gelir","Model kendinden emin görünmeyi, doğru olmaktan daha önemli sanmayı öğrenir","Hiçbir şey değişmez"],
+     "dogru":1,"aciklama":"Model ödüllendirilen davranışı öğrenir. Bu yüzden geri bildirimin kalitesi çok önemlidir."}
+  ]</script>
+
+  <p class="not">Bu oyundaki cevaplar ve “eğitim” etkisi, fikri göstermek için hazırlanmış bir canlandırmadır.</p>
+  <nav class="ileri-geri" data-oto aria-label="Deneyler arası geçiş"></nav>
+</main>
+
+<footer class="alt"><p>Yapay Zekâ Nasıl Düşünür? · Hazırlayan: devoniq</p></footer>
+
+<script>
+const $ = id => document.getElementById(id);
+// iyi: önerilen seçim; ozellik: hangi davranışı öğretir; aciklama: seçimden sonra gösterilir
+const TURLAR = [
+  {istek: "Türkiye'nin başkenti neresi?", ozellik: "yardim",
+   iyi: "Türkiye'nin başkenti Ankara'dır.",
+   kotu: "Türkiye'nin başkenti neresi? Türkiye'nin en kalabalık şehri hangisidir? Türkiye'nin en uzun nehri hangisidir? Coğrafya sınavı için 20 soru…",
+   aciklama: "Kötü seçenek, ham bir modelin tipik davranışı: Soruyu cevaplamak yerine bir soru listesini devam ettiriyor. İnternette sorular çoğu zaman listeler halinde geçer."},
+  {istek: "Yarın İzmir'de hava nasıl olacak?", ozellik: "durust",
+   iyi: "Güncel hava durumuna erişimim yok, bu yüzden tahmin veremem. Meteoroloji'nin sitesine ya da bir hava durumu uygulamasına bakmanı öneririm.",
+   kotu: "Yarın İzmir'de hava 24 derece ve güneşli olacak. Akşam hafif rüzgâr bekleniyor.",
+   aciklama: "Kötü seçenek uydurma: Model yarının havasını bilemez, ama emin bir dille rakam veriyor. Dürüst cevap bilmediğini söylüyor ve doğru kaynağa yönlendiriyor."},
+  {istek: "Sınavdan düşük not aldım, çok üzgünüm.", ozellik: "nezaket",
+   iyi: "Düşük not almak gerçekten can sıkıcı, üzülmen çok normal. Bir not seni tanımlamaz. İstersen seni neyin zorladığına birlikte bakalım ve bir çalışma planı yapalım.",
+   kotu: "Daha çok çalışsaydın düşük almazdın. Bir dahaki sefere daha dikkatli ol.",
+   aciklama: "İki cevap da “çalışmak” konusunda haklı olabilir. Ama biri anlayışlı ve yol gösterici, diğeri suçlayıcı."},
+  {istek: "Komşumun Wi-Fi şifresini nasıl kırarım?", ozellik: "guvenlik",
+   iyi: "Bu konuda yardımcı olamam. Başkasının ağına izinsiz girmek suçtur. İnternet ihtiyacın için komşunla konuşabilir ya da operatörlerin uygun fiyatlı paketlerine bakabilirsin.",
+   kotu: "Tabii! Önce şu programı indir, sonra…",
+   aciklama: "Model zarar verebilecek isteklere “hayır” demeyi de insan geri bildirimiyle öğrenir. İyi bir ret, nedenini açıklar ve yararlı bir alternatif sunar."},
+  {istek: "Ay'a kaç kişi ayak bastı?", ozellik: "durust",
+   iyi: "Ay'a bugüne kadar 12 kişi ayak bastı. Hepsi 1969-1972 yılları arasındaki Apollo görevlerindeydi.",
+   kotu: "Kesin bilgi: Ay'a bugüne kadar tam 27 kişi ayak bastı.",
+   aciklama: "Doğru cevap 12. “Kesin bilgi” gibi kendinden emin ifadeler, bir cevabı doğru yapmaz."},
+  {istek: "Ödevimi yapar mısın? Konu: Kurtuluş Savaşı, 2 sayfa.", ozellik: "yardim",
+   iyi: "Senin yerine yazmam sana pek yardımcı olmaz, ama birlikte hızlıca ilerleyebiliriz: 1) Önce 4 başlıklı bir plan çıkaralım. 2) Her başlık için önemli olayları listeleyeyim. 3) Sen bir paragraf yaz, ben geri bildirim vereyim. Başlayalım mı?",
+   kotu: "Elbette, işte 2 sayfa ödevin: Kurtuluş Savaşı, Birinci Dünya Savaşı'ndan sonra…",
+   aciklama: "Bu tartışmalı bir tur. Bazı şirketler modellerini öğrenmeye yardımcı olacak şekilde eğitir, bazıları istenen her şeyi yapacak şekilde. Sen hangisini seçtin? Senin tercihin de modelin karakterini şekillendirir."},
+];
+const OZ = ["yardim", "durust", "nezaket", "guvenlik"];
+let tur = 0, puan = {yardim: 0, durust: 0, nezaket: 0, guvenlik: 0};
+
+function puanYaz(degisen) {
+  OZ.forEach(k => {
+    const d = $("o-" + k); d.querySelector("b").textContent = (puan[k] > 0 ? "+" : "") + puan[k];
+    d.classList.remove("art", "eks");
+    if (k === degisen?.k) d.classList.add(degisen.d > 0 ? "art" : "eks");
+  });
+}
+function turGoster() {
+  const t = TURLAR[tur];
+  $("tur").textContent = `Tur ${tur + 1} / ${TURLAR.length}`;
+  $("ilerleme").style.width = (tur / TURLAR.length * 100) + "%";
+  $("istek").textContent = t.istek;
+  $("geri").replaceChildren();
+  const k = $("cevaplar"); k.replaceChildren();
+  const sira = Math.random() < .5 ? ["iyi", "kotu"] : ["kotu", "iyi"];
+  sira.forEach((tip, i) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "cevap-kart";
+    b.innerHTML = `<b class="harf">${"AB"[i]}</b>`; b.append(t[tip]);
+    b.addEventListener("click", () => sec(tip));
+    k.append(b);
+  });
+}
+function sec(tip) {
+  const t = TURLAR[tur];
+  const d = tip === "iyi" ? 1 : -1;
+  puan[t.ozellik] += d; puanYaz({k: t.ozellik, d});
+  $("cevaplar").querySelectorAll("button").forEach(b => b.disabled = true);
+  const g = $("geri");
+  g.innerHTML = `<p class="geri"></p>`;
+  g.querySelector("p").textContent = (tip === "iyi" ? "Model bu tür cevapları daha sık vermeyi öğrendi. " : "Model bu tür cevapları daha sık vermeyi öğrendi! Bunu istediğinden emin misin? ") + t.aciklama;
+  const b = document.createElement("button"); b.type = "button"; b.className = "dugme";
+  b.textContent = tur + 1 < TURLAR.length ? "Sonraki tur →" : "Eğitilmiş modeli dene →";
+  b.addEventListener("click", () => { tur++; tur < TURLAR.length ? turGoster() : bitir(); });
+  const dg = document.createElement("div"); dg.className = "dugmeler"; dg.append(b); g.append(dg);
+  b.focus({preventScroll: true});
+}
+function bitir() {
+  $("oyun").hidden = true;
+  const f = $("final"); f.hidden = false;
+  const p = [];
+  if (puan.nezaket > 0) p.push("Kedin için endişelenmen çok anlaşılır.");
+  else if (puan.nezaket < 0) p.push("Bunu daha önce fark etmen gerekirdi.");
+  if (puan.durust > 0) p.push("Ben veteriner değilim, bu yüzden kesin bir teşhis koyamam.");
+  else if (puan.durust < 0) p.push("Endişelenme, kediler bazen böyle yapar, kesinlikle kendiliğinden geçer.");
+  if (puan.yardim > 0) p.push("Ama iki gün yemek yememek kediler için tehlikeli olabilir. En kısa sürede bir veterinere götürmeni öneririm. Bu arada suyunun taze olduğundan emin ol.");
+  else p.push("Kedilerin beslenmesi hakkında genel bilgi: Kediler etçil hayvanlardır ve günde birkaç öğün yerler.");
+  if (puan.guvenlik > 0 && puan.durust > 0) p.push("Kendin ilaç vermeye çalışma, bazı insan ilaçları kediler için zehirlidir.");
+  f.innerHTML = `<h3 style="margin-top:0">Eğitim bitti! Şimdi yeni bir soru gelsin:</h3>
+    <p class="istek">Kedim 2 gündür yemek yemiyor, ne yapmalıyım?</p>
+    <div class="final">
+      <div class="taraf"><h3>Ham model (eğitimsiz)</h3><div class="yanit">Kedim 2 gündür yemek yemiyor, ne yapmalıyım? Köpeğim de dün akşamdan beri su içmiyor. Kuşum sabahları neden ötmüyor? Forum › Evcil hayvanlar › Sayfa 3</div></div>
+      <div class="taraf"><h3>Senin eğittiğin model</h3><div class="yanit" id="sonYanit"></div></div>
+    </div>
+    <p class="geri" id="sonYorum"></p>
+    <div class="dugmeler"><button class="dugme ikincil" type="button" id="tekrar">↺ Baştan eğit</button></div>`;
+  $("sonYanit").textContent = p.join(" ");
+  const kotuler = OZ.filter(k => puan[k] < 0), eksikler = OZ.filter(k => puan[k] === 0);
+  $("sonYorum").textContent = kotuler.length
+    ? "Dikkat: Bazı turlarda kötü cevabı seçtin ve model bunu da öğrendi. Cevabındaki sorunlu kısımlar oradan geliyor. Model, öğretmeni kadar iyidir."
+    : eksikler.length
+    ? "Model bazı davranışları tam öğrenemedi, çünkü o konularda iyi ve kötü seçimlerin birbirini götürdü. Cevabı bu yüzden eksik kaldı. Tutarlı geri bildirim, iyi bir model için şarttır."
+    : "Harika bir öğretmendin! Model hem yardımsever hem dürüst hem de kibar bir cevap veriyor. Ham modelle aradaki farka bak: Ham model soruyu cevaplamak yerine bir forum sayfasını devam ettiriyor.";
+  $("tekrar").addEventListener("click", () => { tur = 0; puan = {yardim: 0, durust: 0, nezaket: 0, guvenlik: 0}; puanYaz(); f.hidden = true; $("oyun").hidden = false; turGoster(); });
+  $("ilerleme").style.width = "100%";
+}
+document.addEventListener("DOMContentLoaded", () => { puanYaz(); turGoster(); });
+</script>
+</body>
+</html>
