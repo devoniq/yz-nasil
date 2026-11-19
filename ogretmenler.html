@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Öğretmenler İçin · Yapay Zekâ Nasıl Düşünür?</title>
+<meta name="description" content="Yapay zekâ deneylerini sınıfta kullanmak için ders akışı, kazanımlar, tartışma soruları ve bilgisayarsız etkinlikler.">
+<meta property="og:title" content="Öğretmenler için · Yapay Zekâ Nasıl Düşünür?">
+<meta property="og:description" content="Ders akışı, kazanımlar, tartışma soruları ve bilgisayarsız etkinlikler.">
+<meta property="og:image" content="https://devoniq.github.io/yz-nasil/ikon-512.png">
+<meta name="theme-color" content="#3646c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<script>try{const t=localStorage.getItem("tema");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="ortak.css">
+<script src="ortak.js" defer></script>
+<style>
+.akis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.akis div{background:var(--kart);border:1px solid var(--cizgi);border-radius:14px;padding:12px;text-align:center}
+.akis b{display:block;font-size:22px;color:var(--ana)}
+.akis span{font-size:14px;color:var(--soluk)}
+.plan{background:var(--kart);border:1px solid var(--cizgi);border-radius:14px;padding:14px 18px;margin:12px 0;break-inside:avoid}
+.plan h3{margin:0 0 4px}
+.plan .ust-bilgi{font-size:14px;color:var(--soluk);margin:0 0 8px}
+.plan h4{margin:10px 0 4px;font-size:15px}
+.plan ul{margin:0;padding-left:22px}
+.plan li{margin:3px 0}
+.etkinlik{background:var(--vurgu-acik);border-radius:14px;padding:14px 18px;margin:12px 0;break-inside:avoid}
+.etkinlik h3{margin:0 0 6px}
+@media (max-width:560px){.akis{grid-template-columns:1fr 1fr}}
+@media print{
+  .ust,.yazdir-gizle,footer.alt{display:none!important}
+  body{background:#fff;color:#000;font-size:12pt}
+  .plan,.etkinlik,.akis div{box-shadow:none;border-color:#bbb;background:#fff}
+  a{color:#000;text-decoration:none}
+  main.sayfa{max-width:none;padding:0}
+}
+</style>
+</head>
+<body>
+<header class="ust"><div class="ust-ic">
+  <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
+  <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
+</div></header>
+
+<main class="sayfa">
+  <span class="etiket">Ek kaynak</span>
+  <h1>Öğretmenler için</h1>
+  <p class="giris">Bu sitedeki her deney, bir ders saatinin bir bölümünde sınıfça yapılabilecek şekilde tasarlandı. Kurulum, üyelik ya da öğrenci hesabı gerekmez. Bir bilgisayar ve projeksiyon yeterli. Öğrencilerin telefonları ya da tabletleri varsa her biri kendi başına da yapabilir.</p>
+  <div class="dugmeler yazdir-gizle"><button class="dugme" type="button" onclick="window.print()">🖨️ Bu sayfayı yazdır</button></div>
+
+  <h2>Önerilen ders akışı (40 dakika)</h2>
+  <div class="akis">
+    <div><b>5 dk</b><span>Merak uyandıran soru</span></div>
+    <div><b>20 dk</b><span>Deneyi sınıfça yapma</span></div>
+    <div><b>10 dk</b><span>Tartışma soruları</span></div>
+    <div><b>5 dk</b><span>Mini test</span></div>
+  </div>
+  <p class="ipucu">İpucu: Mini testi sınıfça, parmak kaldırarak oylayabilirsiniz. Şıklar her açılışta karıştığı için tahtadaki sıra öğrencilerin ekranındakiyle aynı olmayabilir.</p>
+
+  <h2>Deney deney ders planları</h2>
+  <div id="planlar"></div>
+
+  <h2>Bilgisayarsız sınıf etkinlikleri</h2>
+  <div class="etkinlik">
+    <h3>🎲 İnsan dil modeli</h3>
+    <p><b>Konu:</b> “Sonraki kelime nasıl seçilir?” deneyi · <b>Süre:</b> 15 dk · <b>Malzeme:</b> Kâğıt şeritler, iki torba</p>
+    <ol>
+      <li>Tahtaya bir başlangıç yazın: “Bugün okulda…”</li>
+      <li>Öğrencilerden bu başlangıçtan sonra gelebilecek kelimeleri kâğıtlara yazıp torbaya atmalarını isteyin. Aynı kelimeyi birden çok öğrenci yazabilir.</li>
+      <li>Torbadan rastgele bir kâğıt çekin ve cümleye ekleyin. Sık yazılan kelimelerin çekilme şansı daha yüksektir, tıpkı modeldeki olasılıklar gibi.</li>
+      <li>Yeni son kelimeyle işlemi tekrarlayın. Cümle bitince sorun: “Bu cümleyi kim yazdı?”</li>
+    </ol>
+  </div>
+  <div class="etkinlik">
+    <h3>🧱 Token avı</h3>
+    <p><b>Konu:</b> “Metin nasıl parçalanır?” deneyi · <b>Süre:</b> 10 dk · <b>Malzeme:</b> Kâğıt, makas</p>
+    <ol>
+      <li>Öğrencilere uzun bir Türkçe kelime verin (ör. “öğretmenlerimizden”).</li>
+      <li>Kelimeyi sınıfta en sık görülen parçalara bölmelerini isteyin: öğret-men-ler-imiz-den.</li>
+      <li>Sonra “Metin nasıl parçalanır?” deneyinde aynı kelimenin gerçek parçalayıcıda nasıl bölündüğüne bakın. Benzerlikleri ve farkları tartışın.</li>
+    </ol>
+  </div>
+  <div class="etkinlik">
+    <h3>🕵️ Uydurma avcıları</h3>
+    <p><b>Konu:</b> “Yapay zekâ neden uydurur?” deneyi · <b>Süre:</b> 20 dk · <b>Malzeme:</b> Ders kitabı ya da ansiklopedi</p>
+    <ol>
+      <li>Önceden bir yapay zekâya ders konusuyla ilgili birkaç soru sorup cevaplarını yazdırın.</li>
+      <li>Gruplara dağıtın. Her grup cevaplardaki isim, tarih ve rakamları ders kitabından kontrol etsin.</li>
+      <li>Bulunan hataları ve “doğrulanamayan” bilgileri tahtada toplayın. Sorun: Hangi tür bilgiler daha sık hatalıydı?</li>
+    </ol>
+  </div>
+
+  <h2>Dikkat edilmesi gerekenler</h2>
+  <ul>
+    <li>Site <strong>hiçbir öğrenci verisi toplamaz</strong>. Çerez ve takip kodu yoktur. Okul ağlarında güvenle açılabilir.</li>
+    <li>Sayfalar bir kez açıldıktan sonra internet bağlantısı olmadan da çalışır.</li>
+    <li>Anlatımlar bilerek basitleştirildi. Her sayfadaki “Daha derine in” bölümleri meraklı öğrenciler ve öğretmenler içindir.</li>
+    <li>Gerçek yapay zekâ araçlarının yaş sınırları vardır. Sınıfta canlı bir sohbet botu kullanacaksanız, okulunuzun kurallarına ve aracın kullanım koşullarına bakın.</li>
+  </ul>
+</main>
+
+<footer class="alt"><p>Yapay Zekâ Nasıl Düşünür? · Hazırlayan: devoniq</p></footer>
+
+<script>
+// Kazanım ve tartışma soruları, deney listesindeki sırayla eşleşir.
+const PLANLAR = {
+  "1": {kaz: ["Yapay zekânın metni token'lara bölerek işlediğini açıklar.", "Türkçe ve İngilizce metinlerin token sayılarını karşılaştırır."],
+        tar: ["Sence yapay zekâ neden “kelime” yerine “parça” ile çalışıyor?", "Aynı içerik Türkçede daha çok token tutuyorsa, bunun kullanıcılara etkisi ne olabilir?"]},
+  "anlam": {kaz: ["Kelimelerin sayı listeleriyle temsil edildiğini fark eder.", "Anlam yakınlığının uzaklık olarak ölçülebileceğini açıklar."],
+        tar: ["Haritaya “okul” kelimesini eklesek nereye koyardın? Neden?", "Bir müzik uygulamasının sana şarkı önermesi bu fikre nasıl benziyor olabilir?"]},
+  "2": {kaz: ["Dil modelinin cevabı kelime kelime, olasılıklara göre kurduğunu açıklar.", "Sıcaklık ayarının çıktıya etkisini gözlemler."],
+        tar: ["Yapay zekâ “düşünüyor” mu, yoksa “tahmin” mi ediyor? Fark nedir?", "Hangi işlerde düşük, hangilerinde yüksek yaratıcılık isterdin?"]},
+  "dikkat": {kaz: ["Bir kelimenin anlamının bağlama göre değiştiğini fark eder.", "Dikkat mekanizmasının temel fikrini açıklar."],
+        tar: ["Türkçede bağlama göre anlamı değişen başka hangi kelimeleri biliyorsun?", "Sen bir cümleyi anlarken hangi kelimelere “dikkat” ediyorsun?"]},
+  "3": {kaz: ["Soru-cevap sürecinin aşamalarını sıralar.", "Model büyüklüğü ve cevap uzunluğunun süreye etkisini karşılaştırır."],
+        tar: ["Cevabın kelime kelime akması neden kullanıcılar için iyi bir fikir?", "Telefonunda çalışan küçük bir model ile buluttaki büyük bir modelin artıları ve eksileri neler?"]},
+  "sinir": {kaz: ["Sinir ağının rastgele başlayıp hatalarından öğrendiğini gözlemler.", "Ağ büyüklüğü ile öğrenebileceği şekillerin karmaşıklığını ilişkilendirir."],
+        tar: ["İnsan beyni ile yapay sinir ağı arasında hangi benzerlikler ve farklar var?", "Bir ağın veriyi “ezberlemesi” neden kötü olabilir?"]},
+  "egit": {kaz: ["Makine öğrenmesinde kural yerine örnek kullanıldığını açıklar.", "Veri miktarı ve kalitesinin model başarısına etkisini deneyerek gösterir."],
+        tar: ["Model yıldızı neden “bilmiyorum” diyemedi?", "Yanlış etiketlenmiş verilerle eğitilen bir model gerçek hayatta ne gibi sorunlara yol açabilir?"]},
+  "geribildirim": {kaz: ["Ön eğitim ile insan geri bildirimi aşamalarını ayırt eder.", "Sohbet botlarının davranışının insan tercihleriyle şekillendiğini açıklar."],
+        tar: ["Ödev turunda hangi cevabı seçtin? Neden? Sınıfta herkes aynı mı seçti?", "Bir sohbet botunun neye “hayır” diyeceğine kim karar vermeli?"]},
+  "soru": {kaz: ["İyi bir istemin öğelerini (bağlam, sınır, biçim, uzunluk) sayar.", "Belirsiz bir istemi iyileştirerek yeniden yazar."],
+        tar: ["Bir arkadaşından yardım isterken de bu kuralları kullanıyor musun?", "Kendi ödevin için örnek bir istem yaz ve sıra arkadaşınla karşılaştır."]},
+  "resim": {kaz: ["Resim üreten modellerin gürültüden başlayıp adım adım ilerlediğini açıklar.", "Aynı istekten farklı resimler çıkmasının nedenini söyler."],
+        tar: ["Yapay zekânın ürettiği bir resmin sahibi kimdir?", "Gerçek bir kişinin sahte fotoğrafını üretmek hangi zararlara yol açabilir?"]},
+  "onyargi": {kaz: ["Eğitim verisindeki dengesizliğin model kararlarını nasıl etkilediğini gösterir.", "Gerçek hayattaki önyargı örneklerini tartışır."],
+        tar: ["Okulunda kullanılan bir yapay zekâ önyargılı olsaydı bunu nasıl fark ederdin?", "“Tarafsız veri” mümkün mü?"]},
+  "4": {kaz: ["Uydurmanın nedenini “en olası devam” fikriyle açıklar.", "Yapay zekâdan gelen bilgiyi doğrulama yollarını sayar."],
+        tar: ["Hiç bir yapay zekânın yanlış bilgi verdiğine şahit oldun mu?", "Bir bilginin doğru olduğundan nasıl emin olursun?"]},
+  "kim": {kaz: ["Yapay zekâ metinlerinin tipik özelliklerini tanır.", "Dedektörlerin sınırlılıklarını ve sahte içeriğe karşı korunma yollarını açıklar."],
+        tar: ["Bir arkadaşın ödevini yapay zekâya yazdırmışsa bu adil mi? Hangi durumlarda yapay zekâ kullanmak uygundur?", "Ailenle bir “acil durum kelimesi” belirlemek neden işe yarar?"]},
+  "gizlilik": {kaz: ["Yapay zekâ sohbetlerinde paylaşılmaması gereken bilgileri sayar.", "Kişisel bilgileri yer tutucularla değiştirerek güvenli istem yazar."],
+        tar: ["Sosyal medyada paylaştıkların ile yapay zekâya yazdıkların arasında ne fark var?", "Bir başkasının bilgilerini paylaşmak neden sorun olabilir?"]},
+};
+document.addEventListener("DOMContentLoaded", () => {
+  const k = document.getElementById("planlar");
+  YZ.hazirlar().forEach((m, i) => {
+    const p = PLANLAR[m.id]; if (!p) return;
+    const d = document.createElement("div"); d.className = "plan";
+    d.innerHTML = `<h3></h3><p class="ust-bilgi"></p><h4>Kazanımlar</h4><ul class="kaz"></ul><h4>Tartışma soruları</h4><ul class="tar"></ul>`;
+    const a = document.createElement("a"); a.href = m.d; a.textContent = `Deney ${i + 1}: ${m.ad}`; d.querySelector("h3").append(a);
+    d.querySelector(".ust-bilgi").textContent = `${YZ.BOLUMLER[m.b].ad} · yaklaşık ${m.sure} dakika`;
+    p.kaz.forEach(x => { const li = document.createElement("li"); li.textContent = x; d.querySelector(".kaz").append(li); });
+    p.tar.forEach(x => { const li = document.createElement("li"); li.textContent = x; d.querySelector(".tar").append(li); });
+    k.append(d);
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yapay Zekâ Sözlüğü · Yapay Zekâ Nasıl Düşünür?</title>
+<meta name="description" content="Token, parametre, halüsinasyon, transformer… Yapay zekâ terimlerinin sade Türkçe açıklamaları.">
+<meta property="og:title" content="Yapay Zekâ Sözlüğü · Yapay Zekâ Nasıl Düşünür?">
+<meta property="og:description" content="Yapay zekâ terimlerinin sade Türkçe açıklamaları.">
+<meta property="og:image" content="https://devoniq.github.io/yz-nasil/ikon-512.png">
+<meta name="theme-color" content="#3646c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<script>try{const t=localStorage.getItem("tema");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="ortak.css">
+<script src="ortak.js" defer></script>
+<style>
+#ara{width:100%;min-height:50px;border-radius:14px;border:1px solid var(--cizgi);background:var(--kart);padding:10px 16px;font-size:17px;position:sticky;top:70px;z-index:5;box-shadow:var(--golge)}
+.harfler{display:flex;flex-wrap:wrap;gap:4px;margin:12px 0}
+.harfler a{min-width:34px;height:34px;display:grid;place-items:center;border-radius:8px;background:var(--kart2);border:1px solid var(--cizgi);text-decoration:none;font-weight:700;font-size:14px}
+dl.terimler{margin:0}
+.terim{background:var(--kart);border:1px solid var(--cizgi);border-radius:14px;padding:14px 16px;margin:10px 0;scroll-margin-top:140px}
+.terim dt{font-weight:800;font-size:18px}
+.terim dt small{font-weight:500;color:var(--soluk);font-size:14px;margin-left:6px}
+.terim dd{margin:6px 0 0}
+.terim dd a{font-size:14px;display:inline-block;margin-top:6px}
+.harf-baslik{font-size:22px;color:var(--ana);margin:22px 0 4px;scroll-margin-top:140px}
+#bos{color:var(--soluk)}
+</style>
+</head>
+<body>
+<header class="ust"><div class="ust-ic">
+  <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
+  <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
+</div></header>
+
+<main class="sayfa">
+  <span class="etiket">Ek kaynak</span>
+  <h1>Yapay zekâ sözlüğü</h1>
+  <p class="giris">Haberlerde ve sohbet botlarında sık duyduğun terimlerin sade Türkçe açıklamaları. İlgili terimlerin yanında, konuyu kendin deneyebileceğin deneyin bağlantısı var.</p>
+  <label for="ara" class="gizli">Terim ara</label>
+  <input id="ara" type="search" placeholder="Terim ara… (ör. token, sinir ağı)" autocomplete="off">
+  <nav class="harfler" id="harfler" aria-label="Harfe git"></nav>
+  <div id="liste"></div>
+  <p id="bos" hidden>Bu aramayla eşleşen bir terim bulunamadı.</p>
+</main>
+
+<footer class="alt"><p>Yapay Zekâ Nasıl Düşünür? · Hazırlayan: devoniq</p></footer>
+
+<script>
+// [terim, İngilizcesi, açıklama, ilgili deney dosyası]
+const TERIMLER = [
+  ["Ağırlık", "weight", "Sinir ağındaki bir bağlantının gücünü gösteren sayı. Eğitim, bu sayıların ayarlanmasıdır. “Parametre” ile aynı anlamda kullanılır.", "sinir-agi.html"],
+  ["Ajan", "AI agent", "Sadece cevap vermekle kalmayıp, bir hedefe ulaşmak için kendi başına adımlar atan yapay zekâ sistemi. Örneğin internette arama yapıp bir tablo hazırlayan, dosya düzenleyen bir asistan.", ""],
+  ["Algoritma", "algorithm", "Bir işi yapmak için adım adım tarif. Yemek tarifi de bir tür algoritmadır.", ""],
+  ["Aşırı öğrenme", "overfitting", "Modelin eğitim örneklerini ezberleyip yeni örneklerde başarısız olması. İyi bir model ezberlemez, genelleştirir.", "sinir-agi.html"],
+  ["Bağlam penceresi", "context window", "Modelin aynı anda “aklında tutabildiği” metin miktarı. Token ile ölçülür. Pencere dolunca sohbetin başı unutulabilir.", "1-parcalama.html"],
+  ["Büyük dil modeli", "large language model, LLM", "Çok büyük miktarda metinle eğitilmiş, milyarlarca parametreli dil modeli. ChatGPT, Gemini, Claude gibi sohbet botlarının arkasındaki teknoloji.", "2-sonraki-kelime.html"],
+  ["Çıkarım", "inference", "Eğitilmiş bir modelin kullanılması, yani soruya cevap üretmesi. Eğitimden çok daha hızlı ve ucuzdur.", "3-zaman.html"],
+  ["Çok modlu", "multimodal", "Sadece metni değil, resim, ses ve video gibi farklı türdeki bilgileri de anlayabilen ve üretebilen model.", ""],
+  ["Derin öğrenme", "deep learning", "Çok katmanlı (derin) sinir ağlarıyla yapılan makine öğrenmesi. Bugünkü yapay zekâ başarılarının çoğu bu yöntemle elde edildi.", "sinir-agi.html"],
+  ["Difüzyon modeli", "diffusion model", "Gürültüden başlayıp onu adım adım temizleyerek resim üreten model türü.", "resim-uretme.html"],
+  ["Dikkat mekanizması", "attention", "Modelin bir kelimeyi anlamak için cümledeki diğer kelimelere ne kadar “bakacağını” belirleyen yöntem. Transformer'ın temel parçası.", "dikkat.html"],
+  ["Embedding (gömme)", "embedding", "Bir kelimeyi ya da metni anlamını taşıyan bir sayı listesine çevirme. Anlamı yakın kelimelerin sayıları da birbirine yakın olur.", "anlam-haritasi.html"],
+  ["Eğitim", "training", "Modelin örneklerden öğrenme süreci. Model her örnekte hatasına bakarak ağırlıklarını biraz düzeltir.", "kendi-modelin.html"],
+  ["Eğitim verisi", "training data", "Modelin öğrenmek için kullandığı örneklerin tamamı. Modelin kalitesi büyük ölçüde bu verinin kalitesine bağlıdır.", "onyargi.html"],
+  ["GPT", "Generative Pre-trained Transformer", "“Üretken, önceden eğitilmiş Transformer.” Bir model ailesinin adıdır, ama bu tür modellerin genel adı gibi de kullanılır.", "dikkat.html"],
+  ["GPU (grafik işlemci)", "graphics processing unit", "Aynı anda çok sayıda basit hesap yapabilen işlemci. Aslen oyunlar için geliştirildi, bugün yapay zekâ eğitiminin ve çalıştırılmasının temel donanımı.", "3-zaman.html"],
+  ["Halüsinasyon (uydurma)", "hallucination", "Modelin gerçekte olmayan bir bilgiyi kendinden emin bir dille üretmesi.", "4-uydurma.html"],
+  ["İnce ayar", "fine-tuning", "Önceden eğitilmiş bir modeli daha küçük, özel bir veriyle ek olarak eğitme. Örneğin genel bir modeli hukuk metinlerine uyarlamak.", "iyi-cevap.html"],
+  ["İstem (prompt)", "prompt", "Yapay zekâya yazdığın istek ya da soru. İyi yazılmış bir istem, çok daha iyi cevap getirir.", "soru-sorma.html"],
+  ["Makine öğrenmesi", "machine learning", "Bilgisayara kural yazmak yerine örnekler göstererek öğretme yöntemi.", "kendi-modelin.html"],
+  ["Model", "model", "Eğitimle elde edilen, girdiyi alıp çıktı üreten matematiksel yapı. Pratikte milyarlarca sayıdan oluşan büyük bir dosyadır.", ""],
+  ["Nöron (yapay)", "neuron", "Sinir ağının en küçük hesap birimi. Gelen sayıları ağırlıklarla çarpıp toplar ve sonucu bir sonraki katmana iletir.", "sinir-agi.html"],
+  ["Ön eğitim", "pre-training", "Modelin büyük miktarda genel metinle sonraki kelimeyi tahmin etmeyi öğrendiği ilk ve en pahalı eğitim aşaması.", "iyi-cevap.html"],
+  ["Önyargı", "bias", "Modelin, eğitim verisindeki dengesizlikler yüzünden belirli gruplara ya da durumlara karşı sistematik olarak hatalı davranması.", "onyargi.html"],
+  ["Parametre", "parameter", "Modelin eğitimle ayarlanan sayıları (ağırlıklar). “7 milyar parametreli model” gibi ifadeler modelin büyüklüğünü anlatır.", "sinir-agi.html"],
+  ["RLHF", "reinforcement learning from human feedback", "İnsan geri bildirimiyle pekiştirmeli öğrenme. İnsanların iyi cevapları seçmesiyle modelin davranışının şekillendirilmesi.", "iyi-cevap.html"],
+  ["Sıcaklık", "temperature", "Modelin kelime seçerken ne kadar “risk alacağını” belirleyen ayar. Düşükse hep en olası kelime, yüksekse daha şaşırtıcı kelimeler seçilir.", "2-sonraki-kelime.html"],
+  ["Sinir ağı", "neural network", "Birbirine bağlı yapay nöronlardan oluşan, örneklerden öğrenebilen hesap yapısı.", "sinir-agi.html"],
+  ["Sohbet botu", "chatbot", "Kullanıcıyla yazışarak ya da konuşarak etkileşen program. Bugünkü sohbet botlarının çoğu büyük dil modellerine dayanır.", ""],
+  ["Token", "token", "Dil modelinin metni böldüğü parça. Bazen bir kelime, bazen bir hece, bazen tek bir harftir.", "1-parcalama.html"],
+  ["Tokenizer (parçalayıcı)", "tokenizer", "Metni token'lara bölen ve her token'a bir numara veren araç.", "1-parcalama.html"],
+  ["Transformer", "transformer", "2017'de tanıtılan, dikkat mekanizmasına dayanan model mimarisi. Bugünkü dil modellerinin neredeyse hepsinin temeli.", "dikkat.html"],
+  ["Yapay zekâ", "artificial intelligence, AI", "İnsan zekâsı gerektirdiği düşünülen işleri (anlama, tahmin etme, karar verme, üretme) yapabilen bilgisayar sistemlerinin genel adı.", "./"],
+  ["Yapay zekâ dedektörü", "AI detector", "Bir metnin yapay zekâyla yazılıp yazılmadığını tahmin etmeye çalışan araç. Sık yanıldığı için tek başına kanıt sayılmamalı.", "insan-mi-yz-mi.html"],
+];
+const $ = id => document.getElementById(id);
+const kucult = s => s.toLocaleLowerCase("tr-TR");
+function ciz(arama = "") {
+  const q = kucult(arama.trim());
+  const liste = $("liste"); liste.replaceChildren();
+  const harfler = new Set();
+  let son = "", sayi = 0;
+  const dl = document.createElement("dl"); dl.className = "terimler";
+  [...TERIMLER].sort((a, b) => a[0].localeCompare(b[0], "tr")).forEach(([ad, en, ac, link]) => {
+    if (q && !kucult(ad + " " + en + " " + ac).includes(q)) return;
+    sayi++;
+    const h = ad.charAt(0).toLocaleUpperCase("tr-TR");
+    if (h !== son && !q) { son = h; harfler.add(h); const b = document.createElement("h2"); b.className = "harf-baslik"; b.id = "harf-" + h; b.textContent = h; dl.append(b); }
+    const d = document.createElement("div"); d.className = "terim"; d.id = "t-" + kucult(ad).replace(/[^a-zçğıöşü0-9]+/g, "-");
+    d.innerHTML = `<dt></dt><dd></dd>`;
+    d.querySelector("dt").textContent = ad;
+    const sm = document.createElement("small"); sm.textContent = en; d.querySelector("dt").append(sm);
+    d.querySelector("dd").textContent = ac;
+    if (link) {
+      const a = document.createElement("a"); a.href = link;
+      const m = YZ.MODULLER.find(x => x.d === link);
+      a.textContent = m ? `→ Deneyi aç: ${m.ad}` : "→ Ana sayfaya git";
+      d.querySelector("dd").append(document.createElement("br"), a);
+    }
+    dl.append(d);
+  });
+  liste.append(dl);
+  $("bos").hidden = sayi > 0;
+  const hn = $("harfler"); hn.replaceChildren(); hn.hidden = !!q;
+  harfler.forEach(h => { const a = document.createElement("a"); a.href = "#harf-" + h; a.textContent = h; hn.append(a); });
+}
+document.addEventListener("DOMContentLoaded", () => {
+  $("ara").addEventListener("input", e => ciz(e.target.value));
+  ciz();
+});
+</script>
+</body>
+</html>

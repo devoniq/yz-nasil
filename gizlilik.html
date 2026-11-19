@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yapay Zekâya Ne Yazmamalı? · Yapay Zekâ Nasıl Düşünür?</title>
+<meta name="description" content="Şifre, kimlik numarası, sağlık bilgisi… Yapay zekâ sohbetlerinde neyi paylaşmamalısın? Senaryolarla güvenli kullanımı öğren.">
+<meta property="og:title" content="Yapay zekâya ne yazmamalı? · Yapay Zekâ Nasıl Düşünür?">
+<meta property="og:description" content="Senaryolarla güvenli yapay zekâ kullanımını öğren.">
+<meta property="og:image" content="https://devoniq.github.io/yz-nasil/ikon-512.png">
+<meta name="theme-color" content="#3646c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<script>try{const t=localStorage.getItem("tema");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="ortak.css">
+<script src="ortak.js" defer></script>
+<style>
+.senaryo{background:var(--kart);border:1px solid var(--cizgi);border-radius:14px;padding:14px 16px;margin:12px 0}
+.senaryo .istek{background:var(--ana);color:var(--ana-yazi);border-radius:14px 14px 4px 14px;padding:10px 14px;margin:0 0 10px;font-size:16px}
+.uc-secenek{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.uc-secenek button{min-height:46px;border-radius:12px;border:2px solid var(--cizgi);background:var(--kart2);cursor:pointer;font-weight:700;font-size:15px}
+.uc-secenek button:hover:not(:disabled){border-color:var(--ana)}
+.uc-secenek button:disabled{cursor:default;opacity:.55}
+.uc-secenek button.secti{opacity:1;border-color:var(--yazi)}
+.uc-secenek button.dogru{opacity:1;background:var(--iyi-acik);border-color:var(--iyi)}
+.aciklama{font-size:15px;margin:10px 0 0;padding:10px 12px;border-radius:10px;background:var(--kart2)}
+.aciklama b.r-guvenli{color:var(--iyi)}.aciklama b.r-dikkat{color:var(--vurgu)}.aciklama b.r-asla{color:var(--kotu)}
+.ozet-puan{font-weight:700;font-size:18px}
+.kurallar{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}
+.kurallar .kutu{margin:0}
+.kurallar h3{margin:0 0 6px;font-size:17px}
+.kurallar p{margin:0;font-size:15px;color:var(--soluk)}
+.once-sonra{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:15px}
+.once-sonra div{border-radius:12px;padding:10px 12px}
+.once-sonra .o{background:var(--kotu-acik)}.once-sonra .s{background:var(--iyi-acik)}
+@media (max-width:560px){.uc-secenek{grid-template-columns:1fr}.once-sonra{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-sayfa="gizlilik">
+<header class="ust"><div class="ust-ic">
+  <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
+  <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
+</div></header>
+
+<main class="sayfa">
+  <span class="etiket" data-oto>&nbsp;</span>
+  <h1>Yapay zekâya ne yazmamalı?</h1>
+  <p class="giris">Yapay zekâyla sohbet etmek bir arkadaşla konuşmak gibi hissettirebilir. Ama yazdıkların bir şirketin bilgisayarlarına gider, orada <strong>saklanabilir</strong> ve bazen modeli geliştirmek için <strong>kullanılabilir</strong>. Ne paylaşacağına dikkat etmek gerekir.</p>
+
+  <section class="kutu deney" aria-labelledby="d-giz">
+    <h2 id="d-giz" style="margin-top:0">Oyun: Bunu yazar mıydın?</h2>
+    <p class="ipucu">Her istek için karar ver: <b style="color:var(--iyi)">Güvenli</b>, <b style="color:var(--vurgu)">Dikkat</b> (değiştirerek yazılabilir) ya da <b style="color:var(--kotu)">Asla</b>.</p>
+    <div id="senaryolar"></div>
+    <p class="ozet-puan" id="ozet" aria-live="polite"></p>
+  </section>
+
+  <h2>Kişisel bilgiyi çıkararak sor</h2>
+  <p>Çoğu zaman bilgileri değiştirerek aynı yardımı alabilirsin:</p>
+  <div class="once-sonra">
+    <div class="o"><b>Yerine bunu yazma:</b><br>“Ahmet Yılmaz, 0532 123 45 67, Çankaya'da oturuyor. Bu müşteriye kibar bir e-posta yaz.”</div>
+    <div class="s"><b>Bunu yaz:</b><br>“[MÜŞTERİ ADI] adlı müşteriye, teslimatın 2 gün gecikeceğini anlatan kibar bir e-posta yaz.”</div>
+  </div>
+
+  <h2>Altın kurallar</h2>
+  <div class="kurallar">
+    <div class="kutu"><h3>🔑 Şifre ve kodlar asla</h3><p>Şifre, PIN, doğrulama kodu ve kart bilgisi hiçbir yapay zekâ sohbetinde gerekmez.</p></div>
+    <div class="kutu"><h3>🪪 Kimlik bilgileri asla</h3><p>T.C. kimlik numarası, pasaport ve banka hesap numaraları yerine [TC NO] gibi yer tutucular kullan.</p></div>
+    <div class="kutu"><h3>🩺 Sağlık bilgisi dikkat</h3><p>Sağlık bilgileri çok hassastır. Adını ve kimlik bilgilerini çıkar. Asıl değerlendirmeyi mutlaka bir doktor yapmalı.</p></div>
+    <div class="kutu"><h3>👥 Başkalarının bilgisi dikkat</h3><p>Arkadaşının mesajları, fotoğrafları ya da bilgileri onun da mahremiyetidir. İzinsiz paylaşma.</p></div>
+    <div class="kutu"><h3>🏢 İş bilgileri dikkat</h3><p>Şirketinin gizli bilgilerini yalnızca şirketin izin verdiği araçlarla işle.</p></div>
+    <div class="kutu"><h3>⚙️ Ayarlarını kontrol et</h3><p>Birçok hizmette sohbet geçmişini kapatma ya da “eğitimde kullanılmasın” seçeneği var. Bir kez bak.</p></div>
+  </div>
+  <p><strong>Kısa yol:</strong> Herkese açık bir panoya asmayacağın bir şeyi yapay zekâya da yazma.</p>
+
+  <details class="derin">
+    <summary>Daha derine in: Yazdıklarıma ne oluyor?</summary>
+    <ul>
+      <li><strong>Saklama:</strong> Sohbetler genelde hizmet veren şirketin sunucularında saklanır. Böylece geçmiş sohbetlerine dönebilirsin.</li>
+      <li><strong>Eğitimde kullanım:</strong> Bazı hizmetler, ayarlarda kapatmadığın sürece sohbetleri modellerini geliştirmek için kullanabilir. Hizmetin gizlilik metninde bu yazar.</li>
+      <li><strong>İnsan incelemesi:</strong> Güvenlik ve kalite kontrolü için bazı sohbetler şirket çalışanlarınca incelenebilir.</li>
+      <li><strong>Sızıntı ve hesap güvenliği:</strong> Hesabın ele geçirilirse bütün sohbet geçmişin de ele geçirilmiş olur. Güçlü bir şifre ve iki adımlı doğrulama kullan.</li>
+      <li><strong>Yaş sınırı:</strong> Birçok yapay zekâ hizmeti belli bir yaşın altındakilerin kullanımına izin vermez ya da ebeveyn izni ister. Kullanmadan önce kurallara bak.</li>
+    </ul>
+    <p>Kurallar hizmetten hizmete değişir. Kullandığın aracın gizlilik ayarlarına bir kez göz atmak iyi bir alışkanlıktır.</p>
+  </details>
+
+  <aside class="ogrendik">
+    <h2>Ne öğrendik?</h2>
+    <ul>
+      <li>Yapay zekâya yazdıkların saklanabilir ve başka amaçlarla kullanılabilir.</li>
+      <li>Şifre, kimlik numarası ve kart bilgisi <strong>asla</strong> paylaşılmaz.</li>
+      <li>Kişisel bilgileri <strong>[İSİM]</strong> gibi yer tutucularla değiştirerek aynı yardımı alabilirsin.</li>
+      <li>Başkalarının bilgileri de korunmalıdır.</li>
+    </ul>
+  </aside>
+
+  <h2>Kendini dene</h2>
+  <script type="application/json" class="test-veri" data-modul="gizlilik">[
+    {"soru":"Bir dilekçe hazırlatırken kimlik numaranı nasıl yazmalısın?",
+     "secenekler":["Gerçek numaramı yazmalıyım","[TC NO] gibi bir yer tutucu yazıp gerçeğini sonra kendim eklemeliyim","Annemin numarasını yazmalıyım"],
+     "dogru":1,"aciklama":"Yer tutucu kullanarak aynı yardımı alırsın. Gerçek numarayı belgeye en sonda kendin eklersin."},
+    {"soru":"Yapay zekâ sohbetine yazdıklarınla ilgili hangisi doğrudur?",
+     "secenekler":["Hemen silinir, kimse göremez","Şirketin sunucularında saklanabilir ve modeli geliştirmek için kullanılabilir","Sadece benim bilgisayarımda kalır"],
+     "dogru":1,"aciklama":"Sohbetler genelde şirket sunucularında saklanır. Kullanım koşulları hizmetten hizmete değişir."},
+    {"soru":"Arkadaşının sana attığı mesajların ekran görüntüsünü yapay zekâya yorumlatmak için hangisi doğrudur?",
+     "secenekler":["Sorun yok, sonuçta bana gönderdi","Bu onun da mahremiyeti. Kişisel bilgileri karalamalı ya da izin almalıyım","Sadece fotoğrafı varsa sakıncalı"],
+     "dogru":1,"aciklama":"Başkalarının bilgilerini paylaşırken onların mahremiyetini de düşünmek gerekir."}
+  ]</script>
+
+  <p class="not">Bu sayfadaki bilgiler genel tavsiyedir. Kullandığın hizmetin güncel gizlilik koşullarını kendi sitesinden kontrol et.</p>
+  <nav class="ileri-geri" data-oto aria-label="Deneyler arası geçiş"></nav>
+</main>
+
+<footer class="alt"><p>Yapay Zekâ Nasıl Düşünür? · Hazırlayan: devoniq</p></footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const SENARYOLAR = [
+  {istek: "Fotosentezi 7. sınıf seviyesinde anlatır mısın?", c: "guvenli", a: "Kişisel bilgi yok. Gönül rahatlığıyla sorabilirsin."},
+  {istek: "Banka şifremi unuttum. 4 haneliydi, 1907 miydi 1903 müydü? Hangisi daha olası?", c: "asla", a: "Şifreni ya da tahminini asla yazma. Yapay zekâ şifreni bilemez. Bankanın şifre yenileme yolunu kullan."},
+  {istek: "T.C. kimlik numaram 1234567xxxx. Bu dilekçeyi benim adıma doldurur musun?", c: "asla", a: "Kimlik numarası yerine [TC NO] yaz. Gerçek numarayı belgeye en sonda kendin ekle."},
+  {istek: "Kan tahlili sonuçlarımın fotoğrafı ekte. Bu değerler ne anlama geliyor?", c: "dikkat", a: "Sağlık bilgisi çok hassas. Fotoğraftaki adını, kimlik ve hastane numaranı kapat. Yapay zekâ genel bilgi verebilir, ama yorumu mutlaka doktoruna yaptır."},
+  {istek: "Arkadaşımın bana attığı mesajların ekran görüntüsü bu. Sence bana kızgın mı?", c: "dikkat", a: "Bu arkadaşının da mahremiyeti. İsimleri ve kişisel bilgileri karala. En iyisi doğrudan arkadaşınla konuşmak."},
+  {istek: "Kızım Elif 10 yaşına giriyor. Ona kısa ve neşeli bir doğum günü şiiri yazar mısın?", c: "guvenli", a: "Bir ad ve yaş tek başına hassas değildir. Soyadı, okul ya da adres eklemeye gerek yok."},
+  {istek: "Kredi kartı numaram 5401 …, son kullanma 08/27. Bu siparişi tamamlar mısın?", c: "asla", a: "Kart bilgileri asla bir sohbete yazılmaz. Ödemeyi yalnızca mağazanın kendi güvenli ödeme sayfasında yap."},
+  {istek: "Şirketimizin bu çeyrekteki gizli satış rakamları ekte. Bunları sunum için tabloya dök.", c: "dikkat", a: "Şirketinin izin verdiği bir yapay zekâ aracı varsa onu kullan. Yoksa gizli bilgileri yükleme, rakamları değiştirerek ya da gizleyerek çalış."},
+];
+const AD = {guvenli: "Güvenli", dikkat: "Dikkat", asla: "Asla"};
+let cevaplanan = 0, dogru = 0;
+document.addEventListener("DOMContentLoaded", () => {
+  const k = $("senaryolar");
+  SENARYOLAR.forEach((s, i) => {
+    const d = document.createElement("div"); d.className = "senaryo";
+    d.innerHTML = `<p class="istek"></p><div class="uc-secenek" role="group" aria-label="Senaryo ${i + 1} için karar"></div><div aria-live="polite"></div>`;
+    d.querySelector(".istek").textContent = s.istek;
+    const g = d.querySelector(".uc-secenek");
+    ["guvenli", "dikkat", "asla"].forEach(c => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = {guvenli: "✅ Güvenli", dikkat: "⚠️ Dikkat", asla: "⛔ Asla"}[c];
+      b.addEventListener("click", () => {
+        g.querySelectorAll("button").forEach(x => x.disabled = true);
+        b.classList.add("secti");
+        g.children[["guvenli", "dikkat", "asla"].indexOf(s.c)].classList.add("dogru");
+        const bildi = c === s.c; if (bildi) dogru++; cevaplanan++;
+        const a = document.createElement("p"); a.className = "aciklama";
+        a.innerHTML = `${bildi ? "✓" : "✗"} Doğru cevap: <b class="r-${s.c}">${AD[s.c]}</b>. `;
+        a.append(s.a);
+        d.lastElementChild.append(a);
+        if (cevaplanan === SENARYOLAR.length) $("ozet").textContent = `${SENARYOLAR.length} senaryodan ${dogru} tanesinde doğru karar verdin.` + (dogru === SENARYOLAR.length ? " Mükemmel! 🛡️" : "");
+      });
+      g.append(b);
+    });
+    k.append(d);
+  });
+});
+</script>
+</body>
+</html>

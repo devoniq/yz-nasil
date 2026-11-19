@@ -136,9 +136,9 @@ const YZ = (() => {
       ozet: "Eğitim verisini değiştir, modelin kararlarının nasıl çarpıklaştığını gör."},
     {id: "4", d: "4-uydurma.html", b: 3, sure: 6, ad: "Yapay zekâ neden uydurur?",
       ozet: "Bir oyunda yapay zekânın yerine geç ve var olmayan bir şey hakkında inandırıcı bir cevap üret."},
-    {id: "kim", taslak: true, d: "insan-mi-yz-mi.html", b: 3, sure: 5, ad: "İnsan mı yazdı, yapay zekâ mı?",
+    {id: "kim", d: "insan-mi-yz-mi.html", b: 3, sure: 5, ad: "İnsan mı yazdı, yapay zekâ mı?",
       ozet: "Metinleri oku, kimin yazdığını tahmin et. Ayırt etmek sandığından zor."},
-    {id: "gizlilik", taslak: true, d: "gizlilik.html", b: 3, sure: 5, ad: "Yapay zekâya ne yazmamalı?",
+    {id: "gizlilik", d: "gizlilik.html", b: 3, sure: 5, ad: "Yapay zekâya ne yazmamalı?",
       ozet: "Şifre, kimlik numarası, sağlık bilgisi… Senaryolarla güvenli kullanımı öğren."},
   ];
   const hazirlar = () => MODULLER.filter(m => !m.taslak);
@@ -162,7 +162,17 @@ const YZ = (() => {
     }
   }
 
+  // Alt bilgiye ek kaynak bağlantıları
+  function altBilgi(){
+    const f = document.querySelector("footer.alt");
+    if (!f || f.querySelector(".ek-baglanti")) return;
+    const p = document.createElement("p"); p.className = "ek-baglanti";
+    p.innerHTML = '<a href="./">Tüm deneyler</a> · <a href="sozluk.html">Sözlük</a> · <a href="ogretmenler.html">Öğretmenler için</a>';
+    f.prepend(p);
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
+    altBilgi();
     temaDugmesi();
     sayfaParcalari();
     testleriKur();

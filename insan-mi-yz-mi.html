@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>İnsan mı Yazdı, Yapay Zekâ mı? · Yapay Zekâ Nasıl Düşünür?</title>
+<meta name="description" content="Metinleri oku, kimin yazdığını tahmin et. Yapay zekâ metnini ayırt etmek sandığından zor. Sahte içeriğe karşı ipuçları.">
+<meta property="og:title" content="İnsan mı yazdı, yapay zekâ mı? · Yapay Zekâ Nasıl Düşünür?">
+<meta property="og:description" content="Metinleri oku, kimin yazdığını tahmin et. Sandığından zor!">
+<meta property="og:image" content="https://devoniq.github.io/yz-nasil/ikon-512.png">
+<meta name="theme-color" content="#3646c4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<script>try{const t=localStorage.getItem("tema");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="ortak.css">
+<script src="ortak.js" defer></script>
+<style>
+.metin-kart{background:var(--kart2);border:1px solid var(--cizgi);border-radius:14px;padding:16px 18px;font-size:18px;line-height:1.6;margin:10px 0 14px}
+.tahmin-dugmeler{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tahmin-dugmeler .dugme{min-height:56px;font-size:17px}
+.sonuc-kutu{border-radius:14px;padding:14px 16px;margin:14px 0 0}
+.sonuc-kutu.dogru{background:var(--iyi-acik)}.sonuc-kutu.yanlis{background:var(--kotu-acik)}
+.sonuc-kutu h3{margin:0 0 6px}
+.sonuc-kutu ul{margin:6px 0 0;padding-left:22px}
+.skor{display:flex;justify-content:space-between;font-size:14px;color:var(--soluk)}
+.ipucu-izgara{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}
+.ipucu-izgara .kutu{margin:0}
+.ipucu-izgara h3{margin:0 0 6px;font-size:17px}
+.ipucu-izgara p{margin:0;font-size:15px;color:var(--soluk)}
+</style>
+</head>
+<body data-sayfa="kim">
+<header class="ust"><div class="ust-ic">
+  <a class="logo" href="./"><img src="ikon.svg" alt=""><span>Yapay Zekâ Nasıl Düşünür?</span></a>
+  <button class="tema-dugme" type="button" aria-label="Temayı değiştir"></button>
+</div></header>
+
+<main class="sayfa">
+  <span class="etiket" data-oto>&nbsp;</span>
+  <h1>İnsan mı yazdı, yapay zekâ mı?</h1>
+  <p class="giris">Yapay zekâ artık ödev, e-posta, yorum ve haber yazabiliyor. Peki okuduğun bir metni kimin yazdığını anlayabilir misin? Sekiz kısa metinle kendini dene.</p>
+
+  <section class="kutu deney" aria-labelledby="d-kim">
+    <h2 id="d-kim" style="margin-top:0">Oyun: Kim yazdı?</h2>
+    <div id="oyun">
+      <div class="skor"><span id="tur"></span><span id="puan"></span></div>
+      <div class="metin-kart" id="metin"></div>
+      <div class="tahmin-dugmeler">
+        <button class="dugme ikincil" type="button" data-cevap="insan">🧑 İnsan yazdı</button>
+        <button class="dugme ikincil" type="button" data-cevap="yz">🤖 Yapay zekâ yazdı</button>
+      </div>
+      <div id="sonuc" aria-live="polite"></div>
+    </div>
+    <div id="bitis" hidden></div>
+  </section>
+
+  <h2>Ders: Kesin ayırt etmek mümkün değil</h2>
+  <p>Oyunda bazı ipuçları gördün: Yapay zekâ metinleri genelde <strong>düzgün, genel ve “her şeyi toparlayan”</strong> bir dille yazılır. İnsan metinlerinde ise <strong>somut ayrıntılar, kişisel tuhaflıklar ve yazım hataları</strong> daha sık görülür. Ama bunlar sadece ipucudur, kanıt değil:</p>
+  <ul>
+    <li>Düzgün yazan insanlar da var. Yapay zekâya “hatalı ve samimi yaz” da denebilir.</li>
+    <li><strong>“Yapay zekâ dedektörü”</strong> denen araçlar da sık yanılır. İnsan yazısını yapay zekâ sanabilirler, özellikle sade ve düzgün yazılmış metinlerde.</li>
+    <li>Bu yüzden birini sadece bir dedektörün sonucuna bakarak “yapay zekâyla yazmış” diye suçlamak doğru değildir.</li>
+  </ul>
+
+  <h2>Sahte içeriğe karşı kendini koru</h2>
+  <p>Yapay zekâ sadece metin değil, <strong>sahte fotoğraf, video ve ses</strong> de üretebiliyor. Bir tanıdığının sesini taklit eden dolandırıcılık aramaları bile oluyor. İşte ipuçları:</p>
+  <div class="ipucu-izgara">
+    <div class="kutu"><h3>🔎 Kaynağa bak</h3><p>Haberi ya da görüntüyü kim paylaşmış? Güvenilir bir haber kaynağında da var mı?</p></div>
+    <div class="kutu"><h3>⏸️ Acele etme</h3><p>“Hemen para gönder”, “hemen paylaş” gibi aciliyet baskısı, dolandırıcılığın en büyük işaretidir.</p></div>
+    <div class="kutu"><h3>📞 Başka yoldan doğrula</h3><p>Tanıdığın biri tuhaf bir şey isterse, bildiğin numaradan onu arayıp kontrol et.</p></div>
+    <div class="kutu"><h3>🖼️ Ayrıntılara dikkat</h3><p>Sahte görüntülerde eller, yazılar, gölgeler ve arka plandaki nesneler tuhaf olabilir. Ama bu ipuçları giderek azalıyor.</p></div>
+    <div class="kutu"><h3>🔁 Görsel arama</h3><p>Şüpheli bir fotoğrafı arama motorlarının görsel arama özelliğiyle arayıp nereden çıktığını bulabilirsin.</p></div>
+    <div class="kutu"><h3>🤝 Aile parolası</h3><p>Ailenle sadece sizin bildiğiniz bir “acil durum kelimesi” belirleyin. Sahte bir aramada işe yarar.</p></div>
+  </div>
+
+  <details class="derin">
+    <summary>Daha derine in: Neden dedektörler güvenilir değil?</summary>
+    <p>Dedektörler genelde metnin ne kadar “tahmin edilebilir” olduğuna bakar. <a href="2-sonraki-kelime.html">“Sonraki kelime”</a> deneyini hatırla: Yapay zekâ çoğu zaman en olası kelimeleri seçer, bu yüzden metni tahmin edilebilir olur. Ama sade ve kurallı yazan bir insanın metni de tahmin edilebilirdir. Ana dili başka olan biri yabancı dilde yazarken de basit, kalıp cümleler kullanır.</p>
+    <p>Öte yandan yapay zekâ metni biraz değiştirildiğinde ya da “farklı yaz” denildiğinde dedektörü kolayca atlatabilir. Bazı şirketler yapay zekâ çıktılarına gizli <em>filigran</em> eklemeyi deniyor, ama bu da her durumda işe yaramıyor.</p>
+    <p class="kucuk">Not: Bu oyundaki bütün metinler site için hazırlandı. “İnsan” olarak işaretlenen metinler gerçek insan yazılarının tipik özelliklerini taşıyacak şekilde, “yapay zekâ” olanlar ise sohbet botlarının tipik üslubuyla yazıldı.</p>
+  </details>
+
+  <aside class="ogrendik">
+    <h2>Ne öğrendik?</h2>
+    <ul>
+      <li>Yapay zekâ metinlerinde genel, düzgün ve toparlayıcı bir üslup sık görülür. Ama bu kesin bir kanıt değildir.</li>
+      <li>Yapay zekâ dedektörleri de yanılabilir. Kimseyi sadece onlara dayanarak suçlama.</li>
+      <li>Sahte görüntü ve seslere karşı en iyi koruma: kaynağı kontrol etmek, acele etmemek, başka yoldan doğrulamak.</li>
+    </ul>
+  </aside>
+
+  <h2>Kendini dene</h2>
+  <script type="application/json" class="test-veri" data-modul="kim">[
+    {"soru":"Bir yapay zekâ dedektörü arkadaşının ödevine “%90 yapay zekâ” dedi. Ne düşünmelisin?",
+     "secenekler":["Kesin yapay zekâyla yazmıştır","Dedektörler yanılabilir, bu tek başına kanıt değildir","Dedektörler hiç yanılmaz"],
+     "dogru":1,"aciklama":"Dedektörler sade ve düzgün yazılmış insan metinlerini de yapay zekâ sanabilir."},
+    {"soru":"Annenin sesiyle biri arayıp acilen para istiyor. İlk ne yapmalısın?",
+     "secenekler":["Hemen göndermelisin","Telefonu kapatıp annenin bildiğin numarasını arayarak doğrulamalısın","Sesini tanıdığın için güvenmelisin"],
+     "dogru":1,"aciklama":"Yapay zekâ sesleri taklit edebilir. Aciliyet baskısı dolandırıcılığın işaretidir. Başka bir yoldan doğrula."},
+    {"soru":"Hangisi bir metnin yapay zekâyla yazılmış olabileceğine dair bir ipucudur?",
+     "secenekler":["Somut, kişisel ayrıntılarla dolu olması","Genel, süslü ve “Sonuç olarak…” diye toparlayan bir üslup","Yazım hataları içermesi"],
+     "dogru":1,"aciklama":"Genel ve toparlayıcı bir üslup yapay zekâda sık görülür. Ama unutma, bu sadece bir ipucudur."}
+  ]</script>
+
+  <p class="not">Bu oyundaki metinler eğitim amacıyla bu site için hazırlanmıştır.</p>
+  <nav class="ileri-geri" data-oto aria-label="Deneyler arası geçiş"></nav>
+</main>
+
+<footer class="alt"><p>Yapay Zekâ Nasıl Düşünür? · Hazırlayan: devoniq</p></footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const METINLER = [
+  {k: "yz", m: "Sonbahar, doğanın renk paletini cömertçe sergilediği büyüleyici bir mevsimdir. Altın sarısı yapraklar, serin rüzgârlar ve sıcak bir fincan çay bu mevsimin vazgeçilmez unsurlarıdır. Kısacası sonbahar, hem huzur hem de yenilenme fırsatı sunar.",
+   ip: ["Herkese uyan, genel bir anlatım. Kişisel tek bir ayrıntı yok.", "Süslü sıfatlar: “büyüleyici”, “cömertçe”, “vazgeçilmez”.", "“Kısacası” ile her şeyi toparlayan bir son cümle."]},
+  {k: "insan", m: "dün akşam otobüs yine gelmedi, 40 dk bekledim durakta. sonunda yürüdüm, eve vardığımda ayaklarım kopuyordu. bi daha o hattı beklersem bana da yazıklar olsun",
+   ip: ["Küçük harf, noktalama eksikliği, “bi” gibi konuşma dili.", "Somut ve kişisel ayrıntılar: 40 dakika, yürüyerek eve dönüş.", "Gerçek bir sinir hali. Toparlayan bir sonuç yok."]},
+  {k: "yz", m: "Elbette! İşte verimli çalışmak için 5 etkili ipucu: 1. Hedeflerinizi belirleyin. 2. Düzenli molalar verin. 3. Dikkat dağıtıcıları azaltın. 4. Görevlerinizi önceliklendirin. 5. Yeterince uyuyun. Bu ipuçlarını uygulayarak verimliliğinizi önemli ölçüde artırabilirsiniz.",
+   ip: ["“Elbette! İşte…” sohbet botlarının çok tipik bir açılışıdır.", "Düzenli numaralı liste, her maddede aynı kalıp.", "Sonda klasik bir “bunları uygularsanız…” cümlesi."]},
+  {k: "insan", m: "Babaannem tarhanayı hep ağustosta yapardı. Damda bezlerin üstüne serer, bizi de sinek kovalamaya dikerdi. Şimdi marketten alıyorum, tadı hiç o değil tabii.",
+   ip: ["Çok özel, yaşanmış bir anı: damda bez, sinek kovalamak.", "Duygusal ama abartısız bir son: “tadı hiç o değil tabii”.", "Ders verme ya da toparlama çabası yok."]},
+  {k: "yz", m: "Geçen hafta ilk kez dağ yürüyüşüne çıktım ve bu deneyim bana sabrın ve azmin önemini bir kez daha hatırlattı. Zirveye ulaştığımda hissettiğim duygu tarif edilemezdi. Doğayla iç içe olmak ruhumu yeniden şarj etti.",
+   ip: ["Kişisel bir anı gibi görünüyor, ama hiçbir somut ayrıntı yok: Hangi dağ? Kiminle?", "Klişe ifadeler: “bir kez daha hatırlattı”, “tarif edilemezdi”, “ruhumu şarj etti”.", "Her cümle bir “ders” çıkarıyor. Bu zor bir örnekti!"]},
+  {k: "insan", m: "Toplantı 14.00'ten 15.30'a alındı. Salon değişmedi, 3. kat. Sunum yapacak arkadaşlar dosyalarını bugün 17.00'ye kadar Ayşe Hanım'a iletsin, son anda gelen dosyalar eklenmeyecek.",
+   ip: ["Düzgün yazılmış ama kısa ve pratik. Süs yok, giriş-sonuç yok.", "Belirli kişi, saat ve kural: gerçek bir iş ortamından.", "Ders: Düzgün yazmak, yapay zekâ olduğunun kanıtı değildir."]},
+  {k: "yz", m: "Bu sorunun cevabı birkaç faktöre bağlıdır. Bir yandan teknolojinin hayatımızı kolaylaştırdığı inkâr edilemez; öte yandan aşırı kullanımın olumsuz etkileri de göz ardı edilmemelidir. Sonuç olarak önemli olan dengeyi bulmaktır.",
+   ip: ["“Birkaç faktöre bağlıdır”, “bir yandan… öte yandan…” kalıbı.", "Kimseyi kızdırmayan, taraf tutmayan bir orta yol.", "“Sonuç olarak önemli olan dengeyi bulmaktır” gibi genel bir kapanış."]},
+  {k: "insan", m: "Kitap güzel başladı ama ortalarda baya sıktı açıkçası. Son 50 sayfa yine toparladı. Puanım 6/10, yazın tatilde okunur.",
+   ip: ["Konuşma dili: “baya”, “açıkçası”.", "Net ve kişisel bir yargı: 6/10.", "Kısa ve dağınık. Bir yapay zekâ genelde daha dengeli ve uzun yazar."]},
+];
+let sira = [], tur = 0, puan = 0;
+function karistir() { sira = METINLER.map((_, i) => i).sort(() => Math.random() - .5); tur = 0; puan = 0; }
+function goster() {
+  const m = METINLER[sira[tur]];
+  $("tur").textContent = `Metin ${tur + 1} / ${METINLER.length}`;
+  $("puan").textContent = `Doğru: ${puan}`;
+  $("metin").textContent = m.m;
+  $("sonuc").replaceChildren();
+  document.querySelectorAll("[data-cevap]").forEach(b => b.disabled = false);
+}
+function cevapla(c) {
+  const m = METINLER[sira[tur]], dogru = c === m.k;
+  if (dogru) puan++;
+  $("puan").textContent = `Doğru: ${puan}`;
+  document.querySelectorAll("[data-cevap]").forEach(b => b.disabled = true);
+  const s = $("sonuc");
+  s.innerHTML = `<div class="sonuc-kutu ${dogru ? "dogru" : "yanlis"}"><h3></h3><p style="margin:0"><b>İpuçları:</b></p><ul></ul></div>`;
+  s.querySelector("h3").textContent = (dogru ? "✓ Doğru! " : "✗ Bu sefer olmadı. ") + (m.k === "yz" ? "Bunu yapay zekâ üslubuyla yazdık." : "Bu bir insan yazısı.");
+  m.ip.forEach(x => { const li = document.createElement("li"); li.textContent = x; s.querySelector("ul").append(li); });
+  const b = document.createElement("button"); b.type = "button"; b.className = "dugme";
+  b.textContent = tur + 1 < METINLER.length ? "Sonraki metin →" : "Sonucu gör →";
+  b.addEventListener("click", () => { tur++; tur < METINLER.length ? goster() : bitir(); });
+  const d = document.createElement("div"); d.className = "dugmeler"; d.append(b); s.querySelector(".sonuc-kutu").append(d);
+}
+function bitir() {
+  $("oyun").hidden = true;
+  const b = $("bitis"); b.hidden = false;
+  const yorum = puan >= 7 ? "Çok iyi bir gözün var! Ama bu metinler bilerek tipik özelliklerle hazırlandı. Gerçek hayatta iş çok daha zor."
+    : puan >= 5 ? "Fena değil! Bazı metinler gerçekten yanıltıcıydı. Bu da ayırt etmenin ne kadar zor olduğunu gösteriyor."
+    : "Zordu, değil mi? Merak etme, uzmanlar ve dedektör yazılımları da sık yanılıyor.";
+  b.innerHTML = `<h3 style="margin-top:0">${METINLER.length} metinden ${puan} doğru</h3><p></p><div class="dugmeler"><button class="dugme ikincil" type="button" id="tekrar">↺ Tekrar oyna</button></div>`;
+  b.querySelector("p").textContent = yorum;
+  $("tekrar").addEventListener("click", () => { karistir(); b.hidden = true; $("oyun").hidden = false; goster(); });
+}
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("[data-cevap]").forEach(b => b.addEventListener("click", () => cevapla(b.dataset.cevap)));
+  karistir(); goster();
+});
+</script>
+</body>
+</html>
